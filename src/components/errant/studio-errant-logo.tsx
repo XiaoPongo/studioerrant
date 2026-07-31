@@ -9,19 +9,25 @@ import { cn } from "@/lib/utils";
  * Renders the supplied SVG wordmark (a stacked lowercase Didone
  * lockup: "studio" larger, "errant" smaller). The SVG has a
  * transparent background with dark charcoal marks, and a 5:3
- * aspect ratio (375×225 viewBox).
+ * aspect ratio (500×300 natural size).
  *
  * Theme-awareness:
  *   Night  (default, dark page)  → light logo  (CSS `filter: invert(1)`)
  *   Morning (light theme)        → dark logo   (no filter)
  *
- * Two stacked <img> elements crossfade via opacity. The dark logo
- * is position:relative so it establishes the box size; the light
- * logo overlays it absolutely. invert() does not affect the alpha
- * channel, so transparency is preserved in both themes.
+ * Uses a SINGLE <img> element. The filter transitions smoothly when
+ * the dog-ear unfolds. This avoids the two-image stacking approach
+ * which caused sizing bugs (the relative image would render at its
+ * natural 500×300 size, ignoring the parent's height constraint,
+ * and overflow the nav into the hero area).
  *
- * Styles are applied inline (rather than via CSS classes) so they
- * are never stripped by the CSS processor.
+ * Sizing: the parent span is sized by the caller's width/height
+ * props. The img uses `max-width: 100%; max-height: 100%` so it is
+ * always constrained by the parent's definite dimension:
+ *   - Nav  (height: 22px, width: auto) → img fills height, width
+ *     follows the 5:3 aspect ratio.
+ *   - Hero (width: min(72vw, 460px), height: auto) → img fills
+ *     width, height follows the aspect ratio.
  */
 export function StudioErrantLogo({
   className,
@@ -39,38 +45,22 @@ export function StudioErrantLogo({
 
   return (
     <span
-      className={cn("relative inline-block align-middle", className)}
-      style={{ width, height, lineHeight: 0 }}
+      className={cn("inline-flex items-center justify-center", className)}
+      style={{ width, height, lineHeight: 0, overflow: "hidden" }}
       role="img"
       aria-label={alt}
     >
-      {/* Dark logo — visible in Morning (light theme).
-          position:relative so it establishes the box size. */}
       <img
         src="/studio-errant-logo.svg"
         alt=""
         aria-hidden="true"
-        className="relative block h-auto max-w-full"
         style={{
-          opacity: isMorning ? 1 : 0,
-          transition: "opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1)",
-        }}
-        draggable={false}
-      />
-      {/* Light logo — visible in Night (dark theme, default).
-          Absolutely positioned to overlay the dark one exactly.
-          Same SVG, inverted via CSS filter so dark marks become
-          light. Transparent background is unaffected by invert(). */}
-      <img
-        src="/studio-errant-logo.svg"
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 h-full w-full"
-        style={{
-          objectFit: "contain",
-          opacity: isMorning ? 0 : 1,
-          filter: "invert(1)",
-          transition: "opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1)",
+          maxWidth: "100%",
+          maxHeight: "100%",
+          width: "auto",
+          height: "auto",
+          filter: isMorning ? "none" : "invert(1)",
+          transition: "filter 1.6s cubic-bezier(0.22, 0.61, 0.36, 1)",
         }}
         draggable={false}
       />
