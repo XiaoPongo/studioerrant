@@ -27,10 +27,10 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
   if (!project) {
     return (
       <div className="relative mx-auto flex min-h-[70vh] max-w-2xl flex-col items-center justify-center px-6 text-center">
-        <p className="font-serif text-3xl italic text-white/80">
+        <p className="font-editorial text-3xl italic text-foreground/80">
           That project has wandered off.
         </p>
-        <p className="mt-6 text-sm text-white/45">
+        <p className="mt-6 text-sm text-foreground/45">
           It may be archived, or it may never have been finished. Either
           way, the question it was asking is still worth following.
         </p>
@@ -38,7 +38,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
           type="button"
           onClick={() => navigate({ name: "work" })}
           data-cursor="hover"
-          className="group mt-10 inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-white/70 transition-colors hover:text-white"
+          className="group mt-10 inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
         >
           <ArrowLeft size={14} />
           Return to the work
@@ -65,7 +65,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
             type="button"
             onClick={() => navigate({ name: "work" })}
             data-cursor="hover"
-            className="group inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-white/45 transition-colors hover:text-white"
+            className="group inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-foreground/45 transition-colors hover:text-foreground"
           >
             <ArrowLeft
               size={12}
@@ -79,7 +79,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
       {/* HERO IMAGE — large visual, generous negative space. */}
       <section className="mx-auto max-w-[1600px] px-6 pt-12 md:px-12 md:pt-16">
         <Reveal delay={0.05}>
-          <div className="relative aspect-[21/10] overflow-hidden rounded-sm border border-white/[0.06]">
+          <div className="relative aspect-[21/10] overflow-hidden rounded-sm border border-foreground/[0.06]">
             <div
               className={cn(
                 "absolute inset-0 bg-gradient-to-br opacity-95",
@@ -91,18 +91,18 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.5 }}
                 transition={{ duration: 2, delay: 0.4 }}
-                className="absolute -inset-x-20 top-1/3 h-40 rotate-[-6deg] bg-white/10 blur-3xl"
+                className="absolute -inset-x-20 top-1/3 h-40 rotate-[-6deg] bg-foreground/10 blur-3xl"
               />
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-black/30" />
             <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-16">
-              <p className="mb-4 text-[11px] uppercase tracking-[0.4em] text-white/55">
+              <p className="mb-4 text-[11px] uppercase tracking-[0.4em] text-foreground/55">
                 {category?.title} · {project.year}
               </p>
-              <h1 className="font-serif text-4xl leading-tight text-white md:text-6xl md:leading-tight">
+              <h1 className="font-editorial text-4xl leading-tight text-white md:text-6xl md:leading-tight">
                 {project.title}
               </h1>
-              <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/70 md:text-lg">
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-foreground/70 md:text-lg">
                 {project.summary}
               </p>
             </div>
@@ -115,7 +115,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full border border-white/15 px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-white/55"
+                className="rounded-full border border-foreground/15 px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-foreground/55"
               >
                 {tag}
               </span>
@@ -127,12 +127,12 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
       {/* PROJECT OVERVIEW — short, confident opening. */}
       <section className="mx-auto max-w-3xl px-6 py-24 md:px-12 md:py-32">
         <Reveal>
-          <p className="mb-8 text-[11px] uppercase tracking-[0.4em] text-white/35">
+          <p className="mb-8 text-[11px] uppercase tracking-[0.4em] text-foreground/35">
             Overview
           </p>
         </Reveal>
         <Reveal delay={0.05}>
-          <p className="font-serif text-2xl leading-relaxed text-white/80 md:text-3xl md:leading-relaxed">
+          <p className="font-editorial text-2xl leading-relaxed text-foreground/80 md:text-3xl md:leading-relaxed">
             {project.overview}
           </p>
         </Reveal>
@@ -155,14 +155,14 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
             )}
           >
             <Reveal className="md:col-span-5 md:[direction:ltr]">
-              <p className="mb-5 text-[11px] uppercase tracking-[0.4em] text-white/35">
+              <p className="mb-5 text-[11px] uppercase tracking-[0.4em] text-foreground/35">
                 {String(i + 1).padStart(2, "0")} — {section.heading}
               </p>
             </Reveal>
             <div className="md:col-span-6 md:col-start-7 md:[direction:ltr]">
               {section.paragraphs.map((para, j) => (
                 <Reveal as="div" key={j} delay={0.05 + j * 0.06}>
-                  <p className="text-lg leading-loose text-white/70">
+                  <p className="text-lg leading-loose text-foreground/70">
                     {para}
                   </p>
                 </Reveal>
@@ -173,15 +173,15 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
           {/* Optional visual — large, framed, breathing. */}
           {section.visual && (
             <Reveal delay={0.1} className="mt-16">
-              <figure className="relative overflow-hidden rounded-sm border border-white/[0.06]">
+              <figure className="relative overflow-hidden rounded-sm border border-foreground/[0.06]">
                 <div
                   className={cn(
                     "aspect-[21/9] bg-gradient-to-br",
                     section.visual.palette,
                   )}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <figcaption className="absolute bottom-0 left-0 p-6 text-[11px] uppercase tracking-[0.3em] text-white/55">
+                <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+                <figcaption className="absolute bottom-0 left-0 p-6 text-[11px] uppercase tracking-[0.3em] text-foreground/55">
                   {section.visual.label}
                 </figcaption>
               </figure>
@@ -194,7 +194,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
       <section className="relative mx-auto max-w-[1600px] px-6 py-24 md:px-12 md:py-32">
         <div className="mx-auto max-w-3xl">
           <Reveal>
-            <p className="mb-8 text-[11px] uppercase tracking-[0.4em] text-white/35">
+            <p className="mb-8 text-[11px] uppercase tracking-[0.4em] text-foreground/35">
               Reflection
             </p>
           </Reveal>
@@ -208,10 +208,10 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
         <div className="mt-16 grid gap-x-12 gap-y-14 md:grid-cols-2">
           {reflectionItems.map((item, i) => (
             <Reveal key={item.label} delay={(i % 2) * 0.08}>
-              <h3 className="text-[11px] uppercase tracking-[0.3em] text-white/45">
+              <h3 className="text-[11px] uppercase tracking-[0.3em] text-foreground/45">
                 {item.label}
               </h3>
-              <p className="mt-4 text-lg leading-loose text-white/75">
+              <p className="mt-4 text-lg leading-loose text-foreground/75">
                 {item.body}
               </p>
             </Reveal>
@@ -223,7 +223,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
       {related.length > 0 && (
         <section className="mx-auto max-w-[1600px] px-6 py-24 md:px-12 md:py-32">
           <Reveal>
-            <p className="mb-12 text-[11px] uppercase tracking-[0.4em] text-white/35">
+            <p className="mb-12 text-[11px] uppercase tracking-[0.4em] text-foreground/35">
               Related — {category?.title}
             </p>
           </Reveal>
@@ -238,7 +238,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
       {/* Departure — no grand finale, only a lingering feeling. */}
       <section className="relative mx-auto max-w-3xl px-6 py-32 text-center md:px-12 md:py-48">
         <Reveal>
-          <p className="font-serif text-2xl italic leading-relaxed text-white/70 md:text-3xl md:leading-relaxed">
+          <p className="font-editorial text-2xl italic leading-relaxed text-foreground/70 md:text-3xl md:leading-relaxed">
             Thank you for following this one as far as it went.
           </p>
         </Reveal>
@@ -248,7 +248,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
               type="button"
               onClick={() => navigate({ name: "work" })}
               data-cursor="hover"
-              className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-white/70 transition-colors hover:text-white"
+              className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
             >
               <ArrowLeft size={14} />
               More work
@@ -257,7 +257,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
               type="button"
               onClick={() => navigate({ name: "about" })}
               data-cursor="hover"
-              className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-white/70 transition-colors hover:text-white"
+              className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
             >
               Why we build this way
               <ArrowUpRight size={14} />

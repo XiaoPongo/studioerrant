@@ -5,19 +5,22 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { useFinePointer } from "@/hooks/use-fine-pointer";
 
 /**
- * The cursor is another living element — a small source of awareness
- * moving through the environment. It follows the mouse with slight
- * interpolation (never perfectly attached, never sluggish) and leaves
- * an extremely subtle fading trail.
+ * The cursor — almost not there.
  *
- * Disabled entirely on touch devices and when the visitor requests
- * reduced motion.
+ * A small white dot that follows the pointer with smooth interpolation,
+ * and a thin ring that lags a fraction behind. No bloom. No trail.
+ * If the visitor notices the cursor, it is already doing too much.
+ *
+ * On hover over interactive elements, the ring expands slightly and
+ * the dot dims — the only acknowledgement that something is reachable.
+ *
+ * Disabled on touch and when reduced motion is requested.
  */
 export function CustomCursor() {
   const reducedMotion = usePrefersReducedMotion();
   const finePointer = useFinePointer();
-  const orbRef = useRef<HTMLDivElement>(null);
-  const trailRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
   const [hovering, setHovering] = useState(false);
 
   const enabled = finePointer && !reducedMotion;
@@ -30,8 +33,8 @@ export function CustomCursor() {
     document.body.classList.add("errant-custom-cursor");
 
     const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    const orb = { x: target.x, y: target.y };
-    const trail = { x: target.x, y: target.y };
+    const dot = { x: target.x, y: target.y };
+    const ring = { x: target.x, y: target.y };
     let rafId = 0;
 
     function onMove(e: MouseEvent) {
@@ -46,15 +49,17 @@ export function CustomCursor() {
     }
 
     function loop() {
-      orb.x += (target.x - orb.x) * 0.28;
-      orb.y += (target.y - orb.y) * 0.28;
-      trail.x += (target.x - trail.x) * 0.12;
-      trail.y += (target.y - trail.y) * 0.12;
-      if (orbRef.current) {
-        orbRef.current.style.transform = `translate3d(${orb.x}px, ${orb.y}px, 0) translate(-50%, -50%)`;
+      // The dot follows closely but not perfectly attached.
+      dot.x += (target.x - dot.x) * 0.32;
+      dot.y += (target.y - dot.y) * 0.32;
+      // The ring lags a fraction more.
+      ring.x += (target.x - ring.x) * 0.14;
+      ring.y += (target.y - ring.y) * 0.14;
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${dot.x}px, ${dot.y}px, 0) translate(-50%, -50%)`;
       }
-      if (trailRef.current) {
-        trailRef.current.style.transform = `translate3d(${trail.x}px, ${trail.y}px, 0) translate(-50%, -50%)`;
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate3d(${ring.x}px, ${ring.y}px, 0) translate(-50%, -50%)`;
       }
       rafId = requestAnimationFrame(loop);
     }
@@ -76,32 +81,32 @@ export function CustomCursor() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-[9999]"
     >
+      {/* The thin ring. Expands slightly on hover. Uses the
+          foreground color so it adapts to Night/Morning. */}
       <div
-        ref={trailRef}
+        ref={ringRef}
         className="absolute left-0 top-0 rounded-full"
         style={{
-          width: 26,
-          height: 26,
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 70%)",
-          filter: "blur(2px)",
+          width: hovering ? 28 : 18,
+          height: hovering ? 28 : 18,
+          border: "1px solid",
+          borderColor: hovering
+            ? "color-mix(in oklab, var(--foreground) 55%, transparent)"
+            : "color-mix(in oklab, var(--foreground) 28%, transparent)",
           transition:
-            "width 240ms ease-out, height 240ms ease-out, opacity 240ms ease-out",
-          opacity: hovering ? 0.7 : 0.45,
+            "width 600ms cubic-bezier(0.22,0.61,0.36,1), height 600ms cubic-bezier(0.22,0.61,0.36,1), border-color 600ms ease",
         }}
       />
+      {/* The dot. Small, dim, present. */}
       <div
-        ref={orbRef}
+        ref={dotRef}
         className="absolute left-0 top-0 rounded-full"
         style={{
-          width: hovering ? 18 : 12,
-          height: hovering ? 18 : 12,
-          background: hovering
-            ? "radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0.7) 60%, rgba(255,255,255,0) 100%)"
-            : "radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 60%, rgba(255,255,255,0) 100%)",
-          filter: "blur(0.6px)",
-          transition: "width 220ms ease-out, height 220ms ease-out",
-          mixBlendMode: "screen",
+          width: 4,
+          height: 4,
+          background: "color-mix(in oklab, var(--foreground) 90%, transparent)",
+          transition: "opacity 500ms ease",
+          opacity: hovering ? 0.4 : 0.9,
         }}
       />
     </div>

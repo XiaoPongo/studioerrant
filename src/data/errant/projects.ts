@@ -100,7 +100,7 @@ export const PROJECTS: Project[] = [
       "An AI system that treats your library as a graph of questions rather than a list of titles — and recommends the next book by the question it will help you ask, not the topic it covers.",
     tags: ["RAG", "Knowledge graphs", "Reading", "LLM orchestration"],
     status: "ongoing",
-    palette: "from-[#2a1f4d] via-[#1a1530] to-black",
+    palette: "from-[#211b38] via-[#16121f] to-background",
     overview:
       "Errant Atlas began with a frustration most readers know: the books we love recommend more books like themselves, when what we actually want is the next question. We built a system that maps a personal library as a graph of underlying questions, then suggests the book most likely to deepen or unsettle the inquiry.",
     sections: [
@@ -112,7 +112,7 @@ export const PROJECTS: Project[] = [
         ],
         visual: {
           label: "Recommendation as similarity vs. as inquiry",
-          palette: "from-[#1f1b3a] to-black",
+          palette: "from-[#1a1730] to-background",
         },
       },
       {
@@ -123,7 +123,7 @@ export const PROJECTS: Project[] = [
         ],
         visual: {
           label: "Reader interviews, weeks 1–6",
-          palette: "from-[#2a1f4d] to-black",
+          palette: "from-[#211b38] to-background",
         },
       },
       {
@@ -141,7 +141,7 @@ export const PROJECTS: Project[] = [
         ],
         visual: {
           label: "Three candidate questions, presented as a choice",
-          palette: "from-[#3b2350] to-black",
+          palette: "from-[#2a2040] to-background",
         },
       },
       {
@@ -174,7 +174,7 @@ export const PROJECTS: Project[] = [
       "An interactive field of soft light that responds to attention rather than input — a quiet experiment in interfaces that breathe back.",
     tags: ["Generative", "Canvas", "Atmosphere", "Interaction"],
     status: "shipped",
-    palette: "from-[#3b2350] via-[#1a1530] to-black",
+    palette: "from-[#2a2040] via-[#16121f] to-background",
     overview:
       "Lumen Field is a study in interface breath. The screen holds a field of soft light that drifts on its own rhythm and responds, gently, to where a visitor's attention lingers. There are no buttons. The only interaction is the act of looking.",
     sections: [
@@ -192,7 +192,7 @@ export const PROJECTS: Project[] = [
         ],
         visual: {
           label: "Drift field responding to dwell, not click",
-          palette: "from-[#2a1f4d] to-black",
+          palette: "from-[#211b38] to-background",
         },
       },
       {
@@ -230,7 +230,7 @@ export const PROJECTS: Project[] = [
       "Field Notes is where the studio thinks out loud — essays, fragments, and abandoned drafts, all kept because even the dead ends taught us something.",
     tags: ["Essays", "Notes", "Thinking in public"],
     status: "ongoing",
-    palette: "from-[#1f1b3a] via-[#0e0e0e] to-black",
+    palette: "from-[#1a1730] via-[#141416] to-background",
     overview:
       "Field Notes is the studio's open journal. It is not a publication schedule. It is the place where unfinished questions live long enough to either become finished essays or quietly teach us something and remain unfinished.",
     sections: [
@@ -276,7 +276,7 @@ export const PROJECTS: Project[] = [
       "An investigation into whether a website can know it is being read without knowing who is reading — a study in metrics that respect the reader.",
     tags: ["Attention", "Privacy", "Metrics", "Ethics"],
     status: "shipped",
-    palette: "from-[#2a1f4d] via-[#1a1530] to-black",
+    palette: "from-[#211b38] via-[#16121f] to-background",
     overview:
       "Quiet Index asks whether the useful parts of analytics — knowing whether a piece of writing was actually read — can be separated from the extractive parts. We prototyped a metric that measures dwell without measuring identity.",
     sections: [
@@ -330,7 +330,7 @@ export const PROJECTS: Project[] = [
       "Halcyon is a clock that resists the impulse to check the time. It only answers after you ask twice — a tiny friction designed to make urgency visible.",
     tags: ["Time", "Friction", "Small experiments"],
     status: "archived",
-    palette: "from-[#1f1b3a] to-black",
+    palette: "from-[#1a1730] to-background",
     overview:
       "Halcyon is a clock that does not tell you the time unless you really mean it. The first time you glance, it gives you nothing. Only the second deliberate ask returns the hour. It is a small experiment in friction as a design material.",
     sections: [
@@ -375,7 +375,7 @@ export const PROJECTS: Project[] = [
       "Verdant is a design system where every token is named after a duration rather than a size. Spacing becomes rhythm; type becomes silence.",
     tags: ["Design system", "Typography", "Rhythm"],
     status: "shipped",
-    palette: "from-[#2a1f4d] via-[#0e0e0e] to-black",
+    palette: "from-[#211b38] via-[#141416] to-background",
     overview:
       "Verdant began as a question: what would a design system look like if its primary axis were time, not space? The result is a system where every spacing token is named after a breath — inhale, hold, exhale — and every type ramp is calibrated to the time it takes to read.",
     sections: [

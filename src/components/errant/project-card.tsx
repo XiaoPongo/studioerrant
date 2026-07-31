@@ -42,7 +42,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
       className="group relative block w-full text-left"
       aria-label={`Open project: ${project.title}`}
     >
-      <div className="relative aspect-[16/10] overflow-hidden rounded-sm border border-white/[0.06] bg-[#080808]">
+      <div className="relative aspect-[16/10] overflow-hidden rounded-sm border border-foreground/[0.06] bg-background">
         {/* Abstract cover visual — a slow gradient + drifting light. */}
         <div
           className={cn(
@@ -57,18 +57,18 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
             whileInView={{ opacity: 0.4 }}
             viewport={{ once: true }}
             transition={{ duration: 1.4, delay: 0.2 }}
-            className="absolute -inset-x-10 top-1/3 h-24 rotate-[-8deg] bg-white/10 blur-2xl"
+            className="absolute -inset-x-10 top-1/3 h-24 rotate-[-8deg] bg-foreground/10 blur-2xl"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-black/10 to-transparent" />
 
         {/* Top row — year + status */}
         <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5">
-          <span className="text-[11px] uppercase tracking-[0.3em] text-white/55">
+          <span className="text-[11px] uppercase tracking-[0.3em] text-foreground/55">
             {project.year}
           </span>
           {statusLabel && (
-            <span className="text-[10px] uppercase tracking-[0.3em] text-white/45">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-foreground/45">
               {statusLabel}
             </span>
           )}
@@ -76,25 +76,25 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
 
         {/* Title block */}
         <div className="absolute inset-x-0 bottom-0 p-6">
-          <h3 className="font-serif text-2xl text-white md:text-3xl">
+          <h3 className="font-editorial text-2xl text-white md:text-3xl">
             {project.title}
           </h3>
-          <p className="mt-2 max-w-md text-sm leading-relaxed text-white/55">
+          <p className="mt-2 max-w-md text-sm leading-relaxed text-foreground/55">
             {project.summary}
           </p>
         </div>
 
         {/* The reveal — slightly more information on hover. */}
-        <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/85 via-black/40 to-transparent p-6 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+        <div className="absolute inset-0 flex items-end bg-gradient-to-t from-background/85 via-black/40 to-transparent p-6 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
           <div>
-            <p className="max-w-md text-sm leading-relaxed text-white/80">
+            <p className="max-w-md text-sm leading-relaxed text-foreground/80">
               {project.detail}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {project.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-white/15 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-white/55"
+                  className="rounded-full border border-foreground/15 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-foreground/55"
                 >
                   {tag}
                 </span>
@@ -105,7 +105,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
 
         <ArrowUpRight
           size={18}
-          className="absolute right-5 top-5 text-white/0 transition-all duration-500 group-hover:right-4 group-hover:top-4 group-hover:text-white/70"
+          className="absolute right-5 top-5 text-foreground/0 transition-all duration-500 group-hover:right-4 group-hover:top-4 group-hover:text-foreground/70"
         />
       </div>
     </motion.button>

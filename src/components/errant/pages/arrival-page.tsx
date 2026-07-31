@@ -5,27 +5,32 @@ import { motion } from "framer-motion";
 import { useRouterStore } from "@/lib/router";
 import { ARRIVAL_QUOTES } from "@/data/errant/quotes";
 import { Reveal } from "@/components/errant/transitions";
+import { ErrantWordmark } from "@/components/errant/errant-wordmark";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 /**
- * Arrival — the first screen.
+ * Arrival — the first room.
  *
- * It should not immediately explain Studio Errant. It creates curiosity.
- * The visitor feels they have entered a quiet place where something is
- * already happening. Nothing rushes to introduce itself.
- *
- * Layout: the Living Mesh occupies the left side of the viewport; the
- * logo placeholder sits centered slightly left of the page's vertical
- * center; a single rotating reflective sentence sits beneath it.
+ * Refinement goals (from the Peter Zumthor directive):
+ *   - The hero whispers. "This is ◉ Studio Errant." Nothing else.
+ *   - Enormous breathing room. The first screen communicates
+ *     confidence through absence.
+ *   - No purple on Arrival. Nearly monochrome.
+ *   - The logo is part of the sentence, not a separate branding
+ *     element. Typography sits slightly left of center.
+ *   - Silence is part of the introduction. The visitor earns the
+ *     explanation later.
+ *   - Scrolling feels like walking. Transitions feel like crossing
+ *     thresholds. Every screen is a room with its own atmosphere.
  */
 export function ArrivalPage() {
   const navigate = useRouterStore((s) => s.navigate);
   const reduced = usePrefersReducedMotion();
 
-  // Rotate the hero statement on each page refresh.
+  // One rotating reflective fragment, displayed very far down the
+  // page — never in the hero. The hero stays silent.
   const quote = useMemo(
-    () =>
-      ARRIVAL_QUOTES[Math.floor(Math.random() * ARRIVAL_QUOTES.length)],
+    () => ARRIVAL_QUOTES[Math.floor(Math.random() * ARRIVAL_QUOTES.length)],
     [],
   );
   const [scrollHint, setScrollHint] = useState(true);
@@ -38,76 +43,77 @@ export function ArrivalPage() {
 
   return (
     <div className="relative">
-      {/* HERO — first viewport. Sits comfortably in silence. */}
-      <section className="relative flex min-h-screen items-center justify-center px-6 md:px-12">
-        <div className="relative z-10 flex max-w-3xl flex-col items-center text-center md:items-start md:translate-x-[-8%] md:text-left">
-          <motion.div
-            initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.6, ease: "easeOut", delay: 0.4 }}
-            className="relative mb-12 flex h-32 w-32 items-center justify-center md:h-48 md:w-48"
+      {/* ════════════════════════════════════════════════════════
+          ROOM I — THE WHISPER
+          The first screen. Almost nothing. The visitor enters a
+          quiet room and is given only enough to know they are
+          somewhere. Silence is the introduction.
+          ════════════════════════════════════════════════════════ */}
+      <section className="relative flex min-h-screen items-center px-6 md:px-12">
+        <div className="relative z-10 w-full max-w-5xl md:translate-x-[-6%]">
+          {/* "This is" — a small, italic editorial line. The
+              wordmark that follows is part of the same sentence. */}
+          <motion.p
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.8, ease: "easeOut", delay: 0.6 }}
+            className="mb-6 font-editorial text-lg italic text-foreground/50 md:text-xl"
           >
-            <motion.div
-              animate={reduced ? undefined : { rotate: 360 }}
-              transition={{ duration: 120, ease: "linear", repeat: Infinity }}
-              className="absolute inset-0 rounded-full border border-white/15"
-            />
-            <motion.div
-              animate={reduced ? undefined : { rotate: -360 }}
-              transition={{ duration: 90, ease: "linear", repeat: Infinity }}
-              className="absolute inset-4 rounded-full border border-white/25"
-            />
-            <div className="absolute inset-10 rounded-full border border-white/40" />
-            <div className="h-3 w-3 rounded-full bg-white shadow-[0_0_24px_rgba(255,255,255,0.6)]" />
-          </motion.div>
+            This is
+          </motion.p>
 
+          {/* The wordmark-as-symbol: a small filled circle (the
+              studio's only iconographic gesture) sitting in line
+              with the wordmark, so the whole reads as a single
+              sentence: "This is ◉ studio errant". */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, ease: "easeOut", delay: 0.9 }}
-            className="mb-3 flex flex-col items-center gap-1 md:items-start"
+            transition={{ duration: 2.2, ease: "easeOut", delay: 1.0 }}
+            className="flex items-baseline gap-5 md:gap-7"
           >
-            <span className="text-xs uppercase tracking-[0.5em] text-white/55">
-              Studio
+            {/* The circle. A 20–30 second breathing cycle —
+                imperceptible unless you watch. */}
+            <span
+              aria-hidden="true"
+              className="relative inline-flex h-3 w-3 shrink-0 items-center justify-center self-center md:h-4 md:w-4"
+            >
+              <motion.span
+                className="absolute inset-0 rounded-full bg-foreground/90"
+                animate={
+                  reduced
+                    ? undefined
+                    : {
+                        scale: [1, 1.18, 1],
+                        opacity: [0.85, 1, 0.85],
+                      }
+                }
+                transition={{
+                  duration: 24,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                }}
+              />
             </span>
-            <span className="text-xs uppercase tracking-[0.5em] text-white">
-              Errant
-            </span>
+            <ErrantWordmark size="xl" />
           </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.4, ease: "easeOut", delay: 1.2 }}
-            className="font-serif text-2xl italic leading-relaxed text-white/85 md:text-3xl md:leading-relaxed"
-          >
-            {quote}
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.4, ease: "easeOut", delay: 1.8 }}
-            className="mt-10 max-w-md text-sm leading-relaxed text-white/45"
-          >
-            A digital studio built around curiosity. We build what curiosity
-            discovers — and document the wandering that gets us there.
-          </motion.p>
+          {/* Nothing else. No intro paragraph. No "we build what
+              curiosity discovers". The visitor earns that later. */}
         </div>
 
-        {/* Scroll cue: a thin vertical line slowly extending downward. */}
+        {/* The scroll cue: a thin vertical line, barely there.
+            Extends downward over 6 seconds. The visitor discovers
+            that scrolling continues — they are never told. */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: scrollHint ? 1 : 0 }}
-          transition={{ duration: 1, ease: "easeInOut" }}
-          className="pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2"
+          transition={{ duration: 1.4, ease: "easeInOut" }}
+          className="pointer-events-none absolute bottom-12 left-6 md:left-12"
           aria-hidden="true"
         >
-          <div className="flex flex-col items-center gap-3">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-white/30">
-              Wander
-            </span>
-            <div className="relative h-16 w-px overflow-hidden bg-white/10">
+          <div className="flex items-center gap-4">
+            <div className="relative h-20 w-px overflow-hidden bg-foreground/10">
               <motion.div
                 initial={reduced ? { y: 0 } : { y: "-100%" }}
                 animate={reduced ? { y: 0 } : { y: "100%" }}
@@ -115,82 +121,102 @@ export function ArrivalPage() {
                   reduced
                     ? undefined
                     : {
-                        duration: 2.4,
+                        duration: 6,
                         ease: "easeInOut",
                         repeat: Infinity,
-                        repeatDelay: 0.8,
+                        repeatDelay: 1.2,
                       }
                 }
-                className="absolute inset-0 w-px bg-white/70"
+                className="absolute inset-0 w-px bg-foreground/60"
               />
             </div>
           </div>
         </motion.div>
       </section>
 
-      {/* DISCOVERY — as scrolling begins, the page opens rather than moves. */}
-      <section className="relative mx-auto max-w-3xl px-6 py-32 md:px-12 md:py-48">
+      {/* ════════════════════════════════════════════════════════
+          ROOM II — THE THRESHOLD
+          A long, narrow hallway. Almost empty. One sentence,
+          centered in vast negative space. The visitor slows
+          before the next room opens.
+          ════════════════════════════════════════════════════════ */}
+      <section className="relative mx-auto flex min-h-screen max-w-3xl items-center px-6 md:px-12">
         <Reveal>
-          <p className="mb-6 text-[11px] uppercase tracking-[0.4em] text-white/35">
-            I — On wandering
-          </p>
-        </Reveal>
-        <Reveal delay={0.05}>
-          <p className="font-serif text-2xl leading-relaxed text-white/80 md:text-3xl md:leading-relaxed">
-            The word <em className="text-white">errant</em> traditionally
-            describes someone who wanders. We have kept the word because we
-            have not found a better name for the way ideas actually arrive.
-          </p>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <p className="mt-10 text-base leading-loose text-white/55 md:text-lg">
-            Ideas rarely appear fully formed. Most worthwhile ideas begin as
-            questions. Questions become experiments. Experiments become
-            observations. Observations become understanding. Understanding,
-            eventually, becomes meaningful work. Studio Errant exists inside
-            that slow movement — and this website is built to make the
-            movement visible.
+          <p className="font-editorial text-3xl leading-[1.35] text-foreground/85 md:text-5xl md:leading-[1.3]">
+            We build what curiosity discovers —
+            <span className="text-foreground/45"> and document the wandering that gets us there.</span>
           </p>
         </Reveal>
       </section>
 
-      {/* IMMERSION — a doorway into the Work. */}
-      <section className="relative mx-auto max-w-5xl px-6 py-32 md:px-12 md:py-48">
-        <div className="grid gap-12 md:grid-cols-12 md:items-center">
+      {/* ════════════════════════════════════════════════════════
+          ROOM III — THE LIBRARY
+          A quieter, denser room. Short paragraphs separated by
+          large vertical air. The visitor sits with each idea
+          before the next one arrives.
+          ════════════════════════════════════════════════════════ */}
+      <section className="relative mx-auto max-w-2xl px-6 py-40 md:px-12 md:py-56">
+        <Reveal>
+          <p className="mb-16 text-[10px] uppercase tracking-[0.4em] text-foreground/35">
+            On wandering
+          </p>
+        </Reveal>
+        <div className="space-y-16 text-lg leading-[1.9] text-foreground/65 md:text-xl md:leading-[1.85]">
+          <Reveal as="p" delay={0.05}>
+            The word <em className="text-foreground/85">errant</em> describes
+            someone who wanders. We kept the word because we never found a
+            better name for the way ideas actually arrive.
+          </Reveal>
+          <Reveal as="p" delay={0.08}>
+            Most worthwhile ideas begin as questions. Questions become
+            experiments. Experiments become observations. Observations become
+            understanding. Understanding, eventually, becomes meaningful work.
+          </Reveal>
+          <Reveal as="p" delay={0.11}>
+            Studio Errant exists inside that slow movement. This website is
+            built to make the movement visible — and to invite you to slow
+            down enough to see it.
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════
+          ROOM IV — THE DOORWAY
+          A single framed opening. Beyond it: the work. The
+          visitor is invited, not pushed.
+          ════════════════════════════════════════════════════════ */}
+      <section className="relative mx-auto flex min-h-screen max-w-5xl items-center px-6 md:px-12">
+        <div className="grid w-full gap-16 md:grid-cols-12 md:items-center">
           <Reveal className="md:col-span-7" delay={0.05}>
-            <p className="mb-6 text-[11px] uppercase tracking-[0.4em] text-white/35">
-              II — On the work
+            <p className="mb-10 text-[10px] uppercase tracking-[0.4em] text-foreground/35">
+              The work
             </p>
-            <p className="font-serif text-2xl leading-relaxed text-white/80 md:text-3xl md:leading-relaxed">
-              The work is not a portfolio. It is a record of curiosities
-              followed far enough to become something.
-            </p>
-            <p className="mt-8 text-base leading-loose text-white/55">
-              Projects are grouped not by date but by the kind of question
-              they were trying to answer. Some are finished. Some are
-              ongoing. A few are deliberately unfinished. All of them are
-              evidence that curiosity existed.
+            <p className="font-editorial text-3xl leading-[1.35] text-foreground/85 md:text-4xl md:leading-[1.3]">
+              Beyond this point, projects. Not a portfolio — a record of
+              curiosities followed far enough to become something.
             </p>
             <button
               type="button"
               onClick={() => navigate({ name: "work" })}
               data-cursor="hover"
-              className="group mt-10 inline-flex items-center gap-4 text-sm uppercase tracking-[0.3em] text-white/70 transition-colors hover:text-white"
+              className="group mt-12 inline-flex items-center gap-5 text-[11px] uppercase tracking-[0.32em] text-foreground/55 transition-colors duration-700 hover:text-foreground"
             >
-              Enter the work
-              <span className="relative h-px w-12 bg-white/40 transition-all duration-500 group-hover:w-20 group-hover:bg-white/80" />
+              Enter
+              <span className="relative h-px w-10 bg-foreground/25 transition-all duration-700 group-hover:w-20 group-hover:bg-foreground/60" />
             </button>
           </Reveal>
 
-          <Reveal className="md:col-span-5" delay={0.15}>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-sm border border-white/[0.06]">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#2a1f4d] via-[#1a1530] to-black opacity-80" />
+          <Reveal className="md:col-span-4 md:col-start-9" delay={0.15}>
+            {/* A single quiet framed object — the only image on
+                Arrival. No purple. Just material. */}
+            <div className="relative aspect-[3/4] overflow-hidden border border-foreground/[0.06]">
+              <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.04] via-transparent to-foreground/[0.02]" />
               <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
-                <p className="font-serif text-lg italic leading-relaxed text-white/70">
-                  &ldquo;Some ideas only appear when you&rsquo;re lost.&rdquo;
+                <p className="font-editorial text-lg italic leading-relaxed text-foreground/45">
+                  {quote}
                 </p>
-                <p className="mt-6 text-[10px] uppercase tracking-[0.4em] text-white/35">
-                  — Field Notes
+                <p className="mt-6 text-[9px] uppercase tracking-[0.4em] text-foreground/25">
+                  — a note
                 </p>
               </div>
             </div>
@@ -198,43 +224,38 @@ export function ArrivalPage() {
         </div>
       </section>
 
-      {/* REFLECTION — leaving should feel like walking out of a gallery. */}
-      <section className="relative mx-auto max-w-3xl px-6 py-32 md:px-12 md:py-48">
+      {/* ════════════════════════════════════════════════════════
+          ROOM V — THE EXIT
+          The visitor leaves the way they came. No grand finale.
+          Only a lingering feeling, and a choice of where to go
+          next.
+          ════════════════════════════════════════════════════════ */}
+      <section className="relative mx-auto flex min-h-[80vh] max-w-2xl flex-col items-center justify-center px-6 text-center md:px-12">
         <Reveal>
-          <p className="mb-6 text-[11px] uppercase tracking-[0.4em] text-white/35">
-            III — Before you continue
+          <p className="font-editorial text-2xl italic leading-relaxed text-foreground/55 md:text-3xl md:leading-relaxed">
+            Take your time. The pages ahead are not in a hurry.
+            <br />
+            Neither, we hope, are you.
           </p>
         </Reveal>
-        <Reveal delay={0.05}>
-          <p className="font-serif text-2xl leading-relaxed text-white/80 md:text-3xl md:leading-relaxed">
-            You are not here to be impressed. You are here to slow down
-            enough that something quiet can reach you.
-          </p>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <p className="mt-10 text-base leading-loose text-white/55 md:text-lg">
-            Take your time. The pages ahead are not in a hurry. Neither, we
-            hope, are you.
-          </p>
-        </Reveal>
-        <Reveal delay={0.15}>
-          <div className="mt-12 flex flex-wrap gap-x-10 gap-y-4">
+        <Reveal delay={0.12}>
+          <div className="mt-16 flex flex-wrap items-center justify-center gap-x-12 gap-y-5">
             <button
               type="button"
               onClick={() => navigate({ name: "work" })}
               data-cursor="hover"
-              className="group flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-white/65 transition-colors hover:text-white"
+              className="group flex items-center gap-3 text-[11px] uppercase tracking-[0.32em] text-foreground/55 transition-colors duration-700 hover:text-foreground"
             >
-              <span className="h-px w-6 bg-white/30 transition-all group-hover:w-10 group-hover:bg-white/70" />
+              <span className="h-px w-5 bg-foreground/25 transition-all duration-700 group-hover:w-8 group-hover:bg-foreground/60" />
               Work
             </button>
             <button
               type="button"
               onClick={() => navigate({ name: "about" })}
               data-cursor="hover"
-              className="group flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-white/65 transition-colors hover:text-white"
+              className="group flex items-center gap-3 text-[11px] uppercase tracking-[0.32em] text-foreground/55 transition-colors duration-700 hover:text-foreground"
             >
-              <span className="h-px w-6 bg-white/30 transition-all group-hover:w-10 group-hover:bg-white/70" />
+              <span className="h-px w-5 bg-foreground/25 transition-all duration-700 group-hover:w-8 group-hover:bg-foreground/60" />
               About
             </button>
           </div>

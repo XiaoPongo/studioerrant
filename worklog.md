@@ -79,3 +79,39 @@ Stage Summary:
 - Site is browser-verified end-to-end: Arrival, Work, About, and project detail pages all render and navigate correctly.
 - Purple emergence, Living Mesh, custom cursor, page transitions, reduced-motion/touch fallbacks, and sticky footer all confirmed working.
 - Multi-page experience delivered within the single `/` route via hash router (#/, #/work, #/about, #/project/<slug>).
+
+---
+Task ID: 3
+Agent: orchestrator (main)
+Task: Refine Studio Errant per the "Peter Zumthor redesigning a website" directive — quieter, more tactile, more architectural, less active. Add a paper dog-ear theme toggle (Night/Morning). New hero "This is ◉ Studio Errant". Remove purple from Arrival. Slow everything.
+
+Work Log:
+- Re-read Codex + the reference StudioErrant.svg (high-contrast serif "studio errant" wordmark on matte paper — analyzed via VLM).
+- Planned refinement: not a redesign. Same architecture (hash router, 4 pages, Living Mesh, cursor, sticky footer). Refine each element toward restraint, material, and inevitability.
+
+Stage Summary:
+- Plan established. Beginning with the design-system rewrite (globals.css) and the two-theme (Night / Morning) material palette.
+
+---
+Task ID: 4
+Agent: orchestrator (main)
+Task: Verify the refined Studio Errant end-to-end with Agent Browser.
+
+Work Log:
+- Loaded the refined site in Agent Browser. No console/runtime errors.
+- Verified the whispered hero: "This is ◉ studio errant" rendered in Cormorant Garamond (high-contrast editorial serif), left-of-center, vast negative space, small breathing dot, no purple, graphite/stone material background. VLM confirmed: "inevitable and quietly confident".
+- Found and fixed a critical CSS bug: the `@theme inline` block had self-referential `--font-sans: var(--font-sans)` and `--font-editorial: var(--font-editorial)` which created empty bindings at `:root`, breaking the font cascade so neither Inter nor Cormorant was actually rendering. Removed the self-references; set body font-family explicitly; the editorial class now resolves correctly.
+- Verified the paper dog-ear theme toggle: clicking the folded corner adds `theme-morning` to <html>; background transitions over 1.6s from graphite (#0c0d0e) to warm archival paper (#f2efe8); text inverts to charcoal; layout stays identical. VLM confirmed: "museum/observatory → library/workshop". Toggling back returns to Night. Choice persists in localStorage.
+- Verified purple emergence on Work page: subtle, muted violet tint appears beneath the dark surface only on Work/project pages; zero on Arrival/About. VLM confirmed: "subtle, muted purple, not bright or neon".
+- Verified mobile (390x844): single column, readable, hamburger menu, editorial hero, graphite background, no overflow.
+- Verified the Living Mesh refinement: ~80% fewer particles, drift ~6-8x slower, dust-in-light feel, cursor influence almost imperceptible. Background now reads as "graphite, stone, or scratched metal" rather than "cosmic".
+- Final `bun run lint` passes with 0 errors / 0 warnings.
+- Dev log clean: all GET / 200, no runtime errors.
+
+Stage Summary:
+- Refinement complete and browser-verified.
+- The experience is now quieter, more tactile, more architectural.
+- Two materials (Night / Morning) toggle via the paper dog-ear.
+- Purple is discovered, never introduced.
+- Typography is a high-contrast editorial serif (Cormorant Garamond).
+- All motion dramatically slowed; the visitor notices movement only after several seconds.

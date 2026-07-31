@@ -6,11 +6,10 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 /**
  * Page transitions dissolve through darkness — "walking into another
- * room with the lights dimmed". No slides, no cubes, no zooms.
+ * room with the lights dimmed". Slow. No slides, no cubes, no zooms.
  *
  * In reduced-motion mode, transitions become simple opacity fades.
  */
-
 export function PageTransition({
   children,
   transitionKey,
@@ -27,16 +26,14 @@ export function PageTransition({
         exit: { opacity: 0 },
       }
     : {
-        initial: { opacity: 0, filter: "blur(8px)" },
+        initial: { opacity: 0 },
         animate: {
           opacity: 1,
-          filter: "blur(0px)",
-          transition: { duration: 0.9, ease: "easeOut" },
+          transition: { duration: 1.6, ease: "easeOut" },
         },
         exit: {
           opacity: 0,
-          filter: "blur(6px)",
-          transition: { duration: 0.5, ease: "easeIn" },
+          transition: { duration: 0.9, ease: "easeIn" },
         },
       };
 
@@ -55,8 +52,9 @@ export function PageTransition({
 }
 
 /**
- * A subtle reveal-on-scroll wrapper. Motion should reveal — never
- * distract. Elements rise a few pixels and fade in over a long duration.
+ * A subtle reveal-on-scroll. Motion should reveal — never distract.
+ * Elements rise a few pixels and fade in over a long duration, only
+ * once, when they enter the viewport.
  */
 export function Reveal({
   children,
@@ -78,10 +76,10 @@ export function Reveal({
 
   return (
     <MotionTag
-      initial={{ opacity: 0, y: 14 }}
+      initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-      transition={{ duration: 1, ease: "easeOut", delay }}
+      transition={{ duration: 1.4, ease: "easeOut", delay }}
       className={className}
     >
       {children}
@@ -101,11 +99,11 @@ export function PullQuote({
 }) {
   return (
     <figure className={className}>
-      <blockquote className="font-serif text-2xl italic leading-relaxed text-white/85 md:text-3xl md:leading-relaxed">
+      <blockquote className="font-editorial text-2xl italic leading-[1.5] text-foreground/80 md:text-3xl md:leading-[1.45]">
         &ldquo;{children}&rdquo;
       </blockquote>
       {by && (
-        <figcaption className="mt-4 text-[11px] uppercase tracking-[0.3em] text-white/40">
+        <figcaption className="mt-5 text-[10px] uppercase tracking-[0.4em] text-foreground/40">
           — {by}
         </figcaption>
       )}

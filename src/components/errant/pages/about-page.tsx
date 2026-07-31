@@ -83,12 +83,12 @@ export function AboutPage() {
       {/* Opener — why does Studio Errant exist? */}
       <section className="relative mx-auto max-w-[1600px] px-6 pb-16 pt-40 md:px-12 md:pb-24 md:pt-52">
         <Reveal>
-          <p className="mb-8 text-[11px] uppercase tracking-[0.5em] text-white/35">
+          <p className="mb-8 text-[11px] uppercase tracking-[0.5em] text-foreground/35">
             Studio Errant — About
           </p>
         </Reveal>
         <Reveal delay={0.05}>
-          <h1 className="max-w-4xl font-serif text-5xl leading-[1.05] text-white md:text-7xl md:leading-[1.05]">
+          <h1 className="max-w-4xl font-editorial text-5xl leading-[1.05] text-white md:text-7xl md:leading-[1.05]">
             We exist to ask
             <br />
             better questions,
@@ -103,11 +103,11 @@ export function AboutPage() {
       {/* Story — first person, conversational, never corporate. */}
       <section className="relative mx-auto max-w-3xl px-6 py-24 md:px-12 md:py-32">
         <Reveal>
-          <p className="mb-8 text-[11px] uppercase tracking-[0.4em] text-white/35">
+          <p className="mb-8 text-[11px] uppercase tracking-[0.4em] text-foreground/35">
             I — The story so far
           </p>
         </Reveal>
-        <div className="space-y-8 text-lg leading-loose text-white/70">
+        <div className="space-y-8 text-lg leading-loose text-foreground/70">
           <Reveal as="p" delay={0.05}>
             Studio Errant began the way most honest things do — with a
             frustration I could not quite name. I had spent years building
@@ -139,12 +139,12 @@ export function AboutPage() {
       {/* Philosophy — the creative process as a cycle. */}
       <section className="relative mx-auto max-w-[1600px] px-6 py-24 md:px-12 md:py-32">
         <Reveal>
-          <p className="mb-8 text-[11px] uppercase tracking-[0.4em] text-white/35">
+          <p className="mb-8 text-[11px] uppercase tracking-[0.4em] text-foreground/35">
             II — The creative process
           </p>
         </Reveal>
         <Reveal delay={0.05}>
-          <p className="max-w-2xl font-serif text-2xl leading-relaxed text-white/80 md:text-3xl md:leading-relaxed">
+          <p className="max-w-2xl font-editorial text-2xl leading-relaxed text-foreground/80 md:text-3xl md:leading-relaxed">
             Curiosity is a cycle. Not a pipeline. Not a funnel. A cycle
             you walk around, and around, until something quietly becomes
             clear.
@@ -156,16 +156,16 @@ export function AboutPage() {
           <Reveal className="lg:col-span-5" delay={0.08}>
             <div className="relative mx-auto aspect-square w-full max-w-md">
               {/* Outer ring */}
-              <div className="absolute inset-0 rounded-full border border-white/10" />
-              <div className="absolute inset-6 rounded-full border border-white/[0.06]" />
-              <div className="absolute inset-12 rounded-full border border-white/[0.04]" />
+              <div className="absolute inset-0 rounded-full border border-foreground/10" />
+              <div className="absolute inset-6 rounded-full border border-foreground/[0.06]" />
+              <div className="absolute inset-12 rounded-full border border-foreground/[0.04]" />
               {/* Center */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="flex h-24 w-24 flex-col items-center justify-center rounded-full border border-white/15 bg-black/40 text-center">
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-white/45">
+                <div className="flex h-24 w-24 flex-col items-center justify-center rounded-full border border-foreground/15 bg-background/40 text-center">
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-foreground/45">
                     The
                   </span>
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-white/80">
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-foreground/80">
                     Cycle
                   </span>
                 </div>
@@ -187,10 +187,10 @@ export function AboutPage() {
                       ease: "easeOut",
                       delay: 0.2 + i * 0.08,
                     }}
-                    className="absolute flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-white/15 bg-[#080808] text-center"
+                    className="absolute flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-foreground/15 bg-background text-center"
                     style={{ left: `${x}%`, top: `${y}%` }}
                   >
-                    <span className="text-[10px] uppercase leading-tight tracking-[0.2em] text-white/85">
+                    <span className="text-[10px] uppercase leading-tight tracking-[0.2em] text-foreground/85">
                       {step.name}
                     </span>
                   </motion.div>
@@ -203,15 +203,15 @@ export function AboutPage() {
             <ol className="space-y-6">
               {PROCESS_STEPS.map((step, i) => (
                 <Reveal as="li" key={step.name} delay={0.05 + i * 0.05}>
-                  <div className="flex gap-6 border-b border-white/[0.05] pb-6">
-                    <span className="font-serif text-sm italic text-white/35">
+                  <div className="flex gap-6 border-b border-foreground/[0.05] pb-6">
+                    <span className="font-editorial text-sm italic text-foreground/35">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <div>
-                      <h3 className="text-base uppercase tracking-[0.2em] text-white">
+                      <h3 className="text-base uppercase tracking-[0.2em] text-foreground">
                         {step.name}
                       </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-white/55">
+                      <p className="mt-2 text-sm leading-relaxed text-foreground/55">
                         {step.note}
                       </p>
                     </div>
@@ -226,17 +226,17 @@ export function AboutPage() {
       {/* Values — what we hold to. */}
       <section className="relative mx-auto max-w-[1600px] px-6 py-24 md:px-12 md:py-32">
         <Reveal>
-          <p className="mb-8 text-[11px] uppercase tracking-[0.4em] text-white/35">
+          <p className="mb-8 text-[11px] uppercase tracking-[0.4em] text-foreground/35">
             III — What we hold to
           </p>
         </Reveal>
         <div className="grid gap-x-12 gap-y-14 md:grid-cols-2">
           {VALUES.map((v, i) => (
             <Reveal key={v.title} delay={(i % 2) * 0.08}>
-              <h3 className="font-serif text-2xl text-white md:text-3xl">
+              <h3 className="font-editorial text-2xl text-white md:text-3xl">
                 {v.title}
               </h3>
-              <p className="mt-4 text-base leading-loose text-white/55">
+              <p className="mt-4 text-base leading-loose text-foreground/55">
                 {v.body}
               </p>
             </Reveal>
@@ -247,18 +247,18 @@ export function AboutPage() {
       {/* Timeline — moments of growth, not résumé milestones. */}
       <section className="relative mx-auto max-w-3xl px-6 py-24 md:px-12 md:py-32">
         <Reveal>
-          <p className="mb-10 text-[11px] uppercase tracking-[0.4em] text-white/35">
+          <p className="mb-10 text-[11px] uppercase tracking-[0.4em] text-foreground/35">
             IV — A loose timeline
           </p>
         </Reveal>
         <ol className="space-y-8">
           {TIMELINE.map((entry, i) => (
             <Reveal as="li" key={entry.moment} delay={i * 0.05}>
-              <div className="flex items-baseline justify-between gap-6 border-b border-white/[0.05] pb-6">
-                <span className="font-serif text-xl text-white/85 md:text-2xl">
+              <div className="flex items-baseline justify-between gap-6 border-b border-foreground/[0.05] pb-6">
+                <span className="font-editorial text-xl text-foreground/85 md:text-2xl">
                   {entry.moment}
                 </span>
-                <span className="text-[11px] uppercase tracking-[0.3em] text-white/35">
+                <span className="text-[11px] uppercase tracking-[0.3em] text-foreground/35">
                   {entry.year}
                 </span>
               </div>
@@ -266,7 +266,7 @@ export function AboutPage() {
           ))}
         </ol>
         <Reveal delay={0.1}>
-          <p className="mt-10 text-sm leading-relaxed text-white/40">
+          <p className="mt-10 text-sm leading-relaxed text-foreground/40">
             Notice that these are moments of growth rather than résumé
             milestones. A timeline that emphasises ideas over achievements
             is, we think, a more honest kind of record.
@@ -284,7 +284,7 @@ export function AboutPage() {
           </PullQuote>
         </Reveal>
         <Reveal delay={0.1}>
-          <p className="mt-12 text-base leading-loose text-white/55">
+          <p className="mt-12 text-base leading-loose text-foreground/55">
             If you have a question worth following — or a project that
             begins as one — write to us. We answer slowly, but we answer.
           </p>
@@ -294,19 +294,19 @@ export function AboutPage() {
             <a
               href="mailto:hello@studioerrant.example"
               data-cursor="hover"
-              className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-white/70 transition-colors hover:text-white"
+              className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
             >
               hello@studioerrant.example
-              <span className="h-px w-6 bg-white/30 transition-all group-hover:w-10 group-hover:bg-white/70" />
+              <span className="h-px w-6 bg-foreground/30 transition-all group-hover:w-10 group-hover:bg-foreground/70" />
             </a>
             <button
               type="button"
               onClick={() => navigate({ name: "work" })}
               data-cursor="hover"
-              className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-white/70 transition-colors hover:text-white"
+              className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
             >
               See the work
-              <span className="h-px w-6 bg-white/30 transition-all group-hover:w-10 group-hover:bg-white/70" />
+              <span className="h-px w-6 bg-foreground/30 transition-all group-hover:w-10 group-hover:bg-foreground/70" />
             </button>
           </div>
         </Reveal>
