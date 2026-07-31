@@ -167,10 +167,110 @@ export function PaperDogEar() {
         {isMorning ? "n" : "m"}
       </span>
 
-      {/* Reduced motion: the unfold still happens, but instantly.
-          The atmosphere is preserved by the slow CSS color transition
-          on html/body in globals.css. */}
-      {reduced && null}
+      {/* A subtle hint that appears every 10 seconds for 4 seconds,
+          pointing at the dog-ear so visitors know it's there and what
+          it does. The hint is a small arrow + the word "unfold" /
+          "fold" depending on the current theme. It fades in and out
+          slowly — never jarring. */}
+      {!reduced && (
+        <DogEarHint isMorning={isMorning} isClient={isClient} size={size} />
+      )}
     </button>
+  );
+}
+
+/**
+ * The dog-ear hint. Every 10 seconds, a small arrow + label fades in
+ * next to the dog-ear, stays visible for 4 seconds, then fades out.
+ * The cycle repeats. Once the visitor has interacted (toggled), the
+ * hint stops — they know it's there.
+ */
+function DogEarHint({
+  isMorning,
+  isClient,
+  size,
+}: {
+  isMorning: boolean;
+  isClient: boolean;
+  size: number;
+}) {
+  const [visible, setVisible] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+
+  // Dismiss the hint permanently once the visitor toggles the theme.
+  // We detect this by tracking the material value and adjusting state
+  // during render (the documented React 19 pattern) rather than via
+  // setState-in-effect.
+  const { material } = useMaterial();
+  const [prevMaterial, setPrevMaterial] = useState(material);
+  if (prevMaterial !== material) {
+    setPrevMaterial(material);
+    if (!dismissed) {
+      setDismissed(true);
+      setVisible(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!isClient || dismissed) return;
+    // First appearance after 4 seconds (so it doesn't compete with
+    // the hero entrance), then every 10 seconds thereafter.
+    const firstTimer = window.setTimeout(() => setVisible(true), 4000);
+    return () => window.clearTimeout(firstTimer);
+  }, [isClient, dismissed]);
+
+  useEffect(() => {
+    if (!visible || dismissed) return;
+    // Hide after 4 seconds, then schedule the next appearance in 10s.
+    const hideTimer = window.setTimeout(() => {
+      setVisible(false);
+      const nextTimer = window.setTimeout(() => setVisible(true), 10000);
+      // Store on the element so cleanup works.
+      (hideTimer as unknown as { _next?: number })._next = nextTimer;
+    }, 4000);
+    return () => {
+      window.clearTimeout(hideTimer);
+      const next = (hideTimer as unknown as { _next?: number })._next;
+      if (next) window.clearTimeout(next);
+    };
+  }, [visible, dismissed]);
+
+  if (dismissed) return null;
+
+  return (
+    <span
+      aria-hidden="true"
+      className="pointer-events-none absolute"
+      style={{
+        right: size + 14,
+        top: size / 2 - 8,
+        opacity: visible && isClient ? 1 : 0,
+        transition: "opacity 800ms cubic-bezier(0.22, 0.61, 0.36, 1)",
+        whiteSpace: "nowrap",
+      }}
+    >
+      <span
+        className="font-editorial text-xs italic"
+        style={{
+          color: isMorning
+            ? "rgba(42,39,36,0.5)"
+            : "rgba(233,230,225,0.5)",
+          letterSpacing: "0.05em",
+        }}
+      >
+        {isMorning ? "fold" : "unfold"}
+      </span>
+      <span
+        className="ml-2 inline-block"
+        style={{
+          color: isMorning
+            ? "rgba(42,39,36,0.4)"
+            : "rgba(233,230,225,0.4)",
+          fontSize: 10,
+        }}
+      >
+        ←
+      </span>
+    </span>
   );
 }

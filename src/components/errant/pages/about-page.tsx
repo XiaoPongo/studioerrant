@@ -295,11 +295,21 @@ export function AboutPage() {
         <Reveal delay={0.15}>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
             <a
-              href="mailto:hello@amaydeep.com"
+              href="mailto:amay@studioerrant.com"
               data-cursor="hover"
               className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
             >
-              hello@amaydeep.com
+              amay@studioerrant.com
+              <span className="h-px w-6 bg-foreground/30 transition-all group-hover:w-10 group-hover:bg-foreground/70" />
+            </a>
+            <a
+              href="https://wa.me/917588643764"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cursor="hover"
+              className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
+            >
+              WhatsApp · +91 75886 43764
               <span className="h-px w-6 bg-foreground/30 transition-all group-hover:w-10 group-hover:bg-foreground/70" />
             </a>
             <button

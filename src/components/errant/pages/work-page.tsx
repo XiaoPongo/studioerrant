@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import { useRouterStore } from "@/lib/router";
 import { NAV_SECTIONS } from "@/data/errant/nav-sections";
-import { PROJECTS } from "@/data/errant/projects";
+import { PROJECTS, type ProjectCategory } from "@/data/errant/projects";
 import { Reveal, PullQuote } from "@/components/errant/transitions";
 import { ProjectCard } from "@/components/errant/project-card";
 import { cn } from "@/lib/utils";
@@ -12,9 +15,12 @@ import { cn } from "@/lib/utils";
  *
  * Each section is a chapter. The chapter list is read from
  * NAV_SECTIONS — the single source of truth shared with the rolling
- * navigation. Each chapter <section> is tagged with
- * data-nav-section="<id>" so the rolling nav can observe which
- * chapter is centered.
+ * navigation.
+ *
+ * The Market Teardown Series has a special "paginated" layout: only
+ * 2 cards are shown at once. If there are more, a "See more" arrow
+ * reveals the next page of 2. This keeps the section from dominating
+ * the page when many teardowns are added.
  */
 export function WorkPage() {
   const navigate = useRouterStore((s) => s.navigate);
@@ -51,6 +57,10 @@ export function WorkPage() {
       {NAV_SECTIONS.map((section) => {
         const projects = PROJECTS.filter((p) => p.category === section.id);
         if (projects.length === 0) return null;
+
+        // The Market Teardown Series uses a paginated 2-per-page layout.
+        const isPaginated = section.id === "teardowns";
+
         return (
           <section
             key={section.id}
@@ -73,20 +83,24 @@ export function WorkPage() {
             </div>
 
             {/* Projects */}
-            <div className="mt-16 grid gap-x-8 gap-y-16 md:grid-cols-12">
-              {projects.map((project, i) => (
-                <div
-                  key={project.slug}
-                  className={cn(
-                    "md:col-span-6",
-                    projects.length === 1 && "md:col-span-8 md:col-start-3",
-                    projects.length >= 3 && i === projects.length - 1 && projects.length % 2 === 1 && "md:col-span-8 md:col-start-3",
-                  )}
-                >
-                  <ProjectCard project={project} index={i} />
-                </div>
-              ))}
-            </div>
+            {isPaginated ? (
+              <PaginatedGrid projects={projects} />
+            ) : (
+              <div className="mt-16 grid gap-x-8 gap-y-16 md:grid-cols-12">
+                {projects.map((project, i) => (
+                  <div
+                    key={project.slug}
+                    className={cn(
+                      "md:col-span-6",
+                      projects.length === 1 && "md:col-span-8 md:col-start-3",
+                      projects.length >= 3 && i === projects.length - 1 && projects.length % 2 === 1 && "md:col-span-8 md:col-start-3",
+                    )}
+                  >
+                    <ProjectCard project={project} index={i} />
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
         );
       })}
@@ -116,6 +130,71 @@ export function WorkPage() {
           </button>
         </Reveal>
       </section>
+    </div>
+  );
+}
+
+/**
+ * A paginated grid for the Market Teardown Series. Shows 2 cards at a
+ * time. A "See more" arrow at the bottom-right reveals the next page
+ * of 2. Visitors can page through all cards.
+ */
+function PaginatedGrid({ projects }: { projects: typeof PROJECTS }) {
+  const PAGE_SIZE = 2;
+  const [page, setPage] = useState(0);
+  const totalPages = Math.ceil(projects.length / PAGE_SIZE);
+  const visible = projects.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+  const hasMore = page < totalPages - 1;
+
+  return (
+    <div className="mt-16">
+      <div className="grid gap-x-8 gap-y-16 md:grid-cols-2">
+        {visible.map((project, i) => (
+          <ProjectCard key={project.slug} project={project} index={i} />
+        ))}
+      </div>
+
+      {/* See more arrow — only if there are more pages. */}
+      {hasMore && (
+        <div className="mt-12 flex justify-center md:justify-end">
+          <button
+            type="button"
+            data-cursor="hover"
+            onClick={() => setPage((p) => p + 1)}
+            className="group inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-foreground/45 transition-colors duration-500 hover:text-foreground"
+            aria-label="See more"
+          >
+            See more
+            <motion.span
+              initial={{ x: 0 }}
+              whileHover={{ x: 4 }}
+              className="inline-flex"
+            >
+              <ArrowRight
+                size={16}
+                className="transition-transform duration-500 group-hover:translate-x-1"
+              />
+            </motion.span>
+          </button>
+        </div>
+      )}
+
+      {/* Page indicator + back — shown when not on the first page. */}
+      {page > 0 && (
+        <div className="mt-6 flex items-center justify-center gap-6">
+          <button
+            type="button"
+            data-cursor="hover"
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+            className="text-[10px] uppercase tracking-[0.3em] text-foreground/35 transition-colors hover:text-foreground/65"
+          >
+            ← Back
+          </button>
+          <span className="text-[10px] uppercase tracking-[0.3em] text-foreground/25">
+            {page + 1} / {totalPages}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

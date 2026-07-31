@@ -113,7 +113,7 @@ story = []
 # Header
 story.append(Paragraph('AMAY DEEP', name_style))
 story.append(Paragraph(
-    'hello@amaydeep.com  |  thebandar.co.in  |  github.com/XiaoPongo  |  Instagram: @chillbandar',
+    'amay@studioerrant.com  |  thebandar.co.in  |  github.com/XiaoPongo  |  Instagram: @chillbandar',
     contact_style
 ))
 
@@ -169,7 +169,7 @@ story.extend(skills_row([
     ('GitHub', 'github.com/XiaoPongo'),
     ('Instagram', 'instagram.com/chillbandar'),
     ('LinkedIn', 'linkedin.com/in/amay-deep-34158b229'),
-    ('Email', 'hello@amaydeep.com'),
+    ('Email', 'amay@studioerrant.com'),
 ]))
 
 doc.build(story)

@@ -83,11 +83,22 @@ export function Footer() {
             <ul className="space-y-3 text-sm text-foreground/60">
               <li>
                 <a
-                  href="mailto:hello@amaydeep.com"
+                  href="mailto:amay@studioerrant.com"
                   className="transition-colors duration-700 hover:text-foreground"
                   data-cursor="hover"
                 >
-                  hello@amaydeep.com
+                  amay@studioerrant.com
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://wa.me/917588643764"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors duration-700 hover:text-foreground"
+                  data-cursor="hover"
+                >
+                  WhatsApp · +91 75886 43764
                 </a>
               </li>
               <li>
