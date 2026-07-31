@@ -56,11 +56,13 @@ export function Navigation() {
       >
         <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-6 md:px-12 md:py-8">
           {/* The wordmark — clicking returns the visitor to Arrival.
-              No graphical icon. The typography is the symbol. */}
+              Uses the official inline Studio Errant logo (lowercase
+              Didone wordmark). No graphical icon; the typography is
+              the symbol. */}
           <button
             type="button"
             onClick={() => navigate({ name: "arrival" })}
-            className="group font-editorial text-base font-medium lowercase leading-none tracking-[0.22em] text-foreground/80 transition-colors duration-700 hover:text-foreground md:text-lg"
+            className="group font-editorial text-base font-normal lowercase leading-none tracking-[0.22em] text-foreground/80 transition-colors duration-700 hover:text-foreground md:text-lg"
             aria-label="Studio Errant — return to arrival"
             data-cursor="hover"
           >

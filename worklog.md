@@ -115,3 +115,40 @@ Stage Summary:
 - Purple is discovered, never introduced.
 - Typography is a high-contrast editorial serif (Cormorant Garamond).
 - All motion dramatically slowed; the visitor notices movement only after several seconds.
+
+---
+Task ID: 5
+Agent: orchestrator (main)
+Task: Final refinement pass — fix hero overflow, use official logo, rebuild material background, improve Morning theme, reduce trails, restore grain, build dynamic rolling navigation, simplify cursor, honest one-person identity.
+
+Work Log:
+- Read the Studio Errant Codex; fetched thebandar.co.in as identity/tone reference (Amay Deep — one-person independent practice, B.Com graduate, designer/writer/developer). Studio Errant is a one-person practice. Reflected honestly: first-person singular throughout, no invented team/offices/history.
+- Analyzed the official StudioErrant.svg logo via VLM: a stacked lowercase Didone wordmark ("studio" larger / "errant" smaller), high stroke contrast, ball terminals, vertical stress. Closest free Google Font: Bodoni Moda.
+- Built StudioErrantLogo component (stacked + inline variants, fluid clamp() sizing so the wordmark NEVER overflows any viewport).
+- Rebuilt the hero: "This is" + official stacked logo. Fluid typography via clamp(). Left-of-center with vast negative space. No intro paragraph. Silence is the introduction.
+- Rebuilt the material background as 3 stacked fixed layers: (1) directional sheen (brushed aluminium), (2) soft radial light (single lamp), (3) static SVG turbulence grain (graphite powder / paper fibres) + a second finer grain layer. None animate. None shimmer. The page itself feels made from the material.
+- Improved Morning theme: separate atmospheric treatment (not an inversion). Warm archival paper bg, charcoal ink, multiply-blend grain, charcoal dust motes (--mote-color follows theme) so movement STAYS VISIBLE on paper. Workshop vs Observatory — two rooms in the same building.
+- Reduced trails further: ~10-28 motes total (was ~40-70). Lifetimes 20-45s. Flow 6-8x slower than before. Varying thickness (size² weighting). Long cubic fades. Dust/scratches/graphite — not particles.
+- Restored grain: static SVG turbulence, never animates, never shimmers. Tuned per theme (overlay in Night, multiply in Morning).
+- Built dynamic rolling vertical navigation: exactly 3 items (prev/current/next), center highlighted with a diamond marker, others with dashes, thin vertical guide line. Rotates smoothly as the visitor scrolls (observes which chapter is centered via data-nav-section attributes). Desktop-only (hidden on mobile via useMediaQuery).
+- Made the rolling nav DATA-DRIVEN: created src/data/errant/nav-sections.ts which builds NAV_SECTIONS directly from the canonical CATEGORIES list. The Work page chapters and the rolling nav both read from this single source of truth. Rename a category in the data and the nav updates automatically — no component code changes.
+- Simplified cursor further: 3px dot + 16px thin ring, soft easing, expands to 24px on hover. No bloom, no trail. Disappears into the experience.
+- Updated About content to honest first-person singular ("I exist to ask better questions"). Updated Work page intro to "questions I took seriously". No "we" language.
+- Created useMediaQuery hook (useSyncExternalStore) for the rolling nav visibility gate.
+
+Verification (Agent Browser):
+- Desktop hero (1440x900): official stacked logo fully visible, no overflow, left-of-center, graphite material background, grain present, no purple. VLM confirmed.
+- Mobile hero (390x844): wordmark fully visible WITHOUT overflow, typography adapts gracefully, hamburger menu present, composed layout. VLM confirmed no overflow.
+- Rolling nav: renders exactly 3 items (Visual Media / Artificial Intelligence / Design initially). Center item highlighted with diamond marker. Rotates correctly on scroll (became Design / Writing / Research after scrolling). Data-driven from section source. Hidden on mobile.
+- Morning theme: warm archival paper, charcoal ink, grain visible, workshop/library atmosphere, dog-ear present. VLM confirmed "not simply an inverted dark mode".
+- Lint: 0 errors, 0 warnings. Dev log: all GET / 200, no runtime errors.
+
+Stage Summary:
+- Final refinement complete and browser-verified.
+- Hero never overflows on any viewport.
+- Official Studio Errant logo (Bodoni Moda wordmark) used consistently.
+- Background is a physical material (graphite/paper), not flat.
+- Morning theme is a separate workshop atmosphere, not an inversion.
+- Trails reduced to dust; grain restored; cursor simplified.
+- Dynamic data-driven rolling navigation rotates on scroll.
+- Honest one-person practice identity throughout.

@@ -4,40 +4,30 @@ import { useEffect, useRef } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 /**
- * The Living Mesh — refined.
+ * The Living Mesh — final pass.
  *
- * The first version was too active. This one is almost not there.
+ * Dust caught in light. Not particles flying through space.
  *
  * What it is now:
- *   - Dust floating through light. Not particles flying through space.
- *   - A faint, physical haze — graphite powder disturbed by air —
- *     rather than a cosmic field.
- *   - Movement the visitor notices only after several seconds.
+ *   - Almost nothing. ~10–28 motes total on a desktop screen.
+ *   - Movement happens on the timescale of minutes. A visitor notices
+ *     it only after watching for several seconds.
+ *   - Motes have varying thickness — some are tiny pinpricks, a few
+ *     are slightly larger like graphite flecks.
+ *   - Opacity is very low. They fade in and out over long lifetimes
+ *     (20–45 seconds), so the field breathes rather than twinkles.
+ *   - No "lighter" composite. Soft radial gradients only.
+ *   - Cursor influence is nearly imperceptible — a wide, very weak
+ *     displacement, like air disturbed by a passing hand.
+ *   - Scroll does not speed the field; it only drifts the noise
+ *     sample origin so the composition evolves as you walk.
  *
- * How:
- *   - ~80% fewer particles than before. Density is tiny.
- *   - Drift is ~6–8× slower. Velocities are near-zero; the field
- *     is advected by a very low-frequency noise so motion happens
- *     on the timescale of breath, not animation.
- *   - No "lighter" composite fireworks. Particles are drawn as
- *     extremely faint, soft dots that fade in and out over long
- *     lifetimes — like motes catching light for a moment.
- *   - Cursor influence is almost imperceptible: a tiny, slow
- *     displacement that decays over a wide radius.
- *   - Scroll does not visibly speed the field; it only shifts the
- *     noise sample origin so the composition evolves as you walk.
- *   - The creative accent (purple) is driven by `creativeIntensity`
- *     and is ONLY raised outside of Arrival. On Arrival it is zero.
- *
- * The grain, vignette, and sheen are handled by separate DOM layers
- * (see globals.css `.errant-grain`, `.errant-vignette`, `.errant-sheen`).
- * The canvas here is just the dust.
+ * The mote color follows the theme: warm white in Night (graphite
+ * dust in raking light), charcoal in Morning (graphite on paper).
+ * So movement STAYS VISIBLE in both rooms — the Workshop does not
+ * lose the dust the way a naive inversion would.
  */
-
 interface MeshProps {
-  /** 0..1 — how strongly the creative accent emerges beneath the
-      surface. Zero on Arrival. Rises only inside Work / Experiments
-      / project pages. */
   creativeIntensity?: number;
   className?: string;
 }
@@ -53,39 +43,26 @@ interface Mote {
   baseAlpha: number;
 }
 
-// Very low-frequency flow. The field barely moves — motion happens
-// on the timescale of minutes, not seconds.
+// Very low-frequency flow. Motion on the timescale of minutes.
 function flowAngle(x: number, y: number, t: number): number {
   const a =
-    Math.sin(x * 0.00045 + t * 0.000022) +
-    Math.cos(y * 0.00052 - t * 0.000018) +
-    Math.sin((x + y) * 0.00028 + t * 0.000015) * 0.4;
+    Math.sin(x * 0.00038 + t * 0.000014) +
+    Math.cos(y * 0.00044 - t * 0.000011) +
+    Math.sin((x + y) * 0.00024 + t * 0.000009) * 0.35;
   return a * Math.PI;
 }
 
-// Parse a CSS color (hex, rgb, rgba) into an {r,g,b} triple. Used so
-// the dust can follow the theme's foreground color (Night vs Morning).
-// Falls back to warm white if parsing fails.
 function cssColorToRgb(input: string): { r: number; g: number; b: number } {
-  const s = input.trim();
-  if (!s) return { r: 233, g: 230, b: 225 };
-  // hex
+  const s = (input || "").trim();
+  if (!s) return { r: 232, g: 228, b: 220 };
   const hexMatch = s.match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i);
   if (hexMatch) {
     let h = hexMatch[1];
-    if (h.length === 3) {
-      h = h
-        .split("")
-        .map((c) => c + c)
-        .join("");
-    }
+    if (h.length === 3) h = h.split("").map((c) => c + c).join("");
     const num = parseInt(h, 16);
     return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
   }
-  // rgb()/rgba()
-  const rgbMatch = s.match(
-    /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i,
-  );
+  const rgbMatch = s.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
   if (rgbMatch) {
     return {
       r: parseInt(rgbMatch[1], 10),
@@ -93,7 +70,7 @@ function cssColorToRgb(input: string): { r: number; g: number; b: number } {
       b: parseInt(rgbMatch[3], 10),
     };
   }
-  return { r: 233, g: 230, b: 225 };
+  return { r: 232, g: 228, b: 220 };
 }
 
 export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
@@ -121,6 +98,9 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
     let scrollOffset = 0;
     let targetScrollOffset = 0;
     const pointer = { x: -9999, y: -9999, active: false };
+    let cachedRgb = { r: 232, g: 228, b: 220 };
+    let cachedAlphaMult = 1;
+    let lastVarCheck = 0;
 
     const isTouch =
       typeof window !== "undefined" &&
@@ -135,13 +115,12 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Density: deliberately tiny. Dust, not a field.
-      // ~1 mote per 26,000 px² on desktop, even fewer on touch.
+      // Extremely sparse. Dust, not a field.
       const area = width * height;
-      let density = Math.floor(area / 26000);
-      if (isTouch) density = Math.floor(density * 0.6);
-      if (reducedMotion) density = Math.floor(density * 0.5);
-      density = Math.max(18, Math.min(density, 70));
+      let density = Math.floor(area / 52000);
+      if (isTouch) density = Math.floor(density * 0.55);
+      if (reducedMotion) density = Math.floor(density * 0.45);
+      density = Math.max(8, Math.min(density, 28));
       motes = new Array(density).fill(0).map(() => spawn(true));
       ctx.clearRect(0, 0, width, height);
     }
@@ -149,10 +128,13 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
     function spawn(initial = false): Mote {
       const x = initial
         ? Math.random() * width
-        : Math.random() * width * 0.6 - width * 0.05;
+        : Math.random() * width * 0.7 - width * 0.05;
       const y = Math.random() * height;
-      // Long lifetimes — motes drift in and out slowly.
-      const maxLife = 14000 + Math.random() * 18000;
+      // Very long lifetimes — motes drift in and out over half a minute.
+      const maxLife = 20000 + Math.random() * 25000;
+      // Varying thickness: most are tiny, a few are larger flecks.
+      // size^2 weighting makes large motes rare.
+      const r = Math.random();
       return {
         x,
         y,
@@ -160,9 +142,8 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
         vy: 0,
         life: Math.random() * maxLife,
         maxLife,
-        // Most motes are very small; a few are slightly larger.
-        size: 0.4 + Math.random() * Math.random() * 1.6,
-        baseAlpha: 0.05 + Math.random() * 0.12,
+        size: 0.3 + r * r * 1.8,
+        baseAlpha: 0.04 + Math.random() * 0.1,
       };
     }
 
@@ -172,126 +153,114 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       const dt = Math.min(now - lastTime, 60);
       lastTime = now;
 
-      // Ease the scroll offset toward target then slowly decay.
-      // The field does not speed up; the sample origin drifts.
-      scrollOffset += (targetScrollOffset - scrollOffset) * 0.04;
-      targetScrollOffset *= 0.985;
+      scrollOffset += (targetScrollOffset - scrollOffset) * 0.035;
+      targetScrollOffset *= 0.984;
 
-      // A very gentle clear. We keep a faint residue so motes leave
-      // the softiest possible trace — like dust suspended in still air.
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      // Very gentle fade of existing pixels — motes leave the softest
+      // possible trace, like graphite dust suspended in still air.
       ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.04)";
       ctx.fillRect(0, 0, width, height);
       ctx.globalCompositeOperation = "source-over";
 
-      const speedScale = reducedMotion ? 0.15 : 1;
+      // Re-read the mote color from the CSS variable every ~500ms so
+      // theme transitions are followed without per-frame cost.
+      if (now - lastVarCheck > 500) {
+        const cs = getComputedStyle(document.documentElement);
+        const fg = cs.getPropertyValue("--mote-color").trim();
+        const am = cs.getPropertyValue("--mote-alpha-mult").trim();
+        if (fg) cachedRgb = cssColorToRgb(fg);
+        if (am) {
+          const parsed = parseFloat(am);
+          if (!Number.isNaN(parsed)) cachedAlphaMult = parsed;
+        }
+        lastVarCheck = now;
+      }
+      const rgb = cachedRgb;
+      const alphaMult = cachedAlphaMult;
+
+      const speedScale = reducedMotion ? 0.12 : 1;
       const creative = creativeRef.current;
 
-      // Read the current foreground color from the CSS variable so
-      // the dust adapts to Night (warm white) and Morning (charcoal).
-      // We re-read on each frame so theme transitions are followed.
-      const styles = getComputedStyle(document.documentElement);
-      const fg = styles.getPropertyValue("--foreground").trim();
-      const rgb = cssColorToRgb(fg);
-
       // The accent — deep, muted, almost invisible.
-      const accentR = 88;
-      const accentG = 76;
-      const accentB = 132;
+      const accentR = 86;
+      const accentG = 74;
+      const accentB = 124;
 
       for (let i = 0; i < motes.length; i++) {
         const p = motes[i];
 
         const angle = flowAngle(p.x, p.y + scrollOffset, t);
-        const flow = 0.012 * speedScale;
+        const flow = 0.008 * speedScale;
         p.vx += Math.cos(angle) * flow;
         p.vy += Math.sin(angle) * flow;
 
+        // Cursor influence — almost imperceptible. Wide, very weak.
         if (pointer.active && !reducedMotion && !isTouch) {
           const dx = p.x - pointer.x;
           const dy = p.y - pointer.y;
           const dist2 = dx * dx + dy * dy;
-          const radius = 220;
+          const radius = 260;
           if (dist2 < radius * radius) {
             const d = Math.sqrt(dist2) || 1;
-            const force = (1 - d / radius) * 0.018;
+            const force = (1 - d / radius) * 0.012;
             p.vx += (dx / d) * force;
             p.vy += (dy / d) * force;
           }
         }
 
-        p.vx *= 0.985;
-        p.vy *= 0.985;
+        p.vx *= 0.978;
+        p.vy *= 0.978;
         p.x += p.vx * (dt / 16);
         p.y += p.vy * (dt / 16);
         p.life += dt;
 
         if (
-          p.x < -60 ||
-          p.x > width + 60 ||
-          p.y < -60 ||
-          p.y > height + 60 ||
+          p.x < -80 ||
+          p.x > width + 80 ||
+          p.y < -80 ||
+          p.y > height + 80 ||
           p.life > p.maxLife
         ) {
           Object.assign(p, spawn(false));
           continue;
         }
 
+        // Long, slow fades. Fade in for the first 22%, hold, fade out
+        // for the last 35%. Occasional fading — the field breathes.
         const lifeRatio = p.life / p.maxLife;
         let fade: number;
-        if (lifeRatio < 0.18) {
-          fade = lifeRatio / 0.18;
-        } else if (lifeRatio > 0.7) {
-          fade = (1 - lifeRatio) / 0.3;
+        if (lifeRatio < 0.22) {
+          fade = lifeRatio / 0.22;
+        } else if (lifeRatio > 0.65) {
+          fade = (1 - lifeRatio) / 0.35;
         } else {
           fade = 1;
         }
-        fade = fade * fade;
+        fade = fade * fade * fade;
 
-        const alpha = p.baseAlpha * fade;
+        const alpha = p.baseAlpha * fade * alphaMult;
 
-        // Soft mote, drawn as a tiny radial gradient so the edge is
-        // never hard. Color follows the theme's foreground.
-        const grad = ctx.createRadialGradient(
-          p.x,
-          p.y,
-          0,
-          p.x,
-          p.y,
-          p.size * 3,
-        );
-        grad.addColorStop(
-          0,
-          `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`,
-        );
+        // Soft mote — a tiny radial gradient so the edge is never hard.
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3.2);
+        grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`);
         grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size * 3.2, 0, Math.PI * 2);
         ctx.fill();
 
-        if (creative > 0.01 && i % 5 === 0) {
-          const accentAlpha = creative * alpha * 0.5;
+        // A fraction of motes carry the creative accent — only when
+        // creative intensity has risen. Even then, very faint.
+        if (creative > 0.01 && i % 6 === 0) {
+          const accentAlpha = creative * alpha * 0.45;
           if (accentAlpha > 0.001) {
-            const ag = ctx.createRadialGradient(
-              p.x,
-              p.y,
-              0,
-              p.x,
-              p.y,
-              p.size * 4,
-            );
-            ag.addColorStop(
-              0,
-              `rgba(${accentR}, ${accentG}, ${accentB}, ${accentAlpha})`,
-            );
-            ag.addColorStop(
-              1,
-              `rgba(${accentR}, ${accentG}, ${accentB}, 0)`,
-            );
+            const ag = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 4.2);
+            ag.addColorStop(0, `rgba(${accentR}, ${accentG}, ${accentB}, ${accentAlpha})`);
+            ag.addColorStop(1, `rgba(${accentR}, ${accentG}, ${accentB}, 0)`);
             ctx.fillStyle = ag;
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size * 4, 0, Math.PI * 2);
+            ctx.arc(p.x, p.y, p.size * 4.2, 0, Math.PI * 2);
             ctx.fill();
           }
         }
@@ -313,8 +282,7 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       pointer.y = -9999;
     }
     function onScroll() {
-      // The field does not speed up. We only drift the sample origin.
-      targetScrollOffset += window.scrollY * 0.0008;
+      targetScrollOffset += window.scrollY * 0.0006;
     }
 
     resize();

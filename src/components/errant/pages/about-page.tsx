@@ -88,14 +88,14 @@ export function AboutPage() {
           </p>
         </Reveal>
         <Reveal delay={0.05}>
-          <h1 className="max-w-4xl font-editorial text-5xl leading-[1.05] text-white md:text-7xl md:leading-[1.05]">
-            We exist to ask
+          <h1 className="max-w-4xl font-editorial text-display-lg text-foreground">
+            I exist to ask
             <br />
             better questions,
             <br />
             not to pretend
             <br />
-            we have answers.
+            I have answers.
           </h1>
         </Reveal>
       </section>
@@ -143,8 +143,8 @@ export function AboutPage() {
             II — The creative process
           </p>
         </Reveal>
-        <Reveal delay={0.05}>
-          <p className="max-w-2xl font-editorial text-2xl leading-relaxed text-foreground/80 md:text-3xl md:leading-relaxed">
+        <Reveal delay={0.08}>
+          <p className="max-w-2xl font-editorial text-display-sm leading-[1.4] text-foreground/80 md:text-display-md md:leading-[1.35]">
             Curiosity is a cycle. Not a pipeline. Not a funnel. A cycle
             you walk around, and around, until something quietly becomes
             clear.

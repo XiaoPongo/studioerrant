@@ -5,14 +5,14 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { useFinePointer } from "@/hooks/use-fine-pointer";
 
 /**
- * The cursor — almost not there.
+ * The cursor — disappears into the experience.
  *
- * A small white dot that follows the pointer with smooth interpolation,
- * and a thin ring that lags a fraction behind. No bloom. No trail.
+ * A tiny dot (3px) and a subtle thin ring (16px) that lags a fraction
+ * behind. Soft easing. No bloom, no trail, no effects. On hover over
+ * interactive elements, the ring expands very slightly and the dot
+ * dims — the only acknowledgement that something is reachable.
+ *
  * If the visitor notices the cursor, it is already doing too much.
- *
- * On hover over interactive elements, the ring expands slightly and
- * the dot dims — the only acknowledgement that something is reachable.
  *
  * Disabled on touch and when reduced motion is requested.
  */
@@ -49,12 +49,11 @@ export function CustomCursor() {
     }
 
     function loop() {
-      // The dot follows closely but not perfectly attached.
-      dot.x += (target.x - dot.x) * 0.32;
-      dot.y += (target.y - dot.y) * 0.32;
-      // The ring lags a fraction more.
-      ring.x += (target.x - ring.x) * 0.14;
-      ring.y += (target.y - ring.y) * 0.14;
+      // Soft easing. The dot follows closely; the ring lags slightly.
+      dot.x += (target.x - dot.x) * 0.3;
+      dot.y += (target.y - dot.y) * 0.3;
+      ring.x += (target.x - ring.x) * 0.12;
+      ring.y += (target.y - ring.y) * 0.12;
       if (dotRef.current) {
         dotRef.current.style.transform = `translate3d(${dot.x}px, ${dot.y}px, 0) translate(-50%, -50%)`;
       }
@@ -81,32 +80,31 @@ export function CustomCursor() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-[9999]"
     >
-      {/* The thin ring. Expands slightly on hover. Uses the
-          foreground color so it adapts to Night/Morning. */}
+      {/* The thin ring. Expands slightly on hover. */}
       <div
         ref={ringRef}
         className="absolute left-0 top-0 rounded-full"
         style={{
-          width: hovering ? 28 : 18,
-          height: hovering ? 28 : 18,
+          width: hovering ? 24 : 16,
+          height: hovering ? 24 : 16,
           border: "1px solid",
           borderColor: hovering
-            ? "color-mix(in oklab, var(--foreground) 55%, transparent)"
-            : "color-mix(in oklab, var(--foreground) 28%, transparent)",
+            ? "color-mix(in oklab, var(--foreground) 50%, transparent)"
+            : "color-mix(in oklab, var(--foreground) 22%, transparent)",
           transition:
-            "width 600ms cubic-bezier(0.22,0.61,0.36,1), height 600ms cubic-bezier(0.22,0.61,0.36,1), border-color 600ms ease",
+            "width 700ms cubic-bezier(0.22,0.61,0.36,1), height 700ms cubic-bezier(0.22,0.61,0.36,1), border-color 700ms ease",
         }}
       />
-      {/* The dot. Small, dim, present. */}
+      {/* The dot. Tiny. */}
       <div
         ref={dotRef}
         className="absolute left-0 top-0 rounded-full"
         style={{
-          width: 4,
-          height: 4,
-          background: "color-mix(in oklab, var(--foreground) 90%, transparent)",
-          transition: "opacity 500ms ease",
-          opacity: hovering ? 0.4 : 0.9,
+          width: 3,
+          height: 3,
+          background: "color-mix(in oklab, var(--foreground) 85%, transparent)",
+          transition: "opacity 600ms ease",
+          opacity: hovering ? 0.35 : 0.85,
         }}
       />
     </div>

@@ -1,26 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Cormorant_Garamond, Inter } from "next/font/google";
+import { Bodoni_Moda, Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
 /*
   Typography
   ------------------------------------------------------------
-  Editorial display face: Cormorant Garamond — high stroke contrast,
-  sharp terminals, the closest freely-available analogue to the
-  Bodoni/Didot feel of the reference wordmark. Used for the logo
-  wordmark, hero, and large reflective passages.
+  Editorial display face: Bodoni Moda — the closest freely-available
+  Google Font to the official Studio Errant wordmark. High stroke
+  contrast, sharp unbracketed serifs, ball terminals, vertical stress.
+  Used for the wordmark, hero, and large reflective passages.
 
   Body / interface face: Inter — quiet, highly readable, neutral.
   Used for navigation, captions, and UI chrome. Never for display.
-
-  Mono is retained for any technical metadata.
 */
-const editorial = Cormorant_Garamond({
+const editorial = Bodoni_Moda({
   variable: "--font-editorial",
   subsets: ["latin"],
   display: "swap",
-  weight: ["300", "400", "500", "600"],
+  weight: ["400", "500"],
   style: ["normal", "italic"],
 });
 
@@ -31,27 +29,20 @@ const sans = Inter({
   weight: ["300", "400", "500", "600"],
 });
 
-const grotesk = Space_Grotesk({
-  variable: "--font-grotesk",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["300", "400", "500"],
-});
-
 export const metadata: Metadata = {
   title: {
     default: "Studio Errant",
     template: "%s · Studio Errant",
   },
   description:
-    "Studio Errant. A digital studio built around curiosity. Wander deliberately.",
+    "Studio Errant. A living practice of design, writing, research, and experiments. Unfinished, by intention.",
   keywords: [
     "Studio Errant",
-    "digital studio",
-    "curiosity",
     "design",
+    "writing",
     "research",
     "experiments",
+    "independent practice",
   ],
   authors: [{ name: "Studio Errant" }],
   creator: "Studio Errant",
@@ -60,7 +51,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Studio Errant",
     description:
-      "A digital studio built around curiosity. Wander deliberately.",
+      "A living practice of design, writing, research, and experiments. Unfinished, by intention.",
     url: "https://studioerrant.example",
     siteName: "Studio Errant",
     type: "website",
@@ -70,7 +61,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Studio Errant",
     description:
-      "A digital studio built around curiosity. Wander deliberately.",
+      "A living practice of design, writing, research, and experiments.",
   },
   robots: { index: true, follow: true },
   icons: { icon: "/favicon.svg" },
@@ -89,7 +80,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${editorial.variable} ${sans.variable} ${grotesk.variable} antialiased bg-background text-foreground`}
+        className={`${editorial.variable} ${sans.variable} antialiased bg-background text-foreground`}
       >
         {children}
         <Toaster />

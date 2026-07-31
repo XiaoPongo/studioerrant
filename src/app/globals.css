@@ -42,141 +42,187 @@
 }
 
 /*
-  Studio Errant — Material Constitution
+  Studio Errant — Material Constitution (final pass)
   ------------------------------------------------------------
-  Two materials. Never called "dark mode" or "light mode".
+  Two rooms in the same building. Never "dark mode" or "light mode".
 
-  Night   — graphite, oxidized steel, museum wall, observatory.
-            Deep, cool, light-absorbing matte. The default.
+  Night    — the Observatory. Graphite, oxidized steel, museum wall.
+             Deep, cool, light-absorbing matte. The default.
 
-  Morning — archival paper, workshop plaster, library stone.
-            Warm, soft, tactile. Discovered by unfolding the page.
+  Morning  — the Workshop. Archival paper, drafting sheet, tracing
+             paper. Warm, soft, tactile. Discovered by unfolding the
+             dog-ear. Movement stays visible — like pencil lead caught
+             in raking light on paper.
 
-  The toggle is a physical paper dog-ear in the top-right corner.
-  Both themes preserve identical layouts. Only atmosphere changes.
+  The page itself should feel made from the material. Not a texture
+  overlay. The grain, the directional sheen, the soft radial light —
+  these are the surface. The visitor should almost wonder whether the
+  monitor has become tactile.
 */
 
 :root {
   --radius: 0.125rem;
 
-  /* ===== NIGHT (default) — graphite / stone / museum =====
-     Not pure black. Graphite powder over oxidized steel, lit
-     faintly from above. Cool, neutral, absorptive. */
-  --background: #0c0d0e;
-  --surface: #101113;
-  --surface-raised: #16181a;
-  --foreground: #e9e6e1;
-  --secondary-text: #8a877f;
-  --tertiary-text: #5a5853;
-  --divider: rgba(233, 230, 225, 0.07);
-  --hairline: rgba(233, 230, 225, 0.05);
+  /* ===== NIGHT — graphite / oxidized steel / observatory ===== */
+  --background: #0b0c0d;
+  --surface: #0f1011;
+  --surface-raised: #151617;
+  --foreground: #e8e4dc;
+  --secondary-text: #8a867d;
+  --tertiary-text: #58554f;
+  --divider: rgba(232, 228, 220, 0.07);
+  --hairline: rgba(232, 228, 220, 0.05);
 
-  /* The creative accent — deep, muted, discovered. Almost never
-     visible on Arrival. Emerges only inside Work / Experiments /
-     deeper navigation, and even then, beneath the graphite. */
-  --errant-indigo: #1c1830;
-  --errant-violet: #28203f;
-  --errant-plum: #34243f;
+  /* Deep, muted, discovered. Never bright. */
+  --errant-indigo: #1b1730;
+  --errant-violet: #261e3d;
+  --errant-plum: #321f3b;
 
-  /* shadcn-compat aliases */
-  --card: #101113;
-  --card-foreground: #e9e6e1;
-  --popover: #101113;
-  --popover-foreground: #e9e6e1;
-  --primary: #e9e6e1;
-  --primary-foreground: #0c0d0e;
-  --secondary: #16181a;
-  --secondary-foreground: #e9e6e1;
-  --muted: #16181a;
-  --muted-foreground: #8a877f;
-  --accent: #1c1830;
-  --accent-foreground: #e9e6e1;
+  --card: #0f1011;
+  --card-foreground: #e8e4dc;
+  --popover: #0f1011;
+  --popover-foreground: #e8e4dc;
+  --primary: #e8e4dc;
+  --primary-foreground: #0b0c0d;
+  --secondary: #151617;
+  --secondary-foreground: #e8e4dc;
+  --muted: #151617;
+  --muted-foreground: #8a867d;
+  --accent: #1b1730;
+  --accent-foreground: #e8e4dc;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: rgba(233, 230, 225, 0.07);
-  --input: rgba(233, 230, 225, 0.1);
-  --ring: rgba(233, 230, 225, 0.5);
-  --chart-1: #28203f;
-  --chart-2: #34243f;
-  --chart-3: #8a877f;
-  --chart-4: #e9e6e1;
-  --chart-5: #1c1830;
-  --sidebar: #101113;
-  --sidebar-foreground: #e9e6e1;
-  --sidebar-primary: #e9e6e1;
-  --sidebar-primary-foreground: #0c0d0e;
-  --sidebar-accent: #1c1830;
-  --sidebar-accent-foreground: #e9e6e1;
-  --sidebar-border: rgba(233, 230, 225, 0.07);
-  --sidebar-ring: rgba(233, 230, 225, 0.5);
+  --border: rgba(232, 228, 220, 0.07);
+  --input: rgba(232, 228, 220, 0.1);
+  --ring: rgba(232, 228, 220, 0.5);
+  --chart-1: #261e3d;
+  --chart-2: #321f3b;
+  --chart-3: #8a867d;
+  --chart-4: #e8e4dc;
+  --chart-5: #1b1730;
+  --sidebar: #0f1011;
+  --sidebar-foreground: #e8e4dc;
+  --sidebar-primary: #e8e4dc;
+  --sidebar-primary-foreground: #0b0c0d;
+  --sidebar-accent: #1b1730;
+  --sidebar-accent-foreground: #e8e4dc;
+  --sidebar-border: rgba(232, 228, 220, 0.07);
+  --sidebar-ring: rgba(232, 228, 220, 0.5);
 
-  /* Material grain — tuned per theme */
-  --grain-opacity: 0.06;
+  /* Material — Night. Graphite brushed under raking light. */
+  --grain-opacity: 0.085;
   --grain-blend: overlay;
+  --grain-scale: 240px;
 
-  /* Vignette — the edges recede into the material */
+  /* The directional sheen — brushed aluminium feel. */
+  --sheen-from: rgba(232, 228, 220, 0.035);
+  --sheen-to: rgba(232, 228, 220, 0.012);
+
+  /* A faint warm light from upper-left, like a single lamp in a
+     dark room. Gives the surface depth without becoming a gradient. */
+  --material-light:
+    radial-gradient(
+      90% 70% at 18% 12%,
+      rgba(232, 228, 220, 0.04) 0%,
+      rgba(232, 228, 220, 0) 55%
+    ),
+    radial-gradient(
+      70% 60% at 85% 88%,
+      rgba(40, 36, 50, 0.06) 0%,
+      rgba(0, 0, 0, 0) 60%
+    );
+
   --vignette: radial-gradient(
     130% 120% at 50% 38%,
-    rgba(0, 0, 0, 0) 48%,
-    rgba(0, 0, 0, 0.55) 100%
+    rgba(0, 0, 0, 0) 46%,
+    rgba(0, 0, 0, 0.6) 100%
   );
+
+  /* Dust mote color (used by the canvas). Warm white in Night. */
+  --mote-color: 232, 228, 220;
+  --mote-alpha-mult: 1;
 
   color-scheme: dark;
 }
 
-/* ===== MORNING — archival paper / workshop / library =====
-   Warm, soft, tactile. The dog-ear unfolds into this. */
+/* ===== MORNING — archival paper / drafting sheet / workshop ===== */
 .theme-morning {
-  --background: #f2efe8;
-  --surface: #ece8df;
-  --surface-raised: #e3ded2;
-  --foreground: #2a2724;
-  --secondary-text: #6f6a62;
-  --tertiary-text: #a39d92;
-  --divider: rgba(42, 39, 36, 0.1);
-  --hairline: rgba(42, 39, 36, 0.08);
+  --background: #ede8dc;
+  --surface: #e4dece;
+  --surface-raised: #d9d2bf;
+  --foreground: #2b2722;
+  --secondary-text: #6b6558;
+  --tertiary-text: #9b9484;
+  --divider: rgba(43, 39, 34, 0.11);
+  --hairline: rgba(43, 39, 34, 0.08);
 
-  --errant-indigo: #2b2548;
-  --errant-violet: #3a2c54;
-  --errant-plum: #4a3160;
+  /* The accent on paper — deeper, slightly warmer. Like ink. */
+  --errant-indigo: #2a2348;
+  --errant-violet: #382c54;
+  --errant-plum: #463160;
 
-  --card: #ece8df;
-  --card-foreground: #2a2724;
-  --popover: #ece8df;
-  --popover-foreground: #2a2724;
-  --primary: #2a2724;
-  --primary-foreground: #f2efe8;
-  --secondary: #e3ded2;
-  --secondary-foreground: #2a2724;
-  --muted: #e3ded2;
-  --muted-foreground: #6f6a62;
-  --accent: #d9d3c4;
-  --accent-foreground: #2a2724;
+  --card: #e4dece;
+  --card-foreground: #2b2722;
+  --popover: #e4dece;
+  --popover-foreground: #2b2722;
+  --primary: #2b2722;
+  --primary-foreground: #ede8dc;
+  --secondary: #d9d2bf;
+  --secondary-foreground: #2b2722;
+  --muted: #d9d2bf;
+  --muted-foreground: #6b6558;
+  --accent: #cdc4ac;
+  --accent-foreground: #2b2722;
   --destructive: oklch(0.55 0.18 25);
-  --border: rgba(42, 39, 36, 0.1);
-  --input: rgba(42, 39, 36, 0.12);
-  --ring: rgba(42, 39, 36, 0.4);
-  --chart-1: #3a2c54;
-  --chart-2: #4a3160;
-  --chart-3: #6f6a62;
-  --chart-4: #2a2724;
-  --chart-5: #2b2548;
-  --sidebar: #ece8df;
-  --sidebar-foreground: #2a2724;
-  --sidebar-primary: #2a2724;
-  --sidebar-primary-foreground: #f2efe8;
-  --sidebar-accent: #d9d3c4;
-  --sidebar-accent-foreground: #2a2724;
-  --sidebar-border: rgba(42, 39, 36, 0.1);
-  --sidebar-ring: rgba(42, 39, 36, 0.4);
+  --border: rgba(43, 39, 34, 0.11);
+  --input: rgba(43, 39, 34, 0.13);
+  --ring: rgba(43, 39, 34, 0.4);
+  --chart-1: #382c54;
+  --chart-2: #463160;
+  --chart-3: #6b6558;
+  --chart-4: #2b2722;
+  --chart-5: #2a2348;
+  --sidebar: #e4dece;
+  --sidebar-foreground: #2b2722;
+  --sidebar-primary: #2b2722;
+  --sidebar-primary-foreground: #ede8dc;
+  --sidebar-accent: #cdc4ac;
+  --sidebar-accent-foreground: #2b2722;
+  --sidebar-border: rgba(43, 39, 34, 0.11);
+  --sidebar-ring: rgba(43, 39, 34, 0.4);
 
-  --grain-opacity: 0.05;
+  /* Material — Morning. Paper fibres under raking light.
+     Different from Night: the grain is softer (paper, not metal),
+     the blend is multiply (so graphite dust reads dark on light),
+     and the mote color is charcoal so movement STAYS visible. */
+  --grain-opacity: 0.06;
   --grain-blend: multiply;
+  --grain-scale: 200px;
+
+  --sheen-from: rgba(43, 39, 34, 0.028);
+  --sheen-to: rgba(43, 39, 34, 0.008);
+
+  /* A cooler light from upper-left on paper — like a drafting lamp. */
+  --material-light:
+    radial-gradient(
+      90% 70% at 18% 12%,
+      rgba(255, 250, 235, 0.5) 0%,
+      rgba(255, 250, 235, 0) 55%
+    ),
+    radial-gradient(
+      70% 60% at 85% 88%,
+      rgba(120, 110, 80, 0.06) 0%,
+      rgba(0, 0, 0, 0) 60%
+    );
 
   --vignette: radial-gradient(
     130% 120% at 50% 38%,
     rgba(0, 0, 0, 0) 55%,
-    rgba(60, 50, 30, 0.12) 100%
+    rgba(90, 78, 50, 0.14) 100%
   );
+
+  /* Charcoal dust on paper — stays visible. */
+  --mote-color: 43, 39, 34;
+  --mote-alpha-mult: 1.25;
 
   color-scheme: light;
 }
@@ -189,31 +235,24 @@
   html {
     background-color: var(--background);
     color-scheme: var(--color-scheme, dark);
-    /* The whole document transitions slowly when the dog-ear unfolds.
-       1.6s — long enough to feel like the page is turning, not snapping. */
     transition:
-      background-color 1.6s cubic-bezier(0.22, 0.61, 0.36, 1),
-      color 1.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+      background-color 1.8s cubic-bezier(0.22, 0.61, 0.36, 1),
+      color 1.8s cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 
   body {
     background-color: var(--background);
     color: var(--foreground);
-    /* The Next.js font loader sets --font-sans on body via a generated
-       class. We read it here so the body actually uses Inter, rather
-       than falling back to the system sans via --default-font-family. */
     font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
     font-feature-settings: "ss01", "ss02", "cv01", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     transition:
-      background-color 1.6s cubic-bezier(0.22, 0.61, 0.36, 1),
-      color 1.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+      background-color 1.8s cubic-bezier(0.22, 0.61, 0.36, 1),
+      color 1.8s cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 
-  /* Hide the native cursor only on fine-pointer, hover-capable
-     devices. Touch never loses its cursor. */
   @media (hover: hover) and (pointer: fine) {
     body.errant-custom-cursor,
     body.errant-custom-cursor * {
@@ -226,7 +265,6 @@
     color: var(--foreground);
   }
 
-  /* Focus ring — quiet, present, never harsh. */
   :focus-visible {
     outline: 1px solid color-mix(in oklab, var(--foreground) 55%, transparent);
     outline-offset: 4px;
@@ -241,17 +279,15 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: color-mix(in oklab, var(--foreground) 8%, transparent);
+    background: color-mix(in oklab, var(--foreground) 9%, transparent);
     border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in oklab, var(--foreground) 16%, transparent);
+    background: color-mix(in oklab, var(--foreground) 18%, transparent);
   }
 }
 
 @layer utilities {
-  /* The breathing pulse — used only on the very faintest cues.
-     6 seconds. Calm, not theatrical. */
   @keyframes errant-breathe {
     0%, 100% { opacity: 0.3; transform: scale(1); }
     50% { opacity: 0.7; transform: scale(1.08); }
@@ -262,69 +298,105 @@
 
   .text-balance { text-wrap: balance; }
   .text-pretty { text-wrap: pretty; }
-
-  /* The material grain — fixed, full-viewport, blended into the
-     surface. This is what makes the monitor feel tactile.
-     Density is tuned per theme via --grain-opacity. */
-  .errant-grain {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    opacity: var(--grain-opacity);
-    mix-blend-mode: var(--grain-blend);
-    z-index: 1;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 220px 220px;
-  }
-
-  /* A second, even finer grain for the foreground layers — the
-     brushed-aluminium feel. */
-  .errant-grain-fine {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.6' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)'/%3E%3C/svg%3E");
-  }
-
-  /* The vignette — applied as a fixed overlay so the edges of the
-     viewport always recede into the material. */
-  .errant-vignette {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-    background: var(--vignette);
-    transition: background 1.6s cubic-bezier(0.22, 0.61, 0.36, 1);
-  }
-
-  /* A graphite sheen — a faint directional gradient that gives the
-     surface the impression of brushed metal under raking light. */
-  .errant-sheen {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    background: linear-gradient(
-      168deg,
-      color-mix(in oklab, var(--foreground) 2.5%, transparent) 0%,
-      transparent 30%,
-      transparent 70%,
-      color-mix(in oklab, var(--foreground) 1.5%, transparent) 100%
-    );
-    transition: opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1);
-  }
-
-  /* The editorial display face uses high stroke contrast. We let
-     the font carry that; we only set tracking + weight here. */
 }
 
-/* The editorial display face — Cormorant Garamond. High stroke
-   contrast, sharp terminals. Used for the wordmark, hero, and
-   reflective passages. Plain class so Tailwind never strips it. */
+/* ════════════════════════════════════════════════════════════
+   THE MATERIAL SURFACE
+   Three fixed layers, stacked. Together they make the page feel
+   made from graphite (Night) or archival paper (Morning). None of
+   them animate. None of them shimmer. They are the surface.
+   ════════════════════════════════════════════════════════════ */
+
+/* 1. The directional sheen — brushed aluminium / paper grain direction.
+      A very soft linear gradient at a low angle. Never moves. */
+.errant-sheen {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(168deg, var(--sheen-from) 0%, transparent 30%, transparent 70%, var(--sheen-to) 100%);
+  transition: background 1.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* 2. The material light — a faint radial lamp from upper-left,
+      giving the surface depth. Never moves. */
+.errant-light {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: var(--material-light);
+  transition: background 1.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* 3. The grain — graphite powder / paper fibres. This is the layer
+      that makes the monitor feel tactile. It is a single static SVG
+      turbulence pattern, tuned per theme. It NEVER animates. It NEVER
+      shimmers. It is the surface itself. */
+.errant-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: var(--grain-blend);
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: var(--grain-scale);
+  transition: opacity 1.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* A second, finer grain layered on top — the brushed-metal feel.
+   Even finer frequency, very low opacity. */
+.errant-grain-fine {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: calc(var(--grain-opacity) * 0.6);
+  mix-blend-mode: var(--grain-blend);
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.7' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)'/%3E%3C/svg%3E");
+  background-size: 140px;
+  transition: opacity 1.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* The vignette — edges recede into the material. */
+.errant-vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: var(--vignette);
+  transition: background 1.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* The editorial display face — Bodoni Moda. High contrast, sharp
+   terminals, ball terminals, vertical stress. Matches the official
+   Studio Errant wordmark. Plain class so Tailwind never strips it. */
 .font-editorial {
   font-family: var(--font-editorial), Georgia, serif;
   font-feature-settings: "ss01", "liga", "dlig";
 }
 
-/* Reduced motion: the atmosphere remains, movement becomes optional.
-   The grain, vignette, and material are not motion — they stay. */
+/* Fluid display sizes using clamp() — the hero must never overflow
+   on any viewport, yet preserve its oversized feeling. Tuned so the
+   wordmark fits within ~85% of the viewport width on phones. */
+.text-display-xl {
+  font-size: clamp(3rem, 13vw, 8.5rem);
+  line-height: 0.98;
+}
+.text-display-lg {
+  font-size: clamp(2.25rem, 9vw, 5.5rem);
+  line-height: 1.02;
+}
+.text-display-md {
+  font-size: clamp(1.75rem, 6vw, 3.5rem);
+  line-height: 1.1;
+}
+.text-display-sm {
+  font-size: clamp(1.4rem, 4vw, 2.25rem);
+  line-height: 1.15;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

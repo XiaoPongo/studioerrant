@@ -7,6 +7,7 @@ import { useIsClient } from "@/hooks/use-is-client";
 import { LivingMesh } from "@/components/errant/living-mesh";
 import { CustomCursor } from "@/components/errant/custom-cursor";
 import { Navigation } from "@/components/errant/navigation";
+import { RollingNav } from "@/components/errant/rolling-nav";
 import { Footer } from "@/components/errant/footer";
 import { PaperDogEar } from "@/components/errant/paper-dog-ear";
 import { PageTransition } from "@/components/errant/transitions";
@@ -16,24 +17,24 @@ import { AboutPage } from "@/components/errant/pages/about-page";
 import { ProjectDetailPage } from "@/components/errant/pages/project-detail-page";
 
 /**
- * Studio Errant — refined.
+ * Studio Errant — final refinement.
  *
- * A digital studio built around curiosity. The website unfolds like
- * entering a museum before opening hours: quiet, tactile, material.
+ * A living practice of design, writing, research, and experiments.
+ * Unfinished, by intention.
  *
  * Architecture: only the `/` route is exposed. Multi-page navigation
- * is handled by a tiny hash-based router. Each "page" is a client-side
- * view that dissolves through darkness into the next.
+ * is handled by a tiny hash-based router. Each page dissolves through
+ * darkness into the next, like crossing a threshold between rooms.
  *
- * The Living Mesh is a single persistent canvas behind every page so
- * that motion remains continuous across transitions — the dust never
- * resets. Its `creativeIntensity` rises only inside creative work
- * (Work / Experiments / project pages). On Arrival it is zero — the
- * experience is nearly monochrome. The visitor discovers purple; they
- * are never introduced to it.
+ * The page itself is made from a material — graphite (Night) or
+ * archival paper (Morning) — built from three stacked fixed layers:
+ * a directional sheen, a soft radial light, and a static grain. The
+ * Living Mesh (a sparse field of dust) drifts on top. None of these
+ * shimmer or animate aggressively; they are the surface.
  *
- * Two materials: Night (graphite, the default) and Morning (archival
- * paper), toggled by a physical paper dog-ear in the top-right corner.
+ * The dynamic rolling navigation (left edge, desktop only) reads from
+ * a single data source and rotates as the visitor scrolls through the
+ * Work chapters.
  */
 export default function Home() {
   const route = useRouterStore((s) => s.route);
@@ -46,8 +47,7 @@ export default function Home() {
   }, []);
 
   // Purple emerges only inside creative work. Zero on Arrival and
-  // About — those rooms are nearly monochrome. The visitor must
-  // deepen their navigation before the accent appears.
+  // About — those rooms are nearly monochrome.
   const creativeIntensity = useMemo(() => {
     if (route.name === "work" || route.name === "project") return 0.7;
     return 0;
@@ -58,49 +58,42 @@ export default function Home() {
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background text-foreground">
-      {/* ───────── Persistent material layers ───────── */}
-
-      {/* The graphite sheen — a faint directional gradient that gives
-          the surface the impression of brushed metal under raking
-          light. Sits beneath everything. */}
+      {/* ───────── The material surface (3 stacked layers) ───────── */}
       <div className="errant-sheen" aria-hidden="true" />
+      <div className="errant-light" aria-hidden="true" />
 
-      {/* The Living Mesh — the website's dust. Persistent across all
-          pages so motion never resets. Nearly imperceptible. */}
+      {/* The Living Mesh — sparse dust. Persistent across all pages. */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <LivingMesh creativeIntensity={creativeIntensity} />
       </div>
 
-      {/* The creative accent — a deep, muted violet that emerges
-          *beneath* the surface only while the visitor is inside
-          creative work. On Arrival and About this is fully
-          transparent. The transition is very slow so the visitor
-          almost feels the change before they see it. */}
+      {/* The creative accent — emerges beneath the surface only inside
+          creative work. Very slow transition. */}
       <div
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-[2400ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]"
         style={{
           opacity: creativeIntensity,
           background:
-            "radial-gradient(120% 80% at 20% 30%, rgba(40,32,63,0.32) 0%, rgba(0,0,0,0) 55%), radial-gradient(100% 70% at 80% 70%, rgba(52,36,63,0.24) 0%, rgba(0,0,0,0) 60%)",
+            "radial-gradient(120% 80% at 20% 30%, rgba(38,30,61,0.30) 0%, rgba(0,0,0,0) 55%), radial-gradient(100% 70% at 80% 70%, rgba(50,31,59,0.22) 0%, rgba(0,0,0,0) 60%)",
         }}
       />
 
-      {/* The material grain — what makes the monitor feel tactile. */}
+      {/* The grain — two stacked static SVG turbulence layers. This
+          is what makes the monitor feel tactile. Never animates. */}
       <div className="errant-grain" aria-hidden="true" />
+      <div className="errant-grain-fine" aria-hidden="true" />
 
-      {/* The vignette — the edges of the viewport recede into the
-          material. */}
+      {/* The vignette — edges recede into the material. */}
       <div className="errant-vignette" aria-hidden="true" />
 
       {/* ───────── Interactive layers ───────── */}
       <CustomCursor />
       <Navigation />
+      <RollingNav />
       <PaperDogEar />
 
-      {/* Page content. AnimatePresence handles dissolve-through-
-          darkness transitions. A placeholder renders until mounted
-          to avoid hydration mismatches with the hash router. */}
+      {/* Page content */}
       <main className="relative z-10 flex-1">
         {isClient ? (
           <AnimatePresence mode="wait">
