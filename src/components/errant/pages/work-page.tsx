@@ -58,8 +58,9 @@ export function WorkPage() {
         const projects = PROJECTS.filter((p) => p.category === section.id);
         if (projects.length === 0) return null;
 
-        // The Market Teardown Series uses a paginated 2-per-page layout.
-        const isPaginated = section.id === "teardowns";
+        // The Market Teardown Series and Writing use a paginated
+        // 2-per-page layout with a "See more" arrow.
+        const isPaginated = section.id === "teardowns" || section.id === "writing";
 
         return (
           <section

@@ -215,7 +215,7 @@ function DogEarHint({
     if (!isClient || dismissed) return;
     // First appearance after 4 seconds (so it doesn't compete with
     // the hero entrance), then every 10 seconds thereafter.
-    const firstTimer = window.setTimeout(() => setVisible(true), 4000);
+    const firstTimer = window.setTimeout(() => setVisible(true), 5000);
     return () => window.clearTimeout(firstTimer);
   }, [isClient, dismissed]);
 
@@ -242,7 +242,7 @@ function DogEarHint({
       aria-hidden="true"
       className="pointer-events-none absolute"
       style={{
-        right: size + 14,
+        right: size + 6,
         top: size / 2 - 8,
         opacity: visible && isClient ? 1 : 0,
         transition: "opacity 800ms cubic-bezier(0.22, 0.61, 0.36, 1)",
