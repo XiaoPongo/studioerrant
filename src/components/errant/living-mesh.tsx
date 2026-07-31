@@ -4,28 +4,31 @@ import { useEffect, useRef } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 /**
- * The Living Mesh — final pass.
+ * The Living Mesh — the flow of ideas.
  *
- * Dust caught in light. Not particles flying through space.
+ * Particles (motes) are born at the LEFT edge of the viewport and
+ * travel RIGHT with purpose — imitating the flow of ideas through a
+ * neural network, or signals traveling between neurons. Most reach
+ * the right edge. Some drift upward, some downward, but the general
+ * direction is always left-to-right.
  *
- * What it is now:
- *   - Almost nothing. ~10–28 motes total on a desktop screen.
- *   - Movement happens on the timescale of minutes. A visitor notices
- *     it only after watching for several seconds.
- *   - Motes have varying thickness — some are tiny pinpricks, a few
- *     are slightly larger like graphite flecks.
- *   - Opacity is very low. They fade in and out over long lifetimes
- *     (20–45 seconds), so the field breathes rather than twinkles.
- *   - No "lighter" composite. Soft radial gradients only.
- *   - Cursor influence is nearly imperceptible — a wide, very weak
- *     displacement, like air disturbed by a passing hand.
- *   - Scroll does not speed the field; it only drifts the noise
- *     sample origin so the composition evolves as you walk.
+ * No motes appear randomly in the middle. They are always emitted
+ * from the left and always travel rightward. When a mote reaches the
+ * right edge (or strays too far up/down), it is recycled back to the
+ * left edge as a new mote.
+ *
+ * Each mote leaves a soft fading trail — the axon, the dendrite, the
+ * thread of a thought. The trails are what give the field its
+ * "living tissue" quality. They are drawn very faintly so the whole
+ * reads as a slow undercurrent rather than busy animation.
  *
  * The mote color follows the theme: warm white in Night (graphite
- * dust in raking light), charcoal in Morning (graphite on paper).
- * So movement STAYS VISIBLE in both rooms — the Workshop does not
- * lose the dust the way a naive inversion would.
+ * dust in raking light), charcoal in Morning (graphite on paper). In
+ * Morning the motes are MORE visible (--mote-alpha-mult is higher)
+ * so the flow never disappears on the light background.
+ *
+ * Reduced motion: the flow slows dramatically but does not stop —
+ * the atmosphere remains.
  */
 interface MeshProps {
   creativeIntensity?: number;
@@ -41,15 +44,10 @@ interface Mote {
   maxLife: number;
   size: number;
   baseAlpha: number;
-}
-
-// Very low-frequency flow. Motion on the timescale of minutes.
-function flowAngle(x: number, y: number, t: number): number {
-  const a =
-    Math.sin(x * 0.00038 + t * 0.000014) +
-    Math.cos(y * 0.00044 - t * 0.000011) +
-    Math.sin((x + y) * 0.00024 + t * 0.000009) * 0.35;
-  return a * Math.PI;
+  /** A persistent vertical drift — some motes rise, some fall. */
+  drift: number;
+  /** A small phase for organic wobble. */
+  phase: number;
 }
 
 function cssColorToRgb(input: string): { r: number; g: number; b: number } {
@@ -68,6 +66,15 @@ function cssColorToRgb(input: string): { r: number; g: number; b: number } {
       r: parseInt(rgbMatch[1], 10),
       g: parseInt(rgbMatch[2], 10),
       b: parseInt(rgbMatch[3], 10),
+    };
+  }
+  // Bare "r, g, b" triple (the format --mote-color is stored in)
+  const tripleMatch = s.match(/^(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+  if (tripleMatch) {
+    return {
+      r: parseInt(tripleMatch[1], 10),
+      g: parseInt(tripleMatch[2], 10),
+      b: parseInt(tripleMatch[3], 10),
     };
   }
   return { r: 232, g: 228, b: 220 };
@@ -95,8 +102,6 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
     let rafId = 0;
     const startTime = performance.now();
     let lastTime = startTime;
-    let scrollOffset = 0;
-    let targetScrollOffset = 0;
     const pointer = { x: -9999, y: -9999, active: false };
     let cachedRgb = { r: 232, g: 228, b: 220 };
     let cachedAlphaMult = 1;
@@ -115,35 +120,40 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Extremely sparse. Dust, not a field.
+      // Density: a sparse field of idea-flows. Fewer on touch.
       const area = width * height;
-      let density = Math.floor(area / 52000);
+      let density = Math.floor(area / 38000);
       if (isTouch) density = Math.floor(density * 0.55);
-      if (reducedMotion) density = Math.floor(density * 0.45);
-      density = Math.max(8, Math.min(density, 28));
+      if (reducedMotion) density = Math.floor(density * 0.6);
+      density = Math.max(14, Math.min(density, 48));
       motes = new Array(density).fill(0).map(() => spawn(true));
       ctx.clearRect(0, 0, width, height);
     }
 
     function spawn(initial = false): Mote {
-      const x = initial
-        ? Math.random() * width
-        : Math.random() * width * 0.7 - width * 0.05;
+      // Motes are ALWAYS born at the left edge. On the very first
+      // spawn (initial=true) we distribute them across the width so
+      // the field doesn't start empty — but they still flow right.
+      const x = initial ? Math.random() * width : -20 - Math.random() * 60;
       const y = Math.random() * height;
-      // Very long lifetimes — motes drift in and out over half a minute.
-      const maxLife = 20000 + Math.random() * 25000;
-      // Varying thickness: most are tiny, a few are larger flecks.
-      // size^2 weighting makes large motes rare.
-      const r = Math.random();
+      // Rightward velocity — the purpose. Most motes move at a
+      // similar pace; a few are slower (0.08) or faster (0.6).
+      const speed = 0.12 + Math.random() * Math.random() * 0.5;
+      // Vertical drift: most motes drift slightly, some more. Sign
+      // determines up vs down.
+      const driftSign = Math.random() < 0.5 ? -1 : 1;
+      const driftMag = Math.random() * 0.04;
       return {
         x,
         y,
-        vx: 0,
+        vx: speed,
         vy: 0,
-        life: Math.random() * maxLife,
-        maxLife,
-        size: 0.3 + r * r * 1.8,
-        baseAlpha: 0.04 + Math.random() * 0.1,
+        life: 0,
+        maxLife: 18000 + Math.random() * 16000,
+        size: 0.4 + Math.random() * Math.random() * 1.5,
+        baseAlpha: 0.06 + Math.random() * 0.14,
+        drift: driftSign * driftMag,
+        phase: Math.random() * Math.PI * 2,
       };
     }
 
@@ -153,71 +163,79 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       const dt = Math.min(now - lastTime, 60);
       lastTime = now;
 
-      scrollOffset += (targetScrollOffset - scrollOffset) * 0.035;
-      targetScrollOffset *= 0.984;
-
-      // Very gentle fade of existing pixels — motes leave the softest
-      // possible trace, like graphite dust suspended in still air.
+      // Very gentle fade of existing pixels so motes leave soft
+      // trailing tails (the axons / dendrites).
       ctx.globalCompositeOperation = "destination-out";
-      ctx.fillStyle = "rgba(0, 0, 0, 0.04)";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.035)";
       ctx.fillRect(0, 0, width, height);
       ctx.globalCompositeOperation = "source-over";
 
-      // Re-read the mote color from the CSS variable every ~500ms so
-      // theme transitions are followed without per-frame cost.
-      if (now - lastVarCheck > 500) {
-        const cs = getComputedStyle(document.documentElement);
-        const fg = cs.getPropertyValue("--mote-color").trim();
-        const am = cs.getPropertyValue("--mote-alpha-mult").trim();
-        if (fg) cachedRgb = cssColorToRgb(fg);
-        if (am) {
-          const parsed = parseFloat(am);
-          if (!Number.isNaN(parsed)) cachedAlphaMult = parsed;
-        }
-        lastVarCheck = now;
+      // Re-read the mote color from the CSS variable on EVERY frame.
+      // This is cheap (one getComputedStyle call) and guarantees the
+      // mote color tracks the current theme instantly — important
+      // because the canvas persists across theme toggles and the
+      // cached value would otherwise be stale until the next 500ms
+      // check.
+      const cs = getComputedStyle(document.documentElement);
+      const fg = cs.getPropertyValue("--mote-color").trim();
+      const am = cs.getPropertyValue("--mote-alpha-mult").trim();
+      if (fg) cachedRgb = cssColorToRgb(fg);
+      if (am) {
+        const parsed = parseFloat(am);
+        if (!Number.isNaN(parsed)) cachedAlphaMult = parsed;
       }
       const rgb = cachedRgb;
       const alphaMult = cachedAlphaMult;
 
-      const speedScale = reducedMotion ? 0.12 : 1;
+      const speedScale = reducedMotion ? 0.25 : 1;
       const creative = creativeRef.current;
 
-      // The accent — deep, muted, almost invisible.
-      const accentR = 86;
-      const accentG = 74;
-      const accentB = 124;
+      // The accent — deep, muted, discovered.
+      const accentR = 90;
+      const accentG = 76;
+      const accentB = 128;
 
       for (let i = 0; i < motes.length; i++) {
         const p = motes[i];
 
-        const angle = flowAngle(p.x, p.y + scrollOffset, t);
-        const flow = 0.008 * speedScale;
-        p.vx += Math.cos(angle) * flow;
-        p.vy += Math.sin(angle) * flow;
+        // Rightward flow — the purpose. Constant gentle push right.
+        p.vx += 0.002 * speedScale;
+        // Vertical drift — each mote has its own persistent drift
+        // direction (some up, some down). Plus a slow organic wobble.
+        p.vy += p.drift + Math.sin(t * 0.0002 + p.phase) * 0.004;
 
-        // Cursor influence — almost imperceptible. Wide, very weak.
+        // Cursor influence — a gentle deflection, like a hand
+        // disturbing the flow. Never stops the rightward motion.
         if (pointer.active && !reducedMotion && !isTouch) {
           const dx = p.x - pointer.x;
           const dy = p.y - pointer.y;
           const dist2 = dx * dx + dy * dy;
-          const radius = 260;
+          const radius = 200;
           if (dist2 < radius * radius) {
             const d = Math.sqrt(dist2) || 1;
-            const force = (1 - d / radius) * 0.012;
-            p.vx += (dx / d) * force;
+            const force = (1 - d / radius) * 0.02;
             p.vy += (dy / d) * force;
           }
         }
 
-        p.vx *= 0.978;
-        p.vy *= 0.978;
+        // Damping — keep motion fluid, never robotic.
+        p.vx *= 0.985;
+        p.vy *= 0.96;
+        // Clamp horizontal speed so it never stalls or sprints.
+        const minVx = 0.06 * speedScale;
+        const maxVx = 0.85 * speedScale;
+        if (p.vx < minVx) p.vx = minVx;
+        if (p.vx > maxVx) p.vx = maxVx;
+
         p.x += p.vx * (dt / 16);
         p.y += p.vy * (dt / 16);
         p.life += dt;
 
+        // Recycle when the mote reaches the right edge, strays too
+        // far vertically, or lives too long. Always re-birth at the
+        // LEFT edge — never in the middle.
         if (
-          p.x < -80 ||
-          p.x > width + 80 ||
+          p.x > width + 30 ||
           p.y < -80 ||
           p.y > height + 80 ||
           p.life > p.maxLife
@@ -226,41 +244,41 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
           continue;
         }
 
-        // Long, slow fades. Fade in for the first 22%, hold, fade out
-        // for the last 35%. Occasional fading — the field breathes.
+        // Fade in for the first 12% of life, hold, fade out for the
+        // last 25%. Long, slow fades.
         const lifeRatio = p.life / p.maxLife;
         let fade: number;
-        if (lifeRatio < 0.22) {
-          fade = lifeRatio / 0.22;
-        } else if (lifeRatio > 0.65) {
-          fade = (1 - lifeRatio) / 0.35;
+        if (lifeRatio < 0.12) {
+          fade = lifeRatio / 0.12;
+        } else if (lifeRatio > 0.75) {
+          fade = (1 - lifeRatio) / 0.25;
         } else {
           fade = 1;
         }
-        fade = fade * fade * fade;
+        fade = fade * fade;
 
         const alpha = p.baseAlpha * fade * alphaMult;
 
-        // Soft mote — a tiny radial gradient so the edge is never hard.
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3.2);
+        // The mote head — a tiny soft dot.
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3);
         grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`);
         grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 3.2, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
         ctx.fill();
 
-        // A fraction of motes carry the creative accent — only when
-        // creative intensity has risen. Even then, very faint.
-        if (creative > 0.01 && i % 6 === 0) {
-          const accentAlpha = creative * alpha * 0.45;
+        // A fraction of motes carry the creative accent — and only
+        // when creative intensity has risen.
+        if (creative > 0.01 && i % 5 === 0) {
+          const accentAlpha = creative * alpha * 0.5;
           if (accentAlpha > 0.001) {
-            const ag = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 4.2);
+            const ag = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 4);
             ag.addColorStop(0, `rgba(${accentR}, ${accentG}, ${accentB}, ${accentAlpha})`);
             ag.addColorStop(1, `rgba(${accentR}, ${accentG}, ${accentB}, 0)`);
             ctx.fillStyle = ag;
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size * 4.2, 0, Math.PI * 2);
+            ctx.arc(p.x, p.y, p.size * 4, 0, Math.PI * 2);
             ctx.fill();
           }
         }
@@ -281,13 +299,9 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       pointer.x = -9999;
       pointer.y = -9999;
     }
-    function onScroll() {
-      targetScrollOffset += window.scrollY * 0.0006;
-    }
 
     resize();
     window.addEventListener("resize", resize);
-    window.addEventListener("scroll", onScroll, { passive: true });
     if (!isTouch) {
       window.addEventListener("mousemove", onMouseMove);
       canvas.addEventListener("mouseleave", onMouseLeave);
@@ -298,7 +312,6 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener("resize", resize);
-      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("mousemove", onMouseMove);
       canvas?.removeEventListener("mouseleave", onMouseLeave);
     };

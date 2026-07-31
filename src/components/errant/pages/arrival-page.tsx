@@ -45,8 +45,8 @@ export function ArrivalPage() {
       {/* ════════════════════════════════════════════════════════
           ROOM I — THE WHISPER
           ════════════════════════════════════════════════════════ */}
-      <section className="relative flex min-h-screen items-center px-6 sm:px-10 md:px-16 lg:px-20">
-        <div className="relative z-10 w-full md:translate-x-[-4%] lg:translate-x-[-6%]">
+      <section className="relative flex min-h-screen items-center px-6 sm:px-10 md:px-16 lg:px-24">
+        <div className="relative z-10 w-full">
           {/* "This is" — a small italic editorial line. */}
           <motion.p
             initial={{ opacity: 0, y: 6 }}
@@ -58,8 +58,8 @@ export function ArrivalPage() {
           </motion.p>
 
           {/* The official logo image. Constrained with min(vw, px)
-              so it never overflows any viewport while preserving
-              its oversized feeling. The SVG has a 5:3 aspect ratio. */}
+              minus the horizontal padding so it never overflows any
+              viewport. The SVG has a 5:3 aspect ratio. */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -67,7 +67,7 @@ export function ArrivalPage() {
             className="relative"
           >
             <StudioErrantLogo
-              width="min(78vw, 460px)"
+              width="min(72vw, 460px)"
               height="auto"
               alt="Studio Errant"
             />

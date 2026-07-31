@@ -198,3 +198,39 @@ Stage Summary:
 - Hero never overflows on any viewport (fluid min(vw,px) sizing).
 - Rolling nav moved to the RIGHT side, mirrored layout, data-driven, rotates on scroll.
 - About page and footer updated with Amay Deep's real info from thebandar.co.in.
+
+---
+Task ID: 7
+Agent: orchestrator (main)
+Task: Auto-rotate rolling nav every 4s, fix "This is" overflow, fix nav logo too large on Morning, increase nav tab contrast on Morning, rebuild particles to flow left-to-right with purpose (neural/idea-flow metaphor), fix particle visibility on Morning theme.
+
+Work Log:
+- Rolling nav: added auto-rotation every 4 seconds (AUTO_ROTATE_INTERVAL). The active section advances by one (wrapping) on each tick. Auto-rotation pauses for 8 seconds after the visitor scrolls or clicks, so it never fights them. Disabled in reduced-motion mode.
+- Hero "This is" overflow: removed the `md:translate-x-[-4%]` / `lg:translate-x-[-6%]` transforms that were pushing the content off the left edge on smaller viewports. Constrained the logo width to `min(72vw, 460px)`. "This is" is now fully visible on all viewports.
+- Nav logo too large: reduced from `height: 30px` to `height: 22px` so the header logo never competes with the hero logo.
+- Nav tab contrast on Morning: bumped inactive tab opacity from `text-foreground/40` to `text-foreground/60`, and the underline from `bg-foreground/60` to `bg-foreground`. Tabs are now clearly visible on both themes.
+- Rebuilt the Living Mesh completely — the "flow of ideas" metaphor:
+  * Motes are ALWAYS born at the LEFT edge (x = -20 to -80) and travel RIGHT with purpose.
+  * No motes spawn randomly in the middle. When a mote reaches the right edge (or strays too far vertically), it is recycled back to the left edge.
+  * Each mote has a persistent vertical drift (some up, some down) plus a slow organic wobble. Most reach the right side.
+  * Rightward velocity is constant and clamped (min 0.06, max 0.85) so motion never stalls or sprints.
+  * Soft fading trails (the axons/dendrites) via destination-out composite.
+  * Cursor influence is a gentle vertical deflection — never stops the rightward flow.
+- Fixed a critical bug: the `cssColorToRgb` parser only handled hex and `rgb()` formats, but `--mote-color` is stored as a bare `"r, g, b"` triple (e.g. `"43, 39, 34"`). Added a triple-match regex so the mote color now correctly resolves to the dark charcoal in Morning. Previously it fell through to the default light color (232,228,220), making Morning motes invisible.
+- Increased Morning mote visibility: `--mote-alpha-mult` raised from 1.25 to 2.4 so the charcoal flow is clearly visible on paper.
+- Increased Night mote visibility: `--mote-alpha-mult` raised from 1.0 to 1.3.
+- Re-read the mote color CSS variable on EVERY frame (instead of every 500ms) so the canvas tracks theme toggles instantly.
+
+Verification (Agent Browser):
+- Hero (Night): "This is" fully visible, hero logo visible, nav logo small, tabs visible, particles flow left-to-right. VLM confirmed.
+- Morning theme: particles now clearly visible as dark charcoal strokes flowing across the paper (was washed out before). VLM confirmed.
+- Rolling nav auto-rotation: verified over ~9 seconds. Started at [Visual Media, Artificial Intelligence, Design], advanced to [Artificial Intelligence, Design, Writing] after ~4.5s, then to [Experiments, Visual Media, Artificial Intelligence] after another ~4.5s. Rotates every 4 seconds, wraps around correctly.
+- Lint: 0 errors, 0 warnings.
+
+Stage Summary:
+- Rolling nav auto-rotates every 4 seconds (pauses on interaction).
+- "This is" no longer overflows.
+- Nav logo is small (22px) on both themes.
+- Nav tabs are clearly visible on Morning.
+- Particles now flow left-to-right with purpose (idea/neural flow metaphor) — born at the left edge, travel right, some drift up/down, most reach the right side, then recycle. No random middle spawning.
+- Morning theme particles are now clearly visible (charcoal on paper) — was washed out before.

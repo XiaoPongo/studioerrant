@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouterStore } from "@/lib/router";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { useMediaQuery } from "@/hooks/use-media-query";
@@ -21,20 +21,25 @@ import { cn } from "@/lib/utils";
  *
  * Exactly three items are always visible: the previous section, the
  * current section (centered, highlighted), and the next section. All
- * three remain clickable. When the visitor scrolls and a new section
- * enters the center of the viewport, the list rotates smoothly.
+ * three remain clickable.
+ *
+ * Two forces move the list:
+ *   1. Scroll — when the visitor scrolls and a new Work chapter
+ *      centers in the viewport, the list rotates to follow.
+ *   2. Auto-rotation — every 4 seconds the list advances one step
+ *      on its own, so the menu is always gently alive even when the
+ *      visitor is still. The auto-rotation is paused for a while
+ *      after the visitor scrolls or clicks, so it never fights them.
  *
  * The navigation is DATA-DRIVEN, reading from NAV_SECTIONS (built
  * directly from the canonical CATEGORIES list). Rename a category in
  * the data source and the navigation updates automatically.
  *
- * Positioned on the right edge of the viewport, mirrored: items are
- * right-aligned, markers sit to the right of the text, and the guide
- * line runs along the right edge.
- *
- * Desktop-only. On touch devices it is hidden; the mobile menu
- * remains the primary nav.
+ * Desktop-only. On touch devices it is hidden.
  */
+const AUTO_ROTATE_INTERVAL = 4000;
+const AUTO_ROTATE_PAUSE_AFTER_INTERACTION = 8000;
+
 export function RollingNav() {
   const navigate = useRouterStore((s) => s.navigate);
   const route = useRouterStore((s) => s.route);
@@ -44,15 +49,19 @@ export function RollingNav() {
   const [activeId, setActiveId] = useState<ProjectCategory>(
     NAV_SECTIONS[0]?.id ?? "ai",
   );
+  // A monotonic counter that advances the active section by one,
+  // wrapping around. Used by both auto-rotation and the "next"
+  // affordance.
+  const pauseUntilRef = useRef<number>(0);
 
+  // Scroll-driven rotation. Re-queries sections each update so it
+  // catches them after the page transition completes.
   useEffect(() => {
     if (!finePointer) return;
 
     let raf = 0;
     const update = () => {
       raf = 0;
-      // Re-query sections each time — they may appear after the page
-      // transition completes (AnimatePresence takes ~1.6s).
       const sections = Array.from(
         document.querySelectorAll<HTMLElement>("[data-nav-section]"),
       );
@@ -71,14 +80,15 @@ export function RollingNav() {
       }
       if (best) {
         setActiveId(best.id as ProjectCategory);
+        // Pause auto-rotation while the visitor is actively scrolling.
+        pauseUntilRef.current =
+          performance.now() + AUTO_ROTATE_PAUSE_AFTER_INTERACTION;
       }
     };
 
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
     };
-    // Retry a few times to catch the sections after the page
-    // transition completes.
     const timers = [100, 500, 1200, 2000].map((ms) =>
       window.setTimeout(update, ms),
     );
@@ -92,6 +102,22 @@ export function RollingNav() {
     };
   }, [route, finePointer]);
 
+  // Auto-rotation. Every 4 seconds, advance the active section by one
+  // (wrapping) — unless the visitor has scrolled or clicked recently,
+  // or has requested reduced motion.
+  useEffect(() => {
+    if (!finePointer || reduced) return;
+    const interval = window.setInterval(() => {
+      if (performance.now() < pauseUntilRef.current) return;
+      setActiveId((current) => {
+        const idx = NAV_SECTIONS.findIndex((s) => s.id === current);
+        const nextIdx = (idx + 1) % NAV_SECTIONS.length;
+        return NAV_SECTIONS[nextIdx]?.id ?? current;
+      });
+    }, AUTO_ROTATE_INTERVAL);
+    return () => window.clearInterval(interval);
+  }, [finePointer, reduced]);
+
   if (!finePointer) return null;
 
   const window3 = getNavWindow(activeId);
@@ -100,6 +126,9 @@ export function RollingNav() {
   const [prev, current, next] = window3;
 
   const go = (section: NavSection) => {
+    // Any click pauses the auto-rotation for a while.
+    pauseUntilRef.current =
+      performance.now() + AUTO_ROTATE_PAUSE_AFTER_INTERACTION;
     if (route.name !== "work") {
       navigate({ name: "work" });
       setTimeout(() => {

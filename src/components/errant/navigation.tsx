@@ -57,8 +57,8 @@ export function Navigation() {
       >
         <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-6 md:px-12 md:py-8">
           {/* The official logo — clicking returns the visitor to
-              Arrival. Uses the actual supplied SVG wordmark, not
-              text. Theme-aware (light for Night, dark for Morning). */}
+              Arrival. Sized small for the header (height 22px) so it
+              never competes with the hero logo. Theme-aware. */}
           <button
             type="button"
             onClick={() => navigate({ name: "arrival" })}
@@ -66,7 +66,11 @@ export function Navigation() {
             aria-label="Studio Errant — return to arrival"
             data-cursor="hover"
           >
-            <StudioErrantLogo width="auto" height="30px" alt="Studio Errant" />
+            <StudioErrantLogo
+              width="auto"
+              height="22px"
+              alt="Studio Errant"
+            />
           </button>
 
           {/* Desktop nav — top right, small typography. */}
@@ -87,14 +91,14 @@ export function Navigation() {
                       "transition-colors duration-700",
                       active
                         ? "text-foreground"
-                        : "text-foreground/40 group-hover:text-foreground/75",
+                        : "text-foreground/60 group-hover:text-foreground",
                     )}
                   >
                     {item.label}
                   </span>
                   <span
                     className={cn(
-                      "absolute -bottom-2 left-0 h-px bg-foreground/60 transition-all duration-[900ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]",
+                      "absolute -bottom-2 left-0 h-px bg-foreground transition-all duration-[900ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]",
                       active ? "w-full opacity-100" : "w-0 opacity-0",
                     )}
                   />

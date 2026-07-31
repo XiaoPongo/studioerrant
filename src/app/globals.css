@@ -139,7 +139,7 @@
 
   /* Dust mote color (used by the canvas). Warm white in Night. */
   --mote-color: 232, 228, 220;
-  --mote-alpha-mult: 1;
+  --mote-alpha-mult: 1.3;
 
   color-scheme: dark;
 }
@@ -220,9 +220,10 @@
     rgba(90, 78, 50, 0.14) 100%
   );
 
-  /* Charcoal dust on paper — stays visible. */
+  /* Charcoal dust on paper — stays visible. Higher alpha multiplier
+     so the idea-flow never disappears on the light background. */
   --mote-color: 43, 39, 34;
-  --mote-alpha-mult: 1.25;
+  --mote-alpha-mult: 2.4;
 
   color-scheme: light;
 }
