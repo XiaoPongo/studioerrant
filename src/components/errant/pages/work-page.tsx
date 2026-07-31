@@ -56,7 +56,7 @@ export function WorkPage() {
 
       {/* Chapters — each category is a chapter. Tagged so the rolling
           navigation can observe which chapter is centered. */}
-      {NAV_SECTIONS.map((section, chapterIndex) => {
+      {NAV_SECTIONS.map((section) => {
         const projects = PROJECTS.filter((p) => p.category === section.id);
         if (projects.length === 0) return null;
         return (
@@ -66,12 +66,9 @@ export function WorkPage() {
             data-nav-section={section.id}
             className="relative mx-auto max-w-[1600px] scroll-mt-32 px-6 py-24 md:px-12 md:py-32 md:pl-20 lg:pl-28"
           >
-            {/* Chapter heading */}
+            {/* Section heading */}
             <div className="grid gap-10 md:grid-cols-12">
               <Reveal className="md:col-span-5">
-                <p className="mb-5 text-[11px] uppercase tracking-[0.4em] text-foreground/35">
-                  {String(chapterIndex + 1).padStart(2, "0")} — Chapter
-                </p>
                 <h2 className="font-editorial text-display-md text-foreground">
                   {section.title}
                 </h2>

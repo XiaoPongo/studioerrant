@@ -6,7 +6,6 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   NAV_SECTIONS,
-  getNavWindow,
   type NavSection,
 } from "@/data/errant/nav-sections";
 import type { ProjectCategory } from "@/data/errant/projects";
@@ -15,30 +14,35 @@ import { cn } from "@/lib/utils";
 /**
  * The dynamic rolling navigation — RIGHT side.
  *
- *   Work
- *   › Design ‹   ← centered, highlighted
+ * A vertical "reel" of all section names, with exactly three visible
+ * at once. The reel is physically translated up or down so the active
+ * section is always centered. The transition is a smooth rolling
+ * scroll — the items slide through the center position as though the
+ * list itself were a wheel rotating.
+ *
+ *   Writing
+ *   › Design ‹   ← centered, highlighted, largest
  *   Research
  *
- * Exactly three items are always visible: the previous section, the
- * current section (centered, highlighted), and the next section. All
- * three remain clickable.
+ * The reel is taller than its viewport (overflow hidden) so items
+ * enter from one edge and exit the other. Masking fades the top and
+ * bottom edges so items dissolve rather than cut.
  *
- * Two forces move the list:
- *   1. Scroll — when the visitor scrolls and a new Work chapter
- *      centers in the viewport, the list rotates to follow.
- *   2. Auto-rotation — every 4 seconds the list advances one step
- *      on its own, so the menu is always gently alive even when the
- *      visitor is still. The auto-rotation is paused for a while
- *      after the visitor scrolls or clicks, so it never fights them.
+ * Two forces move the reel:
+ *   1. Scroll — when a new Work chapter centers in the viewport.
+ *   2. Auto-rotation — every 4 seconds the reel advances one step.
  *
  * The navigation is DATA-DRIVEN, reading from NAV_SECTIONS (built
- * directly from the canonical CATEGORIES list). Rename a category in
- * the data source and the navigation updates automatically.
+ * directly from the canonical CATEGORIES list).
  *
- * Desktop-only. On touch devices it is hidden.
+ * Desktop-only. ~50% larger than the previous version.
  */
 const AUTO_ROTATE_INTERVAL = 4000;
 const AUTO_ROTATE_PAUSE_AFTER_INTERACTION = 8000;
+
+// Geometry of the reel, in px. ~50% larger than the previous version.
+const ITEM_HEIGHT = 52; // vertical pitch per item in the reel
+const REEL_HEIGHT = ITEM_HEIGHT * 3; // exactly 3 items visible
 
 export function RollingNav() {
   const navigate = useRouterStore((s) => s.navigate);
@@ -49,13 +53,14 @@ export function RollingNav() {
   const [activeId, setActiveId] = useState<ProjectCategory>(
     NAV_SECTIONS[0]?.id ?? "ai",
   );
-  // A monotonic counter that advances the active section by one,
-  // wrapping around. Used by both auto-rotation and the "next"
-  // affordance.
   const pauseUntilRef = useRef<number>(0);
 
-  // Scroll-driven rotation. Re-queries sections each update so it
-  // catches them after the page transition completes.
+  // The index of the active section in NAV_SECTIONS. Drives the
+  // vertical translation of the reel.
+  const activeIndex = NAV_SECTIONS.findIndex((s) => s.id === activeId);
+  const safeIndex = activeIndex === -1 ? 0 : activeIndex;
+
+  // Scroll-driven rotation.
   useEffect(() => {
     if (!finePointer) return;
 
@@ -80,7 +85,6 @@ export function RollingNav() {
       }
       if (best) {
         setActiveId(best.id as ProjectCategory);
-        // Pause auto-rotation while the visitor is actively scrolling.
         pauseUntilRef.current =
           performance.now() + AUTO_ROTATE_PAUSE_AFTER_INTERACTION;
       }
@@ -102,9 +106,7 @@ export function RollingNav() {
     };
   }, [route, finePointer]);
 
-  // Auto-rotation. Every 4 seconds, advance the active section by one
-  // (wrapping) — unless the visitor has scrolled or clicked recently,
-  // or has requested reduced motion.
+  // Auto-rotation every 4 seconds.
   useEffect(() => {
     if (!finePointer || reduced) return;
     const interval = window.setInterval(() => {
@@ -119,16 +121,12 @@ export function RollingNav() {
   }, [finePointer, reduced]);
 
   if (!finePointer) return null;
-
-  const window3 = getNavWindow(activeId);
-  if (window3.length < 3) return null;
-
-  const [prev, current, next] = window3;
+  if (NAV_SECTIONS.length === 0) return null;
 
   const go = (section: NavSection) => {
-    // Any click pauses the auto-rotation for a while.
     pauseUntilRef.current =
       performance.now() + AUTO_ROTATE_PAUSE_AFTER_INTERACTION;
+    setActiveId(section.id);
     if (route.name !== "work") {
       navigate({ name: "work" });
       setTimeout(() => {
@@ -143,88 +141,103 @@ export function RollingNav() {
     el?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
   };
 
+  // Build the reel. We render the full list but translate it so the
+  // active item sits in the center slot. The reel is wrapped in a
+  // fixed-height overflow-hidden viewport with mask fades at the
+  // top and bottom edges.
+  const translateY = -safeIndex * ITEM_HEIGHT;
+
   return (
     <nav
       aria-label="Sections"
       className="pointer-events-auto fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 md:block lg:right-10"
     >
-      <div className="flex flex-col items-end gap-5">
-        <NavItem
-          section={prev}
-          state="prev"
-          reduced={reduced}
-          onClick={() => go(prev)}
-        />
-        <NavItem
-          section={current}
-          state="current"
-          reduced={reduced}
-          onClick={() => go(current)}
-        />
-        <NavItem
-          section={next}
-          state="next"
-          reduced={reduced}
-          onClick={() => go(next)}
-        />
+      {/* The reel viewport — exactly 3 items tall, overflow hidden. */}
+      <div
+        className="relative overflow-hidden"
+        style={{
+          height: REEL_HEIGHT,
+          width: 220,
+          // Mask: fade the top and bottom edges so items dissolve
+          // rather than cut. The fade is gentle so all 3 items
+          // remain visible — only the extreme edges fade.
+          maskImage:
+            "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+        }}
+      >
+        {/* The reel itself. Translated vertically so the active item
+            is centered. The transition is the rolling animation. */}
+        <ul
+          className="m-0 list-none p-0"
+          style={{
+            // translateY is negative (−index × ITEM_HEIGHT). We add
+            // ITEM_HEIGHT to offset the reel so the active item lands
+            // in the center slot of the 3-item viewport.
+            transform: `translateY(${ITEM_HEIGHT + translateY}px)`,
+            transition: reduced
+              ? "none"
+              : "transform 900ms cubic-bezier(0.22, 0.61, 0.36, 1)",
+          }}
+        >
+          {NAV_SECTIONS.map((section) => {
+            const isActive = section.id === activeId;
+            return (
+              <li
+                key={section.id}
+                style={{ height: ITEM_HEIGHT }}
+                className="flex items-center justify-end"
+              >
+                <button
+                  type="button"
+                  data-cursor="hover"
+                  onClick={() => go(section)}
+                  aria-current={isActive ? "true" : undefined}
+                  className={cn(
+                    "group flex items-center gap-3 pr-5 text-right transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
+                    isActive
+                      ? "text-foreground"
+                      : "text-foreground/35 hover:text-foreground/65",
+                  )}
+                  style={{ height: ITEM_HEIGHT }}
+                >
+                  <span
+                    className={cn(
+                      "font-editorial lowercase leading-none transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
+                      isActive
+                        ? "text-xl md:text-2xl"
+                        : "text-sm md:text-base",
+                    )}
+                    style={{
+                      letterSpacing: isActive ? "0.01em" : "0.04em",
+                    }}
+                  >
+                    {section.navLabel}
+                  </span>
+                  {/* The marker — a small dash that becomes a diamond
+                      when the item is centered. */}
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
+                      isActive
+                        ? "h-2 w-2 rotate-45 bg-foreground"
+                        : "h-px w-3 bg-foreground/30 group-hover:w-4 group-hover:bg-foreground/50",
+                    )}
+                  />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
       </div>
 
       {/* A thin vertical guide line on the right edge — the spine. */}
       <div
         aria-hidden="true"
-        className="absolute right-[3px] top-0 h-full w-px bg-foreground/10"
+        className="absolute right-[3px] top-1/2 h-[60px] w-px -translate-y-1/2 bg-foreground/15"
       />
     </nav>
-  );
-}
-
-function NavItem({
-  section,
-  state,
-  reduced,
-  onClick,
-}: {
-  section: NavSection;
-  state: "prev" | "current" | "next";
-  reduced: boolean;
-  onClick: () => void;
-}) {
-  const isCurrent = state === "current";
-  return (
-    <button
-      type="button"
-      data-cursor="hover"
-      onClick={onClick}
-      aria-current={isCurrent ? "true" : undefined}
-      className={cn(
-        "group relative flex items-center gap-3 pr-5 text-right transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
-        isCurrent
-          ? "text-foreground"
-          : "text-foreground/35 hover:text-foreground/65",
-      )}
-    >
-      <span
-        className={cn(
-          "font-editorial lowercase leading-none transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
-          isCurrent ? "text-base md:text-lg" : "text-xs md:text-sm",
-        )}
-        style={{
-          letterSpacing: isCurrent ? "0.01em" : "0.04em",
-        }}
-      >
-        {section.navLabel}
-      </span>
-      {/* The marker — on the RIGHT side of the text. A small dash
-          that grows into a diamond when the item is centered. */}
-      <span
-        aria-hidden="true"
-        className={cn(
-          "absolute right-0 top-1/2 -translate-y-1/2 transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
-          isCurrent
-            ? "h-1.5 w-1.5 rotate-45 bg-foreground"
-            : "h-px w-3 bg-foreground/30 group-hover:w-4 group-hover:bg-foreground/50",
-        )}
-      />
-    </button>
   );
 }

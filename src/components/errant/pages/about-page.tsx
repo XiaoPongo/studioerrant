@@ -46,27 +46,18 @@ const PROCESS_STEPS = [
   },
 ];
 
-const TIMELINE = [
-  { moment: "Started sketching.", year: "—" },
-  { moment: "Studied commerce. Kept sketching.", year: "—" },
-  { moment: "Discovered code.", year: "—" },
-  { moment: "Built The Bandar Co.", year: "—" },
-  { moment: "Began writing in public.", year: "—" },
-  { moment: "Opened Studio Errant.", year: "Now" },
-];
-
 const VALUES = [
   {
     title: "Calm, not loud",
-    body: "Spacing, typography, animation, and pacing should all encourage slower interaction. The internet constantly asks people to move faster. We quietly ask them to stay a little longer.",
+    body: "Spacing, typography, animation, and pacing should all encourage slower interaction. The internet constantly asks people to move faster. I quietly ask them to stay a little longer.",
   },
   {
     title: "Curiosity as discipline",
-    body: "Curiosity is not a personality trait. It is a discipline. It can be practised. It can be refused. We treat it as the daily work, not the inspiration.",
+    body: "Curiosity is not a personality trait. It is a discipline. It can be practised. It can be refused. I treat it as the daily work, not the inspiration.",
   },
   {
     title: "Atmosphere before interface",
-    body: "We begin every project by asking how someone should feel standing here. Only afterward do we build the interface. Atmosphere is never a background.",
+    body: "I begin every project by asking how someone should feel standing here. Only afterward do I build the interface. Atmosphere is never a background.",
   },
   {
     title: "Leave things unfinished",
@@ -228,13 +219,13 @@ export function AboutPage() {
       <section className="relative mx-auto max-w-[1600px] px-6 py-24 md:px-12 md:py-32">
         <Reveal>
           <p className="mb-8 text-[11px] uppercase tracking-[0.4em] text-foreground/35">
-            III — What we hold to
+            III — What I hold to
           </p>
         </Reveal>
         <div className="grid gap-x-12 gap-y-14 md:grid-cols-2">
           {VALUES.map((v, i) => (
             <Reveal key={v.title} delay={(i % 2) * 0.08}>
-              <h3 className="font-editorial text-2xl text-white md:text-3xl">
+              <h3 className="font-editorial text-2xl text-foreground md:text-3xl">
                 {v.title}
               </h3>
               <p className="mt-4 text-base leading-loose text-foreground/55">
@@ -245,33 +236,44 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* Timeline — moments of growth, not résumé milestones. */}
+      {/* Résumé — view and download. */}
       <section className="relative mx-auto max-w-3xl px-6 py-24 md:px-12 md:py-32">
         <Reveal>
           <p className="mb-10 text-[11px] uppercase tracking-[0.4em] text-foreground/35">
-            IV — A loose timeline
+            IV — Résumé
           </p>
         </Reveal>
-        <ol className="space-y-8">
-          {TIMELINE.map((entry, i) => (
-            <Reveal as="li" key={entry.moment} delay={i * 0.05}>
-              <div className="flex items-baseline justify-between gap-6 border-b border-foreground/[0.05] pb-6">
-                <span className="font-editorial text-xl text-foreground/85 md:text-2xl">
-                  {entry.moment}
-                </span>
-                <span className="text-[11px] uppercase tracking-[0.3em] text-foreground/35">
-                  {entry.year}
-                </span>
-              </div>
-            </Reveal>
-          ))}
-        </ol>
-        <Reveal delay={0.1}>
-          <p className="mt-10 text-sm leading-relaxed text-foreground/40">
-            Notice that these are moments of growth rather than résumé
-            milestones. A timeline that emphasises ideas over achievements
-            is, we think, a more honest kind of record.
+        <Reveal delay={0.05}>
+          <p className="font-editorial text-display-sm leading-[1.4] text-foreground/80 md:text-display-md md:leading-[1.35]">
+            If you would like the formal version of this story —
+            <span className="text-foreground/45">
+              {" "}education, selected work, skills, links — it is here as a
+              single page.
+            </span>
           </p>
+        </Reveal>
+        <Reveal delay={0.12}>
+          <div className="mt-12 flex flex-wrap items-center gap-x-10 gap-y-4">
+            <a
+              href="/amay-deep-resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cursor="hover"
+              className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors duration-700 hover:text-foreground"
+            >
+              View résumé
+              <span className="h-px w-6 bg-foreground/30 transition-all duration-700 group-hover:w-10 group-hover:bg-foreground/70" />
+            </a>
+            <a
+              href="/amay-deep-resume.pdf"
+              download="amay-deep-resume.pdf"
+              data-cursor="hover"
+              className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors duration-700 hover:text-foreground"
+            >
+              Download PDF
+              <span className="h-px w-6 bg-foreground/30 transition-all duration-700 group-hover:w-10 group-hover:bg-foreground/70" />
+            </a>
+          </div>
         </Reveal>
       </section>
 
@@ -287,7 +289,7 @@ export function AboutPage() {
         <Reveal delay={0.1}>
           <p className="mt-12 text-base leading-loose text-foreground/55">
             If you have a question worth following — or a project that
-            begins as one — write to us. We answer slowly, but we answer.
+            begins as one — write to me. I answer slowly, but I answer.
           </p>
         </Reveal>
         <Reveal delay={0.15}>
