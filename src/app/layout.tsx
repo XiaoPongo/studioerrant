@@ -35,33 +35,43 @@ export const metadata: Metadata = {
     template: "%s · Studio Errant",
   },
   description:
-    "Studio Errant. A living practice of design, writing, research, and experiments. Unfinished, by intention.",
+    "Studio Errant — an independent design and writing practice. Portfolio work, essays, and long-form market teardowns. Based in India.",
   keywords: [
     "Studio Errant",
-    "design",
+    "design portfolio",
     "writing",
+    "market teardown",
     "research",
     "experiments",
     "independent practice",
   ],
   authors: [{ name: "Studio Errant" }],
   creator: "Studio Errant",
-  metadataBase: new URL("https://studioerrant.example"),
+  metadataBase: new URL("https://studioerrant.in"),
   alternates: { canonical: "/" },
   openGraph: {
     title: "Studio Errant",
     description:
-      "A living practice of design, writing, research, and experiments. Unfinished, by intention.",
-    url: "https://studioerrant.example",
+      "An independent design and writing practice. Portfolio work, essays, and long-form market teardowns.",
+    url: "https://studioerrant.in",
     siteName: "Studio Errant",
     type: "website",
-    locale: "en",
+    locale: "en_IN",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Studio Errant",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Studio Errant",
     description:
-      "A living practice of design, writing, research, and experiments.",
+      "An independent design and writing practice. Portfolio work, essays, and long-form market teardowns.",
+    images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
   icons: {
@@ -80,7 +90,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en-IN" suppressHydrationWarning>
       <body
         className={`${editorial.variable} ${sans.variable} antialiased bg-background text-foreground`}
       >
