@@ -251,7 +251,7 @@ export function RollingNav({
       style={{
         height: reelH,
         width: isMobileLayout ? 180 : 220,
-        margin: isMobileLayout ? "0 auto" : undefined,
+        margin: isMobileLayout ? "0 0 0 auto" : undefined,
         maskImage:
           "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
         WebkitMaskImage:
