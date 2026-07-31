@@ -57,8 +57,8 @@ export function Navigation() {
       >
         <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-6 md:px-12 md:py-8">
           {/* The official logo — clicking returns the visitor to
-              Arrival. Sized small for the header (height 22px) so it
-              never competes with the hero logo. Theme-aware. */}
+              Arrival. Doubled in size for the header (height 44px)
+              so it has presence. Theme-aware. */}
           <button
             type="button"
             onClick={() => navigate({ name: "arrival" })}
@@ -68,7 +68,7 @@ export function Navigation() {
           >
             <StudioErrantLogo
               width="auto"
-              height="22px"
+              height="44px"
               alt="Studio Errant"
             />
           </button>

@@ -6,6 +6,7 @@ import { useRouterStore } from "@/lib/router";
 import { ARRIVAL_QUOTES } from "@/data/errant/quotes";
 import { Reveal } from "@/components/errant/transitions";
 import { StudioErrantLogo } from "@/components/errant/studio-errant-logo";
+import { RollingNav } from "@/components/errant/rolling-nav";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 /**
@@ -72,6 +73,13 @@ export function ArrivalPage() {
               alt="Studio Errant"
             />
           </motion.div>
+
+          {/* Mobile rolling nav — appears below the hero logo in the
+              same frame, only on mobile. On desktop this renders null
+              and the fixed right-edge nav is used instead. */}
+          <div className="mt-10 md:hidden">
+            <RollingNav mobileOnly />
+          </div>
         </div>
 
         {/* The scroll cue: a thin vertical line, barely there. */}

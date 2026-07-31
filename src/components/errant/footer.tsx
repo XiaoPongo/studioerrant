@@ -1,11 +1,12 @@
 "use client";
 
 import { useRouterStore } from "@/lib/router";
+import { StudioErrantLogo } from "@/components/errant/studio-errant-logo";
 
 /**
  * The footer should feel like walking out of a quiet exhibition —
  * nothing dramatic, no grand finale, only a lingering feeling.
- * Uses the editorial wordmark and theme-aware colors so it adapts
+ * Uses the official logo and theme-aware colors so it adapts
  * to Night / Morning.
  */
 export function Footer() {
@@ -17,13 +18,23 @@ export function Footer() {
       <div className="mx-auto max-w-[1600px] px-6 py-16 md:px-12 md:py-24">
         <div className="grid gap-14 md:grid-cols-12">
           <div className="md:col-span-6">
-            <p className="font-editorial text-2xl italic leading-[1.45] text-foreground/75 md:text-3xl md:leading-[1.4]">
-              &ldquo;The quiet work is usually the important work.&rdquo;
-            </p>
+            <button
+              type="button"
+              onClick={() => navigate({ name: "arrival" })}
+              data-cursor="hover"
+              className="transition-opacity duration-700 hover:opacity-80"
+              aria-label="Studio Errant — return to arrival"
+            >
+              <StudioErrantLogo
+                width="auto"
+                height="40px"
+                alt="Studio Errant"
+              />
+            </button>
             <p className="mt-8 max-w-md text-sm leading-relaxed text-foreground/45">
-              Studio Errant is a digital studio built around curiosity. We
-              build what curiosity discovers — and document the wandering
-              that gets us there.
+              An independent practice built around curiosity. I build what
+              curiosity discovers — and document the wandering that gets
+              me there.
             </p>
           </div>
 
