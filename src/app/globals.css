@@ -239,6 +239,11 @@
     transition:
       background-color 1.8s cubic-bezier(0.22, 0.61, 0.36, 1),
       color 1.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+    /* All text on the site is non-copyable — the experience is meant
+       to be visited, not extracted. */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
   }
 
   body {
@@ -252,6 +257,9 @@
     transition:
       background-color 1.8s cubic-bezier(0.22, 0.61, 0.36, 1),
       color 1.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -295,6 +303,13 @@
   }
   .errant-breathe {
     animation: errant-breathe 6s ease-in-out infinite;
+  }
+
+  /* The tap ripple — a subtle expanding ring that fades on click/tap.
+     Used by the custom cursor (desktop) and the TapRipple (mobile). */
+  @keyframes errant-tap {
+    0% { opacity: 0.5; transform: scale(1); }
+    100% { opacity: 0; transform: scale(4); }
   }
 
   .text-balance { text-wrap: balance; }

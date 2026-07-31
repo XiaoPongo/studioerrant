@@ -5,7 +5,7 @@ import { AnimatePresence } from "framer-motion";
 import { attachHashListener, useRouterStore } from "@/lib/router";
 import { useIsClient } from "@/hooks/use-is-client";
 import { LivingMesh } from "@/components/errant/living-mesh";
-import { CustomCursor } from "@/components/errant/custom-cursor";
+import { CustomCursor, TapRipple } from "@/components/errant/custom-cursor";
 import { Navigation } from "@/components/errant/navigation";
 import { RollingNav } from "@/components/errant/rolling-nav";
 import { Footer } from "@/components/errant/footer";
@@ -89,6 +89,7 @@ export default function Home() {
 
       {/* ───────── Interactive layers ───────── */}
       <CustomCursor />
+      <TapRipple />
       <Navigation />
       <RollingNav />
       <PaperDogEar />

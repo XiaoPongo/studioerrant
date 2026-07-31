@@ -51,7 +51,7 @@ export function StudioErrantLogo({
       aria-label={alt}
     >
       <img
-        src="/studio-errant-logo.svg"
+        src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/studio-errant-logo.svg`}
         alt=""
         aria-hidden="true"
         style={{

@@ -64,7 +64,9 @@ export const metadata: Metadata = {
       "A living practice of design, writing, research, and experiments.",
   },
   robots: { index: true, follow: true },
-  icons: { icon: "/favicon.svg" },
+  icons: {
+    icon: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/favicon.svg`,
+  },
 };
 
 export const viewport: Viewport = {
