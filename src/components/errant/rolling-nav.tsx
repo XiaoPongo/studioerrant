@@ -14,10 +14,10 @@ import { cn } from "@/lib/utils";
 /**
  * The dynamic rolling navigation.
  *
- * A "reel" of all section names. Exactly three items are visible at
- * once; the active item is centered, highlighted, and larger. The
- * reel slides vertically (desktop) or horizontally (mobile) so the
- * active item is always in the center slot.
+ * A vertical "reel" of all section names. Exactly three items are
+ * visible at once; the active item is centered, highlighted, and
+ * larger. The reel slides vertically so the active item is always in
+ * the center slot.
  *
  *   Writing          ← dim
  *   › Design ‹       ← centered, highlighted, largest
@@ -28,26 +28,27 @@ import { cn } from "@/lib/utils";
  *   2. Auto-rotation — every 4 seconds the reel advances one step.
  *   3. Click — clicking any item scrolls the page to that chapter.
  *   4. User scroll on the nav itself — wheel/touch over the nav
- *      cycles through sections without scrolling the page.
+ *      cycles through sections WITHOUT scrolling the page. This is
+ *      achieved with native non-passive event listeners so
+ *      preventDefault() actually works.
  *
  * DATA-DRIVEN: reads from NAV_SECTIONS (built from CATEGORIES).
  *
- * Desktop: fixed to the right edge, vertically centered.
- * Mobile: rendered inline (not fixed) below the hero, horizontally.
+ * Desktop: fixed to the right edge, vertically centered, full size.
+ * Mobile: rendered inline below the hero, smaller, centered.
  */
 const AUTO_ROTATE_INTERVAL = 4000;
 const AUTO_ROTATE_PAUSE_AFTER_INTERACTION = 8000;
 
-// Geometry — desktop vertical reel.
-const ITEM_HEIGHT = 52;
-const REEL_HEIGHT = ITEM_HEIGHT * 3;
+// Geometry — desktop.
+const DESKTOP_ITEM_HEIGHT = 52;
+const DESKTOP_REEL_HEIGHT = DESKTOP_ITEM_HEIGHT * 3;
+// Geometry — mobile (smaller).
+const MOBILE_ITEM_HEIGHT = 34;
+const MOBILE_REEL_HEIGHT = MOBILE_ITEM_HEIGHT * 3;
 
 export function RollingNav({
-  /** When true, this instance only renders on mobile (inline). When
-   * false, only renders on desktop (fixed right). Default: false
-   * (desktop), which is what the global page-level instance uses.
-   * The Arrival hero passes mobileOnly=true so the nav appears below
-   * the hero logo on phones. */
+  /** When true, this instance only renders on mobile (inline). */
   mobileOnly = false,
 }: {
   mobileOnly?: boolean;
@@ -61,19 +62,35 @@ export function RollingNav({
     NAV_SECTIONS[0]?.id ?? "ai",
   );
   const pauseUntilRef = useRef<number>(0);
+  const navRef = useRef<HTMLElement>(null);
+
+  // Refs for wheel/touch handling (kept in refs so the native
+  // listeners attached once can always read the latest values).
   const wheelAccumRef = useRef<number>(0);
   const lastWheelTimeRef = useRef<number>(0);
-  const touchStartRef = useRef<{ x: number; y: number; t: number } | null>(
-    null,
-  );
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const touchAccumRef = useRef<number>(0);
+  const advanceRef = useRef<(dir: 1 | -1) => void>(() => {});
 
   const activeIndex = NAV_SECTIONS.findIndex((s) => s.id === activeId);
   const safeIndex = activeIndex === -1 ? 0 : activeIndex;
 
-  // Page-scroll-driven rotation (desktop only — on mobile the nav
-  // is inline, not fixed, so page scroll doesn't drive it).
+  const advance = (dir: 1 | -1) => {
+    pauseUntilRef.current =
+      performance.now() + AUTO_ROTATE_PAUSE_AFTER_INTERACTION;
+    setActiveId((current) => {
+      const idx = NAV_SECTIONS.findIndex((s) => s.id === current);
+      const nextIdx =
+        (idx + dir + NAV_SECTIONS.length) % NAV_SECTIONS.length;
+      return NAV_SECTIONS[nextIdx]?.id ?? current;
+    });
+  };
+  // Keep advanceRef in sync so native listeners can call the latest.
+  advanceRef.current = advance;
+
+  // Page-scroll-driven rotation (desktop only).
   useEffect(() => {
-    if (!isDesktop) return;
+    if (!isDesktop || mobileOnly) return;
 
     let raf = 0;
     const update = () => {
@@ -115,7 +132,7 @@ export function RollingNav({
       window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [route, isDesktop]);
+  }, [route, isDesktop, mobileOnly]);
 
   // Auto-rotation every 4 seconds.
   useEffect(() => {
@@ -131,23 +148,73 @@ export function RollingNav({
     return () => window.clearInterval(interval);
   }, [reduced]);
 
+  // ── Native non-passive wheel + touch listeners ──
+  // React's onWheel is passive by default so preventDefault() is
+  // ignored. We attach native listeners with { passive: false } so
+  // we can stop the page from scrolling when the visitor scrolls
+  // on the nav itself.
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+
+    const onWheel = (e: WheelEvent) => {
+      // CRITICAL: prevent the page from scrolling.
+      e.preventDefault();
+      const now = performance.now();
+      if (now - lastWheelTimeRef.current > 300) {
+        wheelAccumRef.current = 0;
+      }
+      lastWheelTimeRef.current = now;
+      wheelAccumRef.current += e.deltaY;
+      const threshold = 40;
+      if (Math.abs(wheelAccumRef.current) >= threshold) {
+        advanceRef.current(wheelAccumRef.current > 0 ? 1 : -1);
+        wheelAccumRef.current = 0;
+      }
+    };
+
+    const onTouchStart = (e: TouchEvent) => {
+      const t = e.touches[0];
+      touchStartRef.current = { x: t.clientX, y: t.clientY };
+      touchAccumRef.current = 0;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      // CRITICAL: prevent the page from scrolling while the visitor
+      // drags on the nav.
+      e.preventDefault();
+      if (!touchStartRef.current) return;
+      const t = e.touches[0];
+      const dy = t.clientY - touchStartRef.current.y;
+      touchAccumRef.current = dy;
+    };
+
+    const onTouchEnd = () => {
+      if (Math.abs(touchAccumRef.current) > 25) {
+        advanceRef.current(touchAccumRef.current > 0 ? 1 : -1);
+      }
+      touchStartRef.current = null;
+      touchAccumRef.current = 0;
+    };
+
+    nav.addEventListener("wheel", onWheel, { passive: false });
+    nav.addEventListener("touchstart", onTouchStart, { passive: false });
+    nav.addEventListener("touchmove", onTouchMove, { passive: false });
+    nav.addEventListener("touchend", onTouchEnd, { passive: false });
+    return () => {
+      nav.removeEventListener("wheel", onWheel);
+      nav.removeEventListener("touchstart", onTouchStart);
+      nav.removeEventListener("touchmove", onTouchMove);
+      nav.removeEventListener("touchend", onTouchEnd);
+    };
+  }, []);
+
   if (NAV_SECTIONS.length === 0) return null;
 
   // This instance only renders on mobile (inline, below the hero).
   if (mobileOnly && isDesktop) return null;
   // The global instance only renders on desktop (fixed right).
   if (!mobileOnly && !isDesktop) return null;
-
-  const advance = (dir: 1 | -1) => {
-    pauseUntilRef.current =
-      performance.now() + AUTO_ROTATE_PAUSE_AFTER_INTERACTION;
-    setActiveId((current) => {
-      const idx = NAV_SECTIONS.findIndex((s) => s.id === current);
-      const nextIdx =
-        (idx + dir + NAV_SECTIONS.length) % NAV_SECTIONS.length;
-      return NAV_SECTIONS[nextIdx]?.id ?? current;
-    });
-  };
 
   const goToSection = (section: NavSection) => {
     pauseUntilRef.current =
@@ -170,215 +237,116 @@ export function RollingNav({
     });
   };
 
-  // User scroll on the nav itself: wheel (desktop) or touch (mobile).
-  // Accumulates delta and advances one section per threshold. This
-  // lets the visitor cycle the menu without scrolling the page.
-  const onWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    const now = performance.now();
-    // Reset accumulator if it's been a while.
-    if (now - lastWheelTimeRef.current > 300) {
-      wheelAccumRef.current = 0;
-    }
-    lastWheelTimeRef.current = now;
-    wheelAccumRef.current += e.deltaY;
-    const threshold = 40;
-    if (Math.abs(wheelAccumRef.current) >= threshold) {
-      advance(wheelAccumRef.current > 0 ? 1 : -1);
-      wheelAccumRef.current = 0;
-    }
-  };
+  // ── Shared reel renderer ──
+  // The same vertical reel is used on both desktop and mobile. Only
+  // the sizing and positioning differ.
+  const isMobileLayout = mobileOnly && !isDesktop;
+  const itemH = isMobileLayout ? MOBILE_ITEM_HEIGHT : DESKTOP_ITEM_HEIGHT;
+  const reelH = isMobileLayout ? MOBILE_REEL_HEIGHT : DESKTOP_REEL_HEIGHT;
+  const translateY = -safeIndex * itemH;
 
-  const onTouchStart = (e: React.TouchEvent) => {
-    const t = e.touches[0];
-    touchStartRef.current = { x: t.clientX, y: t.clientY, t: performance.now() };
-  };
+  const reel = (
+    <div
+      className="relative overflow-hidden"
+      style={{
+        height: reelH,
+        width: isMobileLayout ? 180 : 220,
+        margin: isMobileLayout ? "0 auto" : undefined,
+        maskImage:
+          "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+        WebkitMaskImage:
+          "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+      }}
+    >
+      <ul
+        className="m-0 list-none p-0"
+        style={{
+          transform: `translateY(${itemH + translateY}px)`,
+          transition: reduced
+            ? "none"
+            : "transform 900ms cubic-bezier(0.22, 0.61, 0.36, 1)",
+        }}
+      >
+        {NAV_SECTIONS.map((section) => {
+          const isActive = section.id === activeId;
+          return (
+            <li
+              key={section.id}
+              style={{ height: itemH }}
+              className="flex items-center justify-end"
+            >
+              <button
+                type="button"
+                data-cursor="hover"
+                onClick={() => goToSection(section)}
+                aria-current={isActive ? "true" : undefined}
+                className={cn(
+                  "group flex items-center gap-3 pr-5 text-right transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
+                  isActive
+                    ? "text-foreground"
+                    : "text-foreground/35 hover:text-foreground/65",
+                )}
+                style={{ height: itemH }}
+              >
+                <span
+                  className={cn(
+                    "font-editorial lowercase leading-none transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
+                    isMobileLayout
+                      ? isActive
+                        ? "text-base"
+                        : "text-[10px]"
+                      : isActive
+                        ? "text-xl md:text-2xl"
+                        : "text-sm md:text-base",
+                  )}
+                  style={{ letterSpacing: isActive ? "0.01em" : "0.04em" }}
+                >
+                  {section.navLabel}
+                </span>
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
+                    isActive
+                      ? isMobileLayout
+                        ? "h-1.5 w-1.5 rotate-45 bg-foreground"
+                        : "h-2 w-2 rotate-45 bg-foreground"
+                      : "h-px w-3 bg-foreground/30 group-hover:w-4 group-hover:bg-foreground/50",
+                  )}
+                />
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
 
-  const onTouchEnd = (e: React.TouchEvent) => {
-    if (!touchStartRef.current) return;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - touchStartRef.current.x;
-    const dy = t.clientY - touchStartRef.current.y;
-    touchStartRef.current = null;
-    // On mobile the nav is horizontal, so horizontal swipe drives it.
-    // On desktop it's vertical, so vertical swipe drives it.
-    if (isDesktop) {
-      if (Math.abs(dy) > 30 && Math.abs(dy) > Math.abs(dx)) {
-        advance(dy > 0 ? 1 : -1);
-      }
-    } else {
-      if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy)) {
-        advance(dx < 0 ? 1 : -1);
-      }
-    }
-  };
-
-  const translateY = -safeIndex * ITEM_HEIGHT;
-
-  // ── MOBILE: horizontal reel, inline (not fixed), below the hero. ──
-  // Reached only by the mobileOnly instance on mobile viewports.
-  if (mobileOnly && !isDesktop) {
+  // ── MOBILE: inline, centered, smaller, below the hero. ──
+  if (isMobileLayout) {
     return (
-      <MobileRollingNav
-        activeId={activeId}
-        onWheel={onWheel}
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
-        onItemClick={goToSection}
-      />
+      <nav
+        ref={navRef as React.RefObject<HTMLElement>}
+        aria-label="Sections"
+        className="pointer-events-auto mt-10 select-none"
+      >
+        {reel}
+      </nav>
     );
   }
 
-  // ── DESKTOP: vertical reel, fixed to the right edge. ──
+  // ── DESKTOP: fixed to the right edge, vertically centered. ──
   return (
     <nav
+      ref={navRef as React.RefObject<HTMLElement>}
       aria-label="Sections"
       className="pointer-events-auto fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 md:block lg:right-10"
-      onWheel={onWheel}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
     >
-      <div
-        className="relative overflow-hidden"
-        style={{
-          height: REEL_HEIGHT,
-          width: 220,
-          maskImage:
-            "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
-        }}
-      >
-        <ul
-          className="m-0 list-none p-0"
-          style={{
-            transform: `translateY(${ITEM_HEIGHT + translateY}px)`,
-            transition: reduced
-              ? "none"
-              : "transform 900ms cubic-bezier(0.22, 0.61, 0.36, 1)",
-          }}
-        >
-          {NAV_SECTIONS.map((section) => {
-            const isActive = section.id === activeId;
-            return (
-              <li
-                key={section.id}
-                style={{ height: ITEM_HEIGHT }}
-                className="flex items-center justify-end"
-              >
-                <button
-                  type="button"
-                  data-cursor="hover"
-                  onClick={() => goToSection(section)}
-                  aria-current={isActive ? "true" : undefined}
-                  className={cn(
-                    "group flex items-center gap-3 pr-5 text-right transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
-                    isActive
-                      ? "text-foreground"
-                      : "text-foreground/35 hover:text-foreground/65",
-                  )}
-                  style={{ height: ITEM_HEIGHT }}
-                >
-                  <span
-                    className={cn(
-                      "font-editorial lowercase leading-none transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
-                      isActive ? "text-xl md:text-2xl" : "text-sm md:text-base",
-                    )}
-                    style={{ letterSpacing: isActive ? "0.01em" : "0.04em" }}
-                  >
-                    {section.navLabel}
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className={cn(
-                      "transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
-                      isActive
-                        ? "h-2 w-2 rotate-45 bg-foreground"
-                        : "h-px w-3 bg-foreground/30 group-hover:w-4 group-hover:bg-foreground/50",
-                    )}
-                  />
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      {reel}
       <div
         aria-hidden="true"
         className="absolute right-[3px] top-1/2 h-[60px] w-px -translate-y-1/2 bg-foreground/15"
       />
-    </nav>
-  );
-}
-
-// ── Mobile rolling nav ──────────────────────────────────────────
-// Renders inline (not fixed). A horizontal reel: the active item is
-// centered, with one neighbor on each side. Swipe left/right cycles.
-function MobileRollingNav({
-  activeId,
-  onItemClick,
-}: {
-  activeId: ProjectCategory;
-  onWheel: (e: React.WheelEvent) => void;
-  onTouchStart: (e: React.TouchEvent) => void;
-  onTouchEnd: (e: React.TouchEvent) => void;
-  onItemClick: (s: NavSection) => void;
-}) {
-  const reduced = usePrefersReducedMotion();
-  const idx = NAV_SECTIONS.findIndex((s) => s.id === activeId);
-  const safeIdx = idx === -1 ? 0 : idx;
-
-  // Build a window of 3: prev, current, next (wrapping).
-  const len = NAV_SECTIONS.length;
-  const window3 = [
-    NAV_SECTIONS[(safeIdx - 1 + len) % len],
-    NAV_SECTIONS[safeIdx],
-    NAV_SECTIONS[(safeIdx + 1) % len],
-  ];
-
-  return (
-    <nav
-      aria-label="Sections"
-      className="pointer-events-auto mt-12 select-none"
-    >
-      <div className="relative overflow-hidden px-4">
-        <div
-          className="flex items-center justify-center gap-6"
-          style={{
-            transition: reduced
-              ? "none"
-              : "transform 700ms cubic-bezier(0.22, 0.61, 0.36, 1)",
-          }}
-        >
-          {window3.map((section, i) => {
-            const isActive = i === 1;
-            return (
-              <button
-                key={section.id}
-                type="button"
-                onClick={() => onItemClick(section)}
-                aria-current={isActive ? "true" : undefined}
-                className={cn(
-                  "font-editorial lowercase leading-none transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
-                  isActive
-                    ? "text-lg text-foreground"
-                    : "text-xs text-foreground/40",
-                )}
-                style={{
-                  letterSpacing: isActive ? "0.01em" : "0.04em",
-                  flexShrink: 0,
-                }}
-              >
-                {section.navLabel}
-              </button>
-            );
-          })}
-        </div>
-        {/* Center marker */}
-        <div className="mt-3 flex justify-center">
-          <span className="h-1.5 w-1.5 rotate-45 bg-foreground" aria-hidden="true" />
-        </div>
-      </div>
     </nav>
   );
 }
