@@ -1,3 +1,7 @@
+# studioerrant.in — robots.txt
+
+Sitemap: https://studioerrant.in/sitemap.xml
+
 User-agent: Googlebot
 Allow: /
 
@@ -12,3 +16,8 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Disallow: /admin/
+Disallow: /api/
+
+Crawl-delay: 1
