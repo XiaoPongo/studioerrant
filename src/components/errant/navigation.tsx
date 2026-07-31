@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useRouterStore, type ErrantRoute, type RouteName } from "@/lib/router";
+import { StudioErrantLogo } from "@/components/errant/studio-errant-logo";
 import { cn } from "@/lib/utils";
 
 const ITEMS: { name: RouteName; label: string; route: ErrantRoute }[] = [
@@ -55,18 +56,17 @@ export function Navigation() {
         )}
       >
         <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-6 md:px-12 md:py-8">
-          {/* The wordmark — clicking returns the visitor to Arrival.
-              Uses the official inline Studio Errant logo (lowercase
-              Didone wordmark). No graphical icon; the typography is
-              the symbol. */}
+          {/* The official logo — clicking returns the visitor to
+              Arrival. Uses the actual supplied SVG wordmark, not
+              text. Theme-aware (light for Night, dark for Morning). */}
           <button
             type="button"
             onClick={() => navigate({ name: "arrival" })}
-            className="group font-editorial text-base font-normal lowercase leading-none tracking-[0.22em] text-foreground/80 transition-colors duration-700 hover:text-foreground md:text-lg"
+            className="group transition-opacity duration-700 hover:opacity-80"
             aria-label="Studio Errant — return to arrival"
             data-cursor="hover"
           >
-            studio errant
+            <StudioErrantLogo width="auto" height="30px" alt="Studio Errant" />
           </button>
 
           {/* Desktop nav — top right, small typography. */}

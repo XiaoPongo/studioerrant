@@ -1,92 +1,79 @@
 "use client";
 
+import { useMaterial } from "@/lib/material";
 import { cn } from "@/lib/utils";
 
 /**
- * The official Studio Errant wordmark.
+ * The official Studio Errant logo.
  *
- * A Didone-style (Bodoni/Didot) lowercase wordmark: "studio" set
- * larger on top, "errant" smaller below. The typography IS the
- * symbol — there is no separate graphic mark. Treated as typography,
- * not decoration.
+ * Renders the supplied SVG wordmark (a stacked lowercase Didone
+ * lockup: "studio" larger, "errant" smaller). The SVG has a
+ * transparent background with dark charcoal marks, and a 5:3
+ * aspect ratio (375×225 viewBox).
  *
- * Set in Bodoni Moda (the closest freely-available Google Font to
- * the original), with tight leading and slight negative tracking on
- * "studio" so the two words read as a single composed block.
+ * Theme-awareness:
+ *   Night  (default, dark page)  → light logo  (CSS `filter: invert(1)`)
+ *   Morning (light theme)        → dark logo   (no filter)
  *
- * Variants:
- *   stacked  — the canonical two-line lockup. Used in the hero and
- *              wherever the wordmark stands alone.
- *   inline   — single line "studio errant". Used in tight chrome
- *              (footer wordmark, project pages).
+ * Two stacked <img> elements crossfade via opacity. The dark logo
+ * is position:relative so it establishes the box size; the light
+ * logo overlays it absolutely. invert() does not affect the alpha
+ * channel, so transparency is preserved in both themes.
+ *
+ * Styles are applied inline (rather than via CSS classes) so they
+ * are never stripped by the CSS processor.
  */
 export function StudioErrantLogo({
-  variant = "stacked",
   className,
-  /** Visual size preset. Actual px values are fluid via clamp(). */
-  size = "md",
-  as: Tag = "span",
+  width = "auto",
+  height = "auto",
+  alt = "Studio Errant",
 }: {
-  variant?: "stacked" | "inline";
   className?: string;
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
-  as?: "span" | "h1" | "h2" | "a" | "div";
+  width?: string;
+  height?: string;
+  alt?: string;
 }) {
-  // Fluid sizes via clamp(). "studio" is always larger than "errant".
-  // Tuned so the largest lockup fits within ~88vw on phones.
-  const studioSize = {
-    xs: "clamp(1.5rem, 5vw, 2rem)",
-    sm: "clamp(2rem, 7vw, 3rem)",
-    md: "clamp(2.75rem, 9vw, 4.5rem)",
-    lg: "clamp(3.5rem, 12vw, 7rem)",
-    xl: "clamp(3rem, 13vw, 8.5rem)",
-  }[size];
-
-  const errantSize = {
-    xs: "clamp(1rem, 3.3vw, 1.35rem)",
-    sm: "clamp(1.35rem, 4.6vw, 2rem)",
-    md: "clamp(1.85rem, 6vw, 3rem)",
-    lg: "clamp(2.3rem, 8vw, 4.6rem)",
-    xl: "clamp(2rem, 8.5vw, 5.5rem)",
-  }[size];
-
-  if (variant === "inline") {
-    return (
-      <Tag
-        className={cn(
-          "font-editorial font-normal lowercase leading-none text-foreground",
-          className,
-        )}
-        style={{ fontSize: studioSize, letterSpacing: "-0.01em" }}
-      >
-        studio{" "}
-        <span style={{ fontSize: errantSize, letterSpacing: "0.005em" }}>
-          errant
-        </span>
-      </Tag>
-    );
-  }
+  const material = useMaterial((s) => s.material);
+  const isMorning = material === "morning";
 
   return (
-    <Tag
-      className={cn(
-        "font-editorial font-normal lowercase leading-[0.92] text-foreground",
-        className,
-      )}
-      style={{ letterSpacing: "-0.012em" }}
+    <span
+      className={cn("relative inline-block align-middle", className)}
+      style={{ width, height, lineHeight: 0 }}
+      role="img"
+      aria-label={alt}
     >
-      <span
-        className="block"
-        style={{ fontSize: studioSize, letterSpacing: "-0.012em" }}
-      >
-        studio
-      </span>
-      <span
-        className="block"
-        style={{ fontSize: errantSize, letterSpacing: "0.002em" }}
-      >
-        errant
-      </span>
-    </Tag>
+      {/* Dark logo — visible in Morning (light theme).
+          position:relative so it establishes the box size. */}
+      <img
+        src="/studio-errant-logo.svg"
+        alt=""
+        aria-hidden="true"
+        className="relative block h-auto max-w-full"
+        style={{
+          opacity: isMorning ? 1 : 0,
+          transition: "opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1)",
+        }}
+        draggable={false}
+      />
+      {/* Light logo — visible in Night (dark theme, default).
+          Absolutely positioned to overlay the dark one exactly.
+          Same SVG, inverted via CSS filter so dark marks become
+          light. Transparent background is unaffected by invert(). */}
+      <img
+        src="/studio-errant-logo.svg"
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full"
+        style={{
+          objectFit: "contain",
+          opacity: isMorning ? 0 : 1,
+          filter: "invert(1)",
+          transition: "opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1)",
+        }}
+        draggable={false}
+      />
+    </span>
   );
 }

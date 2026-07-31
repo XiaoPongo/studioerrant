@@ -14,27 +14,20 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
  * The hero whispers:
  *
  *   This is
- *   [Studio Errant logo]
- *   studio errant
+ *   [official Studio Errant logo]
  *
- * The logo is the official wordmark — a stacked lowercase Didone
- * lockup. It is treated as typography, not decoration: it sits in
- * line with the introduction, becoming part of the sentence.
+ * The logo is the actual supplied SVG wordmark — not text. It is
+ * treated as typography, sitting in line with the introduction.
+ * Sized with min(vw, px) so it NEVER overflows on any viewport.
  *
  * The composition sits slightly left of center with enormous
- * breathing room. Fluid clamp() typography ensures the wordmark
- * NEVER overflows on any viewport — from a 320px phone to an
- * ultrawide monitor — while preserving the oversized feeling.
- *
- * No purple on Arrival. Nearly monochrome. Silence is the
- * introduction; the visitor earns the explanation later.
+ * breathing room. No purple on Arrival. Nearly monochrome. Silence
+ * is the introduction.
  */
 export function ArrivalPage() {
   const navigate = useRouterStore((s) => s.navigate);
   const reduced = usePrefersReducedMotion();
 
-  // One rotating reflective fragment, displayed far down the page —
-  // never in the hero. The hero stays silent.
   const quote = useMemo(
     () => ARRIVAL_QUOTES[Math.floor(Math.random() * ARRIVAL_QUOTES.length)],
     [],
@@ -53,7 +46,7 @@ export function ArrivalPage() {
           ROOM I — THE WHISPER
           ════════════════════════════════════════════════════════ */}
       <section className="relative flex min-h-screen items-center px-6 sm:px-10 md:px-16 lg:px-20">
-        <div className="relative z-10 w-full max-w-5xl md:translate-x-[-4%] lg:translate-x-[-6%]">
+        <div className="relative z-10 w-full md:translate-x-[-4%] lg:translate-x-[-6%]">
           {/* "This is" — a small italic editorial line. */}
           <motion.p
             initial={{ opacity: 0, y: 6 }}
@@ -64,25 +57,24 @@ export function ArrivalPage() {
             This is
           </motion.p>
 
-          {/* The official logo — the stacked lowercase Didone
-              wordmark. Treated as typography, in line with the
-              introduction. Fluid sizing via clamp() so it never
-              overflows. */}
+          {/* The official logo image. Constrained with min(vw, px)
+              so it never overflows any viewport while preserving
+              its oversized feeling. The SVG has a 5:3 aspect ratio. */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 2.2, ease: "easeOut", delay: 1.0 }}
             className="relative"
           >
-            <StudioErrantLogo size="xl" />
+            <StudioErrantLogo
+              width="min(78vw, 460px)"
+              height="auto"
+              alt="Studio Errant"
+            />
           </motion.div>
-
-          {/* Nothing else. No intro paragraph. No tagline. The
-              visitor earns the rest by walking deeper. */}
         </div>
 
-        {/* The scroll cue: a thin vertical line, barely there.
-            Extends downward over 6 seconds. */}
+        {/* The scroll cue: a thin vertical line, barely there. */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: scrollHint ? 1 : 0 }}
@@ -112,9 +104,6 @@ export function ArrivalPage() {
 
       {/* ════════════════════════════════════════════════════════
           ROOM II — THE THRESHOLD
-          A long, narrow hallway. One sentence, centered in vast
-          negative space. Fluid typography so it breathes on every
-          screen without overflowing.
           ════════════════════════════════════════════════════════ */}
       <section className="relative mx-auto flex min-h-screen max-w-3xl items-center px-6 sm:px-8 md:px-12">
         <Reveal>
@@ -130,7 +119,6 @@ export function ArrivalPage() {
 
       {/* ════════════════════════════════════════════════════════
           ROOM III — THE LIBRARY
-          Short paragraphs separated by large vertical air.
           ════════════════════════════════════════════════════════ */}
       <section className="relative mx-auto max-w-2xl px-6 py-40 sm:px-8 md:px-12 md:py-56">
         <Reveal>

@@ -152,3 +152,49 @@ Stage Summary:
 - Trails reduced to dust; grain restored; cursor simplified.
 - Dynamic data-driven rolling navigation rotates on scroll.
 - Honest one-person practice identity throughout.
+
+---
+Task ID: 6
+Agent: orchestrator (main)
+Task: Move rolling nav to RIGHT side, use actual logo SVG (not text), fix hero overflow, theme-aware logo (light for dark theme, dark for light theme), update info from thebandar.co.in.
+
+Work Log:
+- Copied the official StudioErrant.svg to /public/studio-errant-logo.svg.
+- Analyzed the SVG: transparent background, dark charcoal marks (RGB 0-85), 5:3 aspect ratio (375x225 viewBox). Confirmed via pixel inspection.
+- Built StudioErrantLogo component using two stacked <img> elements:
+  * Dark logo (no filter) — visible in Morning (light theme)
+  * Light logo (filter: invert(1)) — visible in Night (dark theme, default)
+  * invert() only affects RGB, not alpha, so transparency is preserved.
+  * Styles applied inline (not via CSS classes) because Tailwind v4 was stripping custom CSS classes from the compiled output.
+  * Dark img is position:relative (establishes box size); light img is position:absolute (overlays).
+  * Crossfade via opacity with 1.6s transition when the dog-ear unfolds.
+- Rebuilt the hero: "This is" + actual logo image. Width constrained with min(78vw, 460px) so it NEVER overflows any viewport. Verified at 1440px, 390px, and 320px — fully visible, no overflow.
+- Replaced text wordmark in navigation top-left with the logo image (height: 30px).
+- Moved the rolling navigation from LEFT to RIGHT side:
+  * Container: fixed right-6 / lg:right-10 (was left-6 / lg:left-10)
+  * Items: right-aligned, text-right, pr-5 (was left-aligned, pl-5)
+  * Markers: on the right side of text (was left)
+  * Guide line: right-[3px] (was left-[3px])
+  * Items container: items-end (was items-start)
+- Fixed a bug in the rolling nav where the scroll listener wasn't being set up if sections weren't found at effect setup time (during page transitions). Now re-queries sections inside the update function and retries at 100ms, 500ms, 1200ms, 2000ms to catch sections after the AnimatePresence transition completes.
+- Updated About page with Amay Deep's info from thebandar.co.in:
+  * Story: "I'm Amay Deep — a B.Com. graduate who never quite fit the mold..." Mentions The Bandar Co. as the previous identity, and Studio Errant as the current one.
+  * Timeline: "Studied commerce. Kept sketching." / "Built The Bandar Co." / "Opened Studio Errant."
+  * Contact: hello@amaydeep.com
+- Updated footer:
+  * Social links: Instagram (@chillbandar), GitHub (XiaoPongo), LinkedIn (amay-deep-34158b229) — all from thebandar.co.in
+  * Copyright: "© year Amay Deep · Studio Errant"
+
+Verification (Agent Browser):
+- Desktop hero (1440x900): actual logo image visible, light/white for dark theme, fully visible without overflow, left-of-center. VLM confirmed.
+- Mobile hero (390x844): logo fully visible, no overflow, appropriately sized. VLM confirmed.
+- Morning theme: logo switches to dark/black on warm paper background. Crossfade works. VLM confirmed.
+- Rolling nav on RIGHT side: 3 items (Visual Media / Artificial Intelligence / Design), right-aligned, diamond marker on center item. Rotates correctly on scroll (became Design / Writing / Research at scrollY=2500). VLM confirmed.
+- Lint: 0 errors, 0 warnings. Dev log: all GET / 200.
+
+Stage Summary:
+- Official logo SVG used throughout (hero + nav), replacing all text wordmarks.
+- Logo is theme-aware: light for Night, dark for Morning, with smooth crossfade.
+- Hero never overflows on any viewport (fluid min(vw,px) sizing).
+- Rolling nav moved to the RIGHT side, mirrored layout, data-driven, rotates on scroll.
+- About page and footer updated with Amay Deep's real info from thebandar.co.in.

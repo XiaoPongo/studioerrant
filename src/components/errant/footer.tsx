@@ -72,31 +72,44 @@ export function Footer() {
             <ul className="space-y-3 text-sm text-foreground/60">
               <li>
                 <a
-                  href="mailto:hello@studioerrant.example"
+                  href="mailto:hello@amaydeep.com"
                   className="transition-colors duration-700 hover:text-foreground"
                   data-cursor="hover"
                 >
-                  hello@studioerrant.example
+                  hello@amaydeep.com
                 </a>
               </li>
               <li>
                 <a
-                  href="#"
+                  href="https://instagram.com/chillbandar"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="transition-colors duration-700 hover:text-foreground"
                   data-cursor="hover"
-                  onClick={(e) => e.preventDefault()}
                 >
-                  Journal (soon)
+                  Instagram
                 </a>
               </li>
               <li>
                 <a
-                  href="#"
+                  href="https://github.com/XiaoPongo"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="transition-colors duration-700 hover:text-foreground"
                   data-cursor="hover"
-                  onClick={(e) => e.preventDefault()}
                 >
-                  Notes (soon)
+                  GitHub
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://linkedin.com/in/amay-deep-34158b229"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors duration-700 hover:text-foreground"
+                  data-cursor="hover"
+                >
+                  LinkedIn
                 </a>
               </li>
             </ul>
@@ -104,7 +117,7 @@ export function Footer() {
         </div>
 
         <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-divider pt-8 text-[10px] uppercase tracking-[0.28em] text-foreground/35 md:flex-row md:items-center">
-          <span>© {year} studio errant</span>
+          <span>© {year} Amay Deep · Studio Errant</span>
           <span className="font-editorial normal-case tracking-normal italic text-foreground/45">
             Wander deliberately.
           </span>

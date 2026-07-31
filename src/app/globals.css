@@ -377,6 +377,36 @@
   font-feature-settings: "ss01", "liga", "dlig";
 }
 
+/* ════════════════════════════════════════════════════════════
+   THE OFFICIAL LOGO — theme-aware
+   The SVG has dark charcoal marks on a transparent background.
+   Two stacked <img> elements crossfade:
+     .errant-logo-dark  → visible in Morning (light theme), no filter
+     .errant-logo-light → visible in Night (dark theme, default),
+                          inverted via CSS so dark marks become light
+   invert() does NOT affect the alpha channel, so transparency is
+   preserved in both themes.
+   ════════════════════════════════════════════════════════════ */
+.errant-logo-wrap {
+  display: inline-block;
+  vertical-align: middle;
+}
+.errant-logo-dark {
+  opacity: 0;
+  transition: opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.errant-logo-light {
+  opacity: 1;
+  filter: invert(1);
+  transition: opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.theme-morning .errant-logo-dark {
+  opacity: 1;
+}
+.theme-morning .errant-logo-light {
+  opacity: 0;
+}
+
 /* Fluid display sizes using clamp() — the hero must never overflow
    on any viewport, yet preserve its oversized feeling. Tuned so the
    wordmark fits within ~85% of the viewport width on phones. */

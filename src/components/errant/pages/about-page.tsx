@@ -48,9 +48,9 @@ const PROCESS_STEPS = [
 
 const TIMELINE = [
   { moment: "Started sketching.", year: "—" },
-  { moment: "Discovered programming.", year: "—" },
-  { moment: "Built first AI project.", year: "—" },
-  { moment: "Published first research.", year: "—" },
+  { moment: "Studied commerce. Kept sketching.", year: "—" },
+  { moment: "Discovered code.", year: "—" },
+  { moment: "Built The Bandar Co.", year: "—" },
   { moment: "Began writing in public.", year: "—" },
   { moment: "Opened Studio Errant.", year: "Now" },
 ];
@@ -109,24 +109,25 @@ export function AboutPage() {
         </Reveal>
         <div className="space-y-8 text-lg leading-loose text-foreground/70">
           <Reveal as="p" delay={0.05}>
-            Studio Errant began the way most honest things do — with a
-            frustration I could not quite name. I had spent years building
-            digital products that were fast, polished, and forgettable. The
-            work was competent. It did not feel like mine.
+            I&rsquo;m Amay Deep — a B.Com. graduate who never quite fit the
+            mold of a commerce student. I came to design, writing, and code
+            sideways, the way most honest things arrive: not through a plan,
+            but through a long series of questions I could not put down.
           </Reveal>
           <Reveal as="p" delay={0.08}>
-            I started keeping a notebook of the questions I actually
-            wanted to follow. Not project briefs — questions. What does it
-            mean to design an interface that respects the reader? Can a
-            system teach a person to notice what they had not yet asked?
-            Why does the web measure everything except what matters?
+            For a while I operated under the name The Bandar Co. — a small,
+            playful identity I built while I was still figuring out what I
+            actually wanted to make. It was useful. It let me experiment in
+            public. But the name never quite fit the work I found myself
+            drawn toward: slower, quieter, more deliberate.
           </Reveal>
           <Reveal as="p" delay={0.11}>
-            Those questions became experiments. The experiments became
-            observations. Slowly, the observations became a way of
-            working. I gave that way of working a name — Studio Errant —
-            because the name for what I was doing was wandering, and I
-            wanted to stop pretending otherwise.
+            Studio Errant is that work, given a name I can stand behind. The
+            word <em className="text-foreground/85">errant</em> describes
+            someone who wanders. I kept it because I never found a better
+            word for the way ideas actually arrive — not in a straight line,
+            but through drift, detour, and the occasional productive loss
+            of direction.
           </Reveal>
           <Reveal as="p" delay={0.14}>
             Today Studio Errant is one person. Tomorrow it may become a
@@ -292,11 +293,11 @@ export function AboutPage() {
         <Reveal delay={0.15}>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
             <a
-              href="mailto:hello@studioerrant.example"
+              href="mailto:hello@amaydeep.com"
               data-cursor="hover"
               className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
             >
-              hello@studioerrant.example
+              hello@amaydeep.com
               <span className="h-px w-6 bg-foreground/30 transition-all group-hover:w-10 group-hover:bg-foreground/70" />
             </a>
             <button

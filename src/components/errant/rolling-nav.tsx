@@ -13,7 +13,7 @@ import type { ProjectCategory } from "@/data/errant/projects";
 import { cn } from "@/lib/utils";
 
 /**
- * The dynamic rolling navigation.
+ * The dynamic rolling navigation — RIGHT side.
  *
  *   Work
  *   › Design ‹   ← centered, highlighted
@@ -22,16 +22,18 @@ import { cn } from "@/lib/utils";
  * Exactly three items are always visible: the previous section, the
  * current section (centered, highlighted), and the next section. All
  * three remain clickable. When the visitor scrolls and a new section
- * enters the center of the viewport, the list rotates smoothly so the
- * new section becomes the centered one.
+ * enters the center of the viewport, the list rotates smoothly.
  *
- * The navigation is DATA-DRIVEN. It reads from NAV_SECTIONS, which is
- * built directly from the site's canonical CATEGORIES list. Rename a
- * category in the data source and the navigation updates automatically
- * — no component code changes required.
+ * The navigation is DATA-DRIVEN, reading from NAV_SECTIONS (built
+ * directly from the canonical CATEGORIES list). Rename a category in
+ * the data source and the navigation updates automatically.
  *
- * The component is desktop-only. On touch devices it is hidden; the
- * mobile menu (in <Navigation />) remains the primary nav.
+ * Positioned on the right edge of the viewport, mirrored: items are
+ * right-aligned, markers sit to the right of the text, and the guide
+ * line runs along the right edge.
+ *
+ * Desktop-only. On touch devices it is hidden; the mobile menu
+ * remains the primary nav.
  */
 export function RollingNav() {
   const navigate = useRouterStore((s) => s.navigate);
@@ -39,27 +41,22 @@ export function RollingNav() {
   const reduced = usePrefersReducedMotion();
   const finePointer = useMediaQuery("(min-width: 768px)");
 
-  // The currently-centered section id. Tracked by observing which
-  // Work-page chapter is closest to the viewport's vertical center.
   const [activeId, setActiveId] = useState<ProjectCategory>(
     NAV_SECTIONS[0]?.id ?? "ai",
   );
 
-  // Observe the Work page chapter sections. Each is tagged with
-  // data-nav-section="<id>". We find the one whose center is closest
-  // to the viewport's vertical center and make it active. The setState
-  // happens inside the scroll/resize callback (allowed) — never
-  // synchronously in the effect body.
   useEffect(() => {
     if (!finePointer) return;
-    const sections = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-nav-section]"),
-    );
-    if (sections.length === 0) return;
 
     let raf = 0;
     const update = () => {
       raf = 0;
+      // Re-query sections each time — they may appear after the page
+      // transition completes (AnimatePresence takes ~1.6s).
+      const sections = Array.from(
+        document.querySelectorAll<HTMLElement>("[data-nav-section]"),
+      );
+      if (sections.length === 0) return;
       const center = window.innerHeight / 2;
       let best: { id: string; dist: number } | null = null;
       for (const el of sections) {
@@ -80,14 +77,15 @@ export function RollingNav() {
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
     };
-    // Defer the first update so the page has time to mount after a
-    // route transition (the sections may not be in their final
-    // positions synchronously).
-    const initialTimer = window.setTimeout(update, 100);
+    // Retry a few times to catch the sections after the page
+    // transition completes.
+    const timers = [100, 500, 1200, 2000].map((ms) =>
+      window.setTimeout(update, ms),
+    );
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
     return () => {
-      window.clearTimeout(initialTimer);
+      timers.forEach((t) => window.clearTimeout(t));
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
@@ -102,13 +100,8 @@ export function RollingNav() {
   const [prev, current, next] = window3;
 
   const go = (section: NavSection) => {
-    // Smooth-scroll the visitor to the chosen chapter, if it exists
-    // on the page. If we're not on the Work page, navigate there
-    // first (the section will be scrolled to after arrival via the
-    // browser's hash fragment).
     if (route.name !== "work") {
       navigate({ name: "work" });
-      // After navigation, give the page time to mount, then scroll.
       setTimeout(() => {
         const el = document.querySelector(
           `[data-nav-section="${section.id}"]`,
@@ -124,9 +117,9 @@ export function RollingNav() {
   return (
     <nav
       aria-label="Sections"
-      className="pointer-events-auto fixed left-6 top-1/2 z-40 hidden -translate-y-1/2 md:block lg:left-10"
+      className="pointer-events-auto fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 md:block lg:right-10"
     >
-      <div className="flex flex-col items-start gap-5">
+      <div className="flex flex-col items-end gap-5">
         <NavItem
           section={prev}
           state="prev"
@@ -147,11 +140,10 @@ export function RollingNav() {
         />
       </div>
 
-      {/* A thin vertical guide line — the spine the items rotate
-          around. Almost invisible. */}
+      {/* A thin vertical guide line on the right edge — the spine. */}
       <div
         aria-hidden="true"
-        className="absolute left-[3px] top-0 h-full w-px bg-foreground/10"
+        className="absolute right-[3px] top-0 h-full w-px bg-foreground/10"
       />
     </nav>
   );
@@ -176,23 +168,12 @@ function NavItem({
       onClick={onClick}
       aria-current={isCurrent ? "true" : undefined}
       className={cn(
-        "group relative flex items-center gap-3 pl-5 text-left transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
+        "group relative flex items-center gap-3 pr-5 text-right transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
         isCurrent
           ? "text-foreground"
           : "text-foreground/35 hover:text-foreground/65",
       )}
     >
-      {/* The marker — a small dash that grows into a diamond when
-          the item is centered. */}
-      <span
-        aria-hidden="true"
-        className={cn(
-          "absolute left-0 top-1/2 -translate-y-1/2 transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
-          isCurrent
-            ? "h-1.5 w-1.5 rotate-45 bg-foreground"
-            : "h-px w-3 bg-foreground/30 group-hover:w-4 group-hover:bg-foreground/50",
-        )}
-      />
       <span
         className={cn(
           "font-editorial lowercase leading-none transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
@@ -204,6 +185,17 @@ function NavItem({
       >
         {section.navLabel}
       </span>
+      {/* The marker — on the RIGHT side of the text. A small dash
+          that grows into a diamond when the item is centered. */}
+      <span
+        aria-hidden="true"
+        className={cn(
+          "absolute right-0 top-1/2 -translate-y-1/2 transition-all duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
+          isCurrent
+            ? "h-1.5 w-1.5 rotate-45 bg-foreground"
+            : "h-px w-3 bg-foreground/30 group-hover:w-4 group-hover:bg-foreground/50",
+        )}
+      />
     </button>
   );
 }
