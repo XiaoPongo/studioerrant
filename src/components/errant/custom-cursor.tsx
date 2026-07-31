@@ -60,7 +60,7 @@ export function CustomCursor() {
       // Remove the ripple after the animation completes.
       window.setTimeout(() => {
         setRipples((rs) => rs.filter((r) => r.id !== id));
-      }, 700);
+      }, 900);
     }
 
     function loop() {
@@ -136,7 +136,7 @@ export function CustomCursor() {
             marginLeft: -4,
             marginTop: -4,
             border: "1px solid color-mix(in oklab, var(--foreground) 40%, transparent)",
-            animation: "errant-tap 700ms cubic-bezier(0.22,0.61,0.36,1) forwards",
+            animation: "errant-tap 900ms cubic-bezier(0.22,0.61,0.36,1) forwards",
           }}
         />
       ))}
@@ -169,7 +169,7 @@ export function TapRipple() {
       setRipples((rs) => [...rs, { id, x: t.clientX, y: t.clientY }]);
       window.setTimeout(() => {
         setRipples((rs) => rs.filter((r) => r.id !== id));
-      }, 700);
+      }, 900);
     };
 
     window.addEventListener("touchstart", onTouchStart, { passive: true });
@@ -195,7 +195,7 @@ export function TapRipple() {
             marginLeft: -5,
             marginTop: -5,
             border: "1px solid color-mix(in oklab, var(--foreground) 45%, transparent)",
-            animation: "errant-tap 700ms cubic-bezier(0.22,0.61,0.36,1) forwards",
+            animation: "errant-tap 900ms cubic-bezier(0.22,0.61,0.36,1) forwards",
           }}
         />
       ))}

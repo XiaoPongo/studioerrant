@@ -306,10 +306,12 @@
   }
 
   /* The tap ripple — a subtle expanding ring that fades on click/tap.
+     Slow appear, slow disappear. No jitter.
      Used by the custom cursor (desktop) and the TapRipple (mobile). */
   @keyframes errant-tap {
-    0% { opacity: 0.5; transform: scale(1); }
-    100% { opacity: 0; transform: scale(4); }
+    0% { opacity: 0; transform: scale(0.5); }
+    20% { opacity: 0.35; }
+    100% { opacity: 0; transform: scale(3.5); }
   }
 
   .text-balance { text-wrap: balance; }

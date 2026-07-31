@@ -13,19 +13,11 @@ import { CATEGORIES, type ProjectCategory } from "./projects";
  */
 export interface NavSection {
   id: ProjectCategory;
-  /** The label shown in the rolling navigation. Keep it short. */
   navLabel: string;
-  /** The full title shown in the Work page chapter heading. */
   title: string;
-  /** The short paragraph that introduces the chapter. */
   introduction: string;
 }
 
-/**
- * Build the nav sections directly from the canonical CATEGORIES list.
- * This guarantees the navigation can never drift from the actual
- * content — if CATEGORIES changes, this list changes with it.
- */
 export const NAV_SECTIONS: NavSection[] = CATEGORIES.map((c) => ({
   id: c.id,
   navLabel: c.title,
@@ -33,11 +25,6 @@ export const NAV_SECTIONS: NavSection[] = CATEGORIES.map((c) => ({
   introduction: c.introduction,
 }));
 
-/**
- * Given a section id, return the three-item window centered on it:
- * [previous, current, next]. Wraps so the list is always circular —
- * the visitor can roll forever in either direction.
- */
 export function getNavWindow(currentId: ProjectCategory): NavSection[] {
   const sections = NAV_SECTIONS;
   const len = sections.length;
