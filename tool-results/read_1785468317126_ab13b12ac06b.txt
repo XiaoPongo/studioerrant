@@ -1,0 +1,2002 @@
+     1→# Studio Errant Design Brief
+     2→
+     3→> **Version:** 1.0
+     4→>
+     5→> **Status:** Living Document
+     6→>
+     7→> This document defines the philosophy, visual language, interaction principles, and engineering direction for Studio Errant. It is the single source of truth for every future iteration of the website, regardless of whether it is built by a human designer, a developer, or an AI coding assistant.
+     8→>
+     9→> Every design decision should be evaluated against the principles described here before implementation.
+    10→
+    11→---
+    12→
+    13→# Execution Protocol
+    14→
+    15→Read this document completely before beginning.
+    16→
+    17→Do not start implementation after reading the first sections.
+    18→
+    19→After reading the entire brief:
+    20→
+    21→- Summarize your understanding.
+    22→- Identify any conflicts.
+    23→- Ask the Discovery Questionnaire.
+    24→- Wait.
+    25→
+    26→Implementation must not begin until explicit approval is received.
+    27→
+    28→If there are tradeoffs between visual fidelity, performance, accessibility, or maintainability, explain them before writing code.
+    29→
+    30→---
+    31→
+    32→# 1. Introduction
+    33→
+    34→Studio Errant is not a portfolio.
+    35→
+    36→It is not a personal website.
+    37→
+    38→It is not a creative agency website.
+    39→
+    40→It is not a product landing page.
+    41→
+    42→Studio Errant is a **digital studio** built around curiosity.
+    43→
+    44→The website exists to communicate an approach to making things rather than simply displaying what has been made.
+    45→
+    46→Visitors should leave remembering how the website made them feel more than remembering any individual project.
+    47→
+    48→The purpose of the experience is to communicate that thoughtful work does not emerge from certainty—it emerges from exploration, experimentation, observation, and wandering.
+    49→
+    50→Everything on this website should reinforce that idea.
+    51→
+    52→Nothing exists purely because it looks impressive.
+    53→
+    54→Every animation, transition, interaction, and piece of typography must support the overall philosophy.
+    55→
+    56→The website should feel calm rather than loud.
+    57→
+    58→Confident rather than flashy.
+    59→
+    60→Timeless rather than trendy.
+    61→
+    62→Minimal without becoming empty.
+    63→
+    64→Artistic without becoming abstract.
+    65→
+    66→Technically sophisticated without drawing attention to the technology itself.
+    67→
+    68→The interface should disappear behind the experience.
+    69→
+    70→Visitors should never think:
+    71→
+    72→> "This website has cool animations."
+    73→
+    74→Instead they should think:
+    75→
+    76→> "That felt different."
+    77→
+    78→---
+    79→
+    80→# 2. Brand Philosophy
+    81→
+    82→The word **Errant** traditionally describes someone who wanders.
+    83→
+    84→Studio Errant embraces wandering as a creative process.
+    85→
+    86→Ideas rarely arrive fully formed.
+    87→
+    88→Most worthwhile ideas begin as questions.
+    89→
+    90→Questions become experiments.
+    91→
+    92→Experiments become observations.
+    93→
+    94→Observations become understanding.
+    95→
+    96→Understanding eventually becomes meaningful work.
+    97→
+    98→Studio Errant exists within that space.
+    99→
+   100→Rather than presenting creativity as moments of sudden inspiration, Studio Errant presents creativity as a slow process of exploration.
+   101→
+   102→Every project shown on the website should feel like evidence of curiosity rather than evidence of expertise.
+   103→
+   104→The website should never attempt to convince visitors that its creator has all the answers.
+   105→
+   106→Instead it should quietly suggest that asking better questions is more valuable than pretending certainty.
+   107→
+   108→Curiosity is not treated as a personality trait.
+   109→
+   110→It is treated as a discipline.
+   111→
+   112→This philosophy should influence every part of the design.
+   113→
+   114→Darkness represents possibility.
+   115→
+   116→Movement represents thought.
+   117→
+   118→Light represents discovery.
+   119→
+   120→Purple represents imagination becoming tangible.
+   121→
+   122→White represents clarity emerging from uncertainty.
+   123→
+   124→Negative space represents room for new ideas.
+   125→
+   126→Nothing on the website should contradict these symbolic meanings.
+   127→
+   128→---
+   129→
+   130→# 3. Design Manifesto
+   131→
+   132→Every future decision should be measured against the following principles.
+   133→
+   134→## Design for memory, not novelty.
+   135→
+   136→The goal is not to impress visitors for five seconds.
+   137→
+   138→The goal is to remain in their memory long after they leave.
+   139→
+   140→If forced to choose between spectacle and memorability, choose memorability.
+   141→
+   142→---
+   143→
+   144→## Atmosphere over decoration.
+   145→
+   146→Visual effects should create emotional atmosphere.
+   147→
+   148→They should never exist simply because modern websites often include them.
+   149→
+   150→Remove anything that does not support the emotional experience.
+   151→
+   152→---
+   153→
+   154→## Motion should reveal.
+   155→
+   156→Animation is communication.
+   157→
+   158→Movement should help visitors understand hierarchy, transition, attention, or emotion.
+   159→
+   160→Animation should never compete with content.
+   161→
+   162→---
+   163→
+   164→## Stillness is equally important.
+   165→
+   166→A world where everything moves feels chaotic.
+   167→
+   168→A world where nothing moves feels lifeless.
+   169→
+   170→Motion requires stillness to create contrast.
+   171→
+   172→Allow some elements to remain perfectly static.
+   173→
+   174→Silence makes music meaningful.
+   175→
+   176→Stillness makes movement meaningful.
+   177→
+   178→---
+   179→
+   180→## Curiosity should always be rewarded.
+   181→
+   182→Visitors who slow down, observe carefully, or interact thoughtfully should occasionally discover subtle details that are not immediately obvious.
+   183→
+   184→These discoveries should never interrupt usability.
+   185→
+   186→They should simply reward attention.
+   187→
+   188→---
+   189→
+   190→## Build with restraint.
+   191→
+   192→Whenever uncertain between two options, choose the simpler one.
+   193→
+   194→Sophistication should emerge from refinement rather than complexity.
+   195→
+   196→---
+   197→
+   198→## Craft over trends.
+   199→
+   200→Avoid temporary design fashions.
+   201→
+   202→The website should feel contemporary five years from now.
+   203→
+   204→If a design decision feels popular rather than timeless, reconsider it.
+   205→
+   206→---
+   207→
+   208→## Let the interface disappear.
+   209→
+   210→Visitors should focus on ideas.
+   211→
+   212→Not interface elements.
+   213→
+   214→Not transitions.
+   215→
+   216→Not technical implementation.
+   217→
+   218→Technology should become invisible.
+   219→
+   220→---
+   221→
+   222→# 4. Visitor Journey
+   223→
+   224→The experience of Studio Errant should unfold like entering a quiet gallery rather than browsing a traditional website.
+   225→
+   226→The emotional journey is intentional.
+   227→
+   228→Every page should gradually deepen the visitor's understanding.
+   229→
+   230→## Arrival
+   231→
+   232→The visitor enters darkness.
+   233→
+   234→There is very little information.
+   235→
+   236→Only subtle movement.
+   237→
+   238→A sense of curiosity.
+   239→
+   240→Nothing demands immediate attention.
+   241→
+   242→The visitor should instinctively slow down.
+   243→
+   244→---
+   245→
+   246→## Discovery
+   247→
+   248→As scrolling begins, motion subtly responds.
+   249→
+   250→The environment feels alive.
+   251→
+   252→The website begins revealing itself.
+   253→
+   254→Visitors understand they are meant to explore rather than consume quickly.
+   255→
+   256→---
+   257→
+   258→## Immersion
+   259→
+   260→By the time visitors reach the Work section, the atmosphere becomes richer.
+   261→
+   262→Purple gradually emerges.
+   263→
+   264→The interface becomes slightly more expressive.
+   265→
+   266→Projects begin appearing.
+   267→
+   268→The visitor should feel they are moving deeper into a creative space rather than simply reaching another webpage.
+   269→
+   270→---
+   271→
+   272→## Understanding
+   273→
+   274→The About page explains the philosophy.
+   275→
+   276→Not through marketing language.
+   277→
+   278→Through thoughtful storytelling.
+   279→
+   280→Visitors should understand *why* Studio Errant exists.
+   281→
+   282→---
+   283→
+   284→## Reflection
+   285→
+   286→Leaving the website should feel like walking out of a quiet exhibition.
+   287→
+   288→Nothing dramatic happens.
+   289→
+   290→No grand finale.
+   291→
+   292→Only a lingering feeling.
+   293→
+   294→Visitors should remember the atmosphere before they remember specific interactions.
+   295→
+   296→---
+   297→
+   298→# 5. Emotional Goals
+   299→
+   300→Studio Errant should consistently evoke the following emotions.
+   301→
+   302→## Calm
+   303→
+   304→Visitors should never feel overwhelmed.
+   305→
+   306→Spacing, typography, animation, and pacing should encourage slower interaction.
+   307→
+   308→---
+   309→
+   310→## Curiosity
+   311→
+   312→Information should reveal itself naturally.
+   313→
+   314→The interface should invite exploration rather than demand attention.
+   315→
+   316→---
+   317→
+   318→## Wonder
+   319→
+   320→Subtle moments of delight should exist throughout the experience.
+   321→
+   322→Never exaggerated.
+   323→
+   324→Never theatrical.
+   325→
+   326→---
+   327→
+   328→## Trust
+   329→
+   330→The website should communicate care.
+   331→
+   332→Thoughtful spacing.
+   333→
+   334→Consistent typography.
+   335→
+   336→Smooth interactions.
+   337→
+   338→Attention to detail.
+   339→
+   340→Visitors should instinctively believe the same level of care exists within the work itself.
+   341→
+   342→---
+   343→
+   344→## Reflection
+   345→
+   346→Rather than encouraging endless scrolling, the website should occasionally create moments where visitors simply pause.
+   347→
+   348→Silence is part of the experience.
+   349→
+   350→---
+   351→
+   352→# 6. Information Architecture
+   353→
+   354→The structure of the website should remain intentionally simple.
+   355→
+   356→There should never be unnecessary pages.
+   357→
+   358→Everything should have a clear purpose.
+   359→
+   360→## Arrival
+   361→
+   362→Introduces Studio Errant.
+   363→
+   364→Creates atmosphere.
+   365→
+   366→Establishes philosophy.
+   367→
+   368→Encourages exploration.
+   369→
+   370→---
+   371→
+   372→## Work
+   373→
+   374→The heart of the website.
+   375→
+   376→Projects are grouped by discipline rather than chronology.
+   377→
+   378→Possible sections include:
+   379→
+   380→- AI & Intelligent Systems
+   381→- Design
+   382→- Writing
+   383→- Research
+   384→- Experiments
+   385→- Visual Media
+   386→
+   387→Each category should feel like a chapter within the same story.
+   388→
+   389→---
+   390→
+   391→## About
+   392→
+   393→Explains the philosophy behind Studio Errant.
+   394→
+   395→Tells the story.
+   396→
+   397→Introduces values.
+   398→
+   399→Discusses creative process.
+   400→
+   401→Looks forward rather than backward.
+   402→
+   403→This should never read like a résumé.
+   404→
+   405→---
+   406→
+   407→The navigation should remain minimal.
+   408→
+   409→Visitors should always know where they are without the interface becoming visually dominant.
+   410→
+   411→---
+   412→
+   413→# 7. Visual Language
+   414→
+   415→Studio Errant communicates primarily through contrast.
+   416→
+   417→Not through color.
+   418→
+   419→Darkness is the default state.
+   420→
+   421→Light is earned.
+   422→
+   423→The design language should resemble entering a quiet room at night where only a few carefully chosen objects are illuminated.
+   424→
+   425→## Darkness
+   426→
+   427→Black is not used because it looks premium.
+   428→
+   429→Black represents possibility.
+   430→
+   431→It allows ideas to emerge naturally.
+   432→
+   433→Darkness is the canvas upon which everything else exists.
+   434→
+   435→---
+   436→
+   437→## Light
+   438→
+   439→White should be used sparingly.
+   440→
+   441→Every bright element becomes important simply because the environment is restrained.
+   442→
+   443→Light guides attention.
+   444→
+   445→Never overwhelms it.
+   446→
+   447→---
+   448→
+   449→## Purple
+   450→
+   451→Purple should never appear immediately.
+   452→
+   453→It should feel discovered.
+   454→
+   455→As visitors enter creative work, subtle violet and indigo tones should slowly emerge beneath the darkness.
+   456→
+   457→The transition should be gradual enough that many visitors do not consciously notice it.
+   458→
+   459→They should simply feel the environment becoming more creative.
+   460→
+   461→When leaving the Work section, the color should gently dissolve back into black.
+   462→
+   463→---
+   464→
+   465→## Space
+   466→
+   467→Whitespace is not empty.
+   468→
+   469→Negative space creates rhythm.
+   470→
+   471→It allows ideas to breathe.
+   472→
+   473→Avoid filling empty areas simply because they feel unused.
+   474→
+   475→The website should never feel crowded.
+   476→
+   477→---
+   478→
+   479→## Texture
+   480→
+   481→Avoid glossy interfaces.
+   482→
+   483→Avoid glassmorphism.
+   484→
+   485→Avoid excessive blur.
+   486→
+   487→Avoid neon effects.
+   488→
+   489→Avoid visual noise.
+   490→
+   491→Textures should feel organic.
+   492→
+   493→Soft.
+   494→
+   495→Natural.
+   496→
+   497→Almost imperceptible.
+   498→
+   499→---
+   500→
+   501→## Contrast
+   502→
+   503→Studio Errant should achieve contrast through:
+   504→
+   505→- movement versus stillness
+   506→- darkness versus light
+   507→- silence versus interaction
+   508→- simplicity versus depth
+   509→
+   510→Not through excessive color or decoration.
+   511→
+   512→The strongest visual experiences often emerge from restraint.
+   513→
+   514→# 8. Motion Language
+   515→
+   516→Motion is the primary language of Studio Errant.
+   517→
+   518→Typography communicates information.
+   519→
+   520→Color communicates emotion.
+   521→
+   522→Motion communicates life.
+   523→
+   524→Animation should never exist because it looks modern. Every movement must have purpose.
+   525→
+   526→The visitor should rarely notice an animation itself. Instead, they should notice how naturally the website responds to them.
+   527→
+   528→Imagine entering a quiet museum where curtains move gently because of distant wind.
+   529→
+   530→Nothing is dramatic.
+   531→
+   532→Everything feels alive.
+   533→
+   534→That is the emotional reference.
+   535→
+   536→---
+   537→
+   538→## Motion Principles
+   539→
+   540→Every animation should satisfy at least one of these goals.
+   541→
+   542→- Guide attention
+   543→- Communicate hierarchy
+   544→- Reinforce atmosphere
+   545→- Reward interaction
+   546→- Connect two ideas
+   547→- Slow the visitor down
+   548→
+   549→If an animation does none of these, remove it.
+   550→
+   551→---
+   552→
+   553→## Motion Characteristics
+   554→
+   555→Motion should feel:
+   556→
+   557→Slow.
+   558→
+   559→Organic.
+   560→
+   561→Fluid.
+   562→
+   563→Continuous.
+   564→
+   565→Breathing.
+   566→
+   567→Never mechanical.
+   568→
+   569→Never robotic.
+   570→
+   571→Never perfectly synchronized.
+   572→
+   573→Nature is irregular.
+   574→
+   575→The interface should borrow from nature rather than machines.
+   576→
+   577→---
+   578→
+   579→## Timing
+   580→
+   581→Avoid dramatic easing.
+   582→
+   583→Prefer:
+   584→
+   585→ease-out
+   586→
+   587→ease-in-out
+   588→
+   589→spring animations with gentle damping
+   590→
+   591→Longer durations are encouraged.
+   592→
+   593→Typical durations:
+   594→
+   595→Hover
+   596→
+   597→150–250ms
+   598→
+   599→Navigation
+   600→
+   601→500–800ms
+   602→
+   603→Page transition
+   604→
+   605→700–1200ms
+   606→
+   607→Background motion
+   608→
+   609→Continuous
+   610→
+   611→Never stop.
+   612→
+   613→Never loop obviously.
+   614→
+   615→---
+   616→
+   617→## Stillness
+   618→
+   619→Not every object should move.
+   620→
+   621→Stillness creates importance.
+   622→
+   623→For example:
+   624→
+   625→Typography remains perfectly stable.
+   626→
+   627→Navigation remains almost motionless.
+   628→
+   629→Project cards only move when interacted with.
+   630→
+   631→Meanwhile:
+   632→
+   633→Background mesh continuously drifts.
+   634→
+   635→Particles slowly float.
+   636→
+   637→Cursor breathes.
+   638→
+   639→This creates contrast.
+   640→
+   641→---
+   642→
+   643→## Reduced Motion
+   644→
+   645→Accessibility is not optional.
+   646→
+   647→Users who enable Reduced Motion should receive:
+   648→
+   649→No cursor trail.
+   650→
+   651→No floating particles.
+   652→
+   653→Mesh movement slowed dramatically.
+   654→
+   655→Transitions become elegant fades.
+   656→
+   657→Hover effects rely on opacity instead of movement.
+   658→
+   659→The atmosphere should remain.
+   660→
+   661→Only unnecessary motion disappears.
+   662→
+   663→---
+   664→
+   665→# 9. The Living Mesh
+   666→
+   667→The Living Mesh is the defining visual element of Studio Errant.
+   668→
+   669→It is not decoration.
+   670→
+   671→It is the website's heartbeat.
+   672→
+   673→If Studio Errant is remembered years later, it should be because of this experience.
+   674→
+   675→---
+   676→
+   677→## Philosophy
+   678→
+   679→The mesh represents thought before language.
+   680→
+   681→Ideas before structure.
+   682→
+   683→Connections before conclusions.
+   684→
+   685→It should feel like something alive.
+   686→
+   687→Neither liquid.
+   688→
+   689→Nor smoke.
+   690→
+   691→Nor cloth.
+   692→
+   693→It exists somewhere between all three.
+   694→
+   695→Visitors should never immediately understand what it is.
+   696→
+   697→---
+   698→
+   699→## Placement
+   700→
+   701→The mesh begins outside the viewport.
+   702→
+   703→Large flowing forms slowly drift into view from the left.
+   704→
+   705→Only portions are visible at any moment.
+   706→
+   707→The composition should constantly evolve.
+   708→
+   709→Avoid symmetrical layouts.
+   710→
+   711→Avoid centered compositions.
+   712→
+   713→Nature rarely centers itself.
+   714→
+   715→---
+   716→
+   717→## Behaviour
+   718→
+   719→The mesh should:
+   720→
+   721→Morph continuously.
+   722→
+   723→Stretch slowly.
+   724→
+   725→Compress naturally.
+   726→
+   727→Flow horizontally.
+   728→
+   729→Occasionally fold into itself.
+   730→
+   731→Split.
+   732→
+   733→Reconnect.
+   734→
+   735→Never pause.
+   736→
+   737→Never teleport.
+   738→
+   739→Never snap.
+   740→
+   741→Motion should be mathematically smooth.
+   742→
+   743→---
+   744→
+   745→## Visual Style
+   746→
+   747→Pure white.
+   748→
+   749→Soft edges.
+   750→
+   751→Semi-translucent.
+   752→
+   753→Layered.
+   754→
+   755→Organic.
+   756→
+   757→No outlines.
+   758→
+   759→No polygons visible.
+   760→
+   761→No wireframes.
+   762→
+   763→No glowing sci-fi effects.
+   764→
+   765→No neon.
+   766→
+   767→No hard shadows.
+   768→
+   769→Think:
+   770→
+   771→silk underwater
+   772→
+   773→fog illuminated by moonlight
+   774→
+   775→microscopic neural tissue
+   776→
+   777→long-exposure ink in water
+   778→
+   779→---
+   780→
+   781→## Scroll Interaction
+   782→
+   783→Scrolling should influence the mesh.
+   784→
+   785→Not dramatically.
+   786→
+   787→Only subtly.
+   788→
+   789→Examples:
+   790→
+   791→slightly increasing flow speed
+   792→
+   793→small distortions
+   794→
+   795→gentle stretching
+   796→
+   797→slight directional influence
+   798→
+   799→The visitor should feel connected to the environment without controlling it.
+   800→
+   801→---
+   802→
+   803→## Cursor Interaction
+   804→
+   805→Desktop only.
+   806→
+   807→Touch devices should ignore cursor interactions completely.
+   808→
+   809→The mesh should respond softly when the cursor approaches.
+   810→
+   811→Examples:
+   812→
+   813→slight displacement
+   814→
+   815→tiny ripples
+   816→
+   817→temporary deformation
+   818→
+   819→The cursor never pushes the mesh away violently.
+   820→
+   821→Instead it gently influences nearby movement.
+   822→
+   823→Like passing a hand through water.
+   824→
+   825→---
+   826→
+   827→## Technical Direction
+   828→
+   829→Prefer GPU accelerated rendering.
+   830→
+   831→Preferred approaches, in order:
+   832→
+   833→Canvas
+   834→
+   835→WebGL
+   836→
+   837→Three.js
+   838→
+   839→React Three Fiber
+   840→
+   841→SVG fallback
+   842→
+   843→If technical limitations require simplification, preserve the feeling rather than the implementation.
+   844→
+   845→The emotional experience is more important than the rendering technique.
+   846→
+   847→---
+   848→
+   849→# 10. Cursor System
+   850→
+   851→The cursor is another living element.
+   852→
+   853→It should feel like a small source of awareness moving through the environment.
+   854→
+   855→---
+   856→
+   857→## Desktop
+   858→
+   859→Replace the system cursor.
+   860→
+   861→Appearance:
+   862→
+   863→Small white orb.
+   864→
+   865→Soft bloom.
+   866→
+   867→Gentle blur.
+   868→
+   869→Subtle transparency.
+   870→
+   871→Diameter approximately 12–16px.
+   872→
+   873→---
+   874→
+   875→## Behaviour
+   876→
+   877→The cursor follows the mouse using interpolation.
+   878→
+   879→Never perfectly attached.
+   880→
+   881→It should feel as though it has momentum.
+   882→
+   883→Very slight delay.
+   884→
+   885→Never sluggish.
+   886→
+   887→---
+   888→
+   889→## Trail
+   890→
+   891→Leave an extremely subtle fading trail.
+   892→
+   893→Trail disappears within one second.
+   894→
+   895→Avoid exaggerated particle effects.
+   896→
+   897→The visitor should barely notice it.
+   898→
+   899→---
+   900→
+   901→## Hover States
+   902→
+   903→Interactive elements should influence the cursor.
+   904→
+   905→Possible responses:
+   906→
+   907→slight enlargement
+   908→
+   909→brightness increase
+   910→
+   911→slight ring formation
+   912→
+   913→soft pulse
+   914→
+   915→Avoid morphing into arrows or large circles.
+   916→
+   917→Maintain elegance.
+   918→
+   919→---
+   920→
+   921→## Touch Devices
+   922→
+   923→Disable entirely.
+   924→
+   925→Touch interactions should instead use:
+   926→
+   927→soft ripple animations
+   928→
+   929→button opacity
+   930→
+   931→gentle scaling
+   932→
+   933→Never attempt to simulate a cursor on touch devices.
+   934→
+   935→---
+   936→
+   937→# 11. Typography
+   938→
+   939→Typography carries personality.
+   940→
+   941→It should communicate confidence without demanding attention.
+   942→
+   943→---
+   944→
+   945→## Tone
+   946→
+   947→Elegant.
+   948→
+   949→Quiet.
+   950→
+   951→Highly readable.
+   952→
+   953→Generous spacing.
+   954→
+   955→Never condensed.
+   956→
+   957→Never decorative.
+   958→
+   959→---
+   960→
+   961→## Font Suggestions
+   962→
+   963→Primary:
+   964→
+   965→Space Grotesk
+   966→
+   967→General Sans
+   968→
+   969→Satoshi
+   970→
+   971→IBM Plex Sans
+   972→
+   973→Choose one.
+   974→
+   975→Do not mix multiple display fonts.
+   976→
+   977→---
+   978→
+   979→## Hierarchy
+   980→
+   981→Headings
+   982→
+   983→Large.
+   984→
+   985→Breathing room.
+   986→
+   987→Light to medium weight.
+   988→
+   989→Body
+   990→
+   991→Highly readable.
+   992→
+   993→16–20px.
+   994→
+   995→Comfortable line height.
+   996→
+   997→Captions
+   998→
+   999→Subtle gray.
+  1000→
+  1001→Small.
+  1002→
+  1003→Never cramped.
+  1004→
+  1005→---
+  1006→
+  1007→## Text Behaviour
+  1008→
+  1009→Typography should remain mostly static.
+  1010→
+  1011→Minor opacity transitions are acceptable.
+  1012→
+  1013→Avoid sliding text from every direction.
+  1014→
+  1015→Words should appear with confidence.
+  1016→
+  1017→Not theatrics.
+  1018→
+  1019→---
+  1020→
+  1021→## Quotes
+  1022→
+  1023→Throughout the website, short reflective sentences may appear.
+  1024→
+  1025→Examples:
+  1026→
+  1027→"Wander deliberately."
+  1028→
+  1029→"Questions build better worlds."
+  1030→
+  1031→"Some ideas require getting lost."
+  1032→
+  1033→These should never become marketing slogans.
+  1034→
+  1035→Treat them like notes from a journal.
+  1036→
+  1037→---
+  1038→
+  1039→# 12. Color System
+  1040→
+  1041→Color is symbolic.
+  1042→
+  1043→Not decorative.
+  1044→
+  1045→---
+  1046→
+  1047→## Base Palette
+  1048→
+  1049→Primary
+  1050→
+  1051→#000000
+  1052→
+  1053→Surface
+  1054→
+  1055→#080808
+  1056→
+  1057→White
+  1058→
+  1059→#FFFFFF
+  1060→
+  1061→Secondary Text
+  1062→
+  1063→#AFAFAF
+  1064→
+  1065→Dividers
+  1066→
+  1067→rgba(255,255,255,0.08)
+  1068→
+  1069→---
+  1070→
+  1071→## Creative Accent
+  1072→
+  1073→Purple appears only when appropriate.
+  1074→
+  1075→Use deep indigo.
+  1076→
+  1077→Muted violet.
+  1078→
+  1079→Dark plum.
+  1080→
+  1081→Never bright purple.
+  1082→
+  1083→Never gradients covering the entire page.
+  1084→
+  1085→Purple should emerge naturally beneath black.
+  1086→
+  1087→---
+  1088→
+  1089→## Emotional Mapping
+  1090→
+  1091→Black
+  1092→
+  1093→Possibility.
+  1094→
+  1095→White
+  1096→
+  1097→Clarity.
+  1098→
+  1099→Gray
+  1100→
+  1101→Reflection.
+  1102→
+  1103→Purple
+  1104→
+  1105→Imagination becoming tangible.
+  1106→
+  1107→These meanings should remain consistent.
+  1108→
+  1109→---
+  1110→
+  1111→# 13. Components & Navigation
+  1112→
+  1113→Components should feel crafted rather than assembled.
+  1114→
+  1115→Everything belongs to the same visual language.
+  1116→
+  1117→---
+  1118→
+  1119→## Buttons
+  1120→
+  1121→Minimal.
+  1122→
+  1123→Thin borders.
+  1124→
+  1125→Soft hover glow.
+  1126→
+  1127→No oversized shadows.
+  1128→
+  1129→No loud animations.
+  1130→
+  1131→---
+  1132→
+  1133→## Cards
+  1134→
+  1135→Project cards should resemble carefully framed exhibits.
+  1136→
+  1137→Spacing matters more than decoration.
+  1138→
+  1139→Hover:
+  1140→
+  1141→slight lift
+  1142→
+  1143→slight brightness
+  1144→
+  1145→tiny mesh response
+  1146→
+  1147→No flipping.
+  1148→
+  1149→No rotating.
+  1150→
+  1151→No dramatic scaling.
+  1152→
+  1153→---
+  1154→
+  1155→## Navigation
+  1156→
+  1157→Navigation should almost disappear.
+  1158→
+  1159→Position:
+  1160→
+  1161→Top right.
+  1162→
+  1163→Small typography.
+  1164→
+  1165→Items:
+  1166→
+  1167→Arrival
+  1168→
+  1169→Work
+  1170→
+  1171→About
+  1172→
+  1173→No hamburger menu on desktop.
+  1174→
+  1175→Mobile uses a simple full-screen overlay with smooth fade.
+  1176→
+  1177→---
+  1178→
+  1179→## Page Transitions
+  1180→
+  1181→Every page should dissolve through darkness.
+  1182→
+  1183→Avoid:
+  1184→
+  1185→slides
+  1186→
+  1187→cube transitions
+  1188→
+  1189→zoom effects
+  1190→
+  1191→spin effects
+  1192→
+  1193→Think of walking into another room with the lights dimmed.
+  1194→
+  1195→---
+  1196→
+  1197→## Microinteractions
+  1198→
+  1199→The website should reward curiosity.
+  1200→
+  1201→Examples:
+  1202→
+  1203→Hovering the logo slightly influences the nearby mesh.
+  1204→
+  1205→Scrolling slowly reveals hidden quotes.
+  1206→
+  1207→Project thumbnails subtly brighten before enlarging.
+  1208→
+  1209→Tiny details emerge over time.
+  1210→
+  1211→These interactions should never interrupt usability.
+  1212→
+  1213→They should simply reward careful observation.
+  1214→
+  1215→---
+  1216→
+  1217→## Design Principle
+  1218→
+  1219→Visitors should never think:
+  1220→
+  1221→"This website has amazing animations."
+  1222→
+  1223→They should think:
+  1224→
+  1225→"This place feels strangely alive."
+  1226→
+  1227→That distinction defines Studio Errant.
+  1228→
+  1229→# 14. Arrival
+  1230→
+  1231→The first screen should not immediately explain Studio Errant.
+  1232→
+  1233→It should create curiosity.
+  1234→
+  1235→The visitor should feel as though they have entered a quiet place where something is already happening.
+  1236→
+  1237→Nothing should rush to introduce itself.
+  1238→
+  1239→The first impression should be emotional before it becomes informational.
+  1240→
+  1241→---
+  1242→
+  1243→## First Viewport
+  1244→
+  1245→Visible immediately:
+  1246→
+  1247→- Living Mesh occupying the left side of the viewport.
+  1248→- Black background extending infinitely.
+  1249→- Logo placeholder centered slightly left of the page's vertical center.
+  1250→- Navigation positioned discreetly in the upper-right corner.
+  1251→- One short reflective sentence beneath the logo.
+  1252→- No project previews.
+  1253→- No paragraphs.
+  1254→- No call-to-action button demanding interaction.
+  1255→
+  1256→The first screen should feel comfortable sitting in silence.
+  1257→
+  1258→---
+  1259→
+  1260→## Logo Placement
+  1261→
+  1262→Until the final logo exists, reserve a square placeholder measuring approximately 512 × 512 pixels.
+  1263→
+  1264→Assume the final logo follows this composition:
+  1265→
+  1266→Studio
+  1267→
+  1268→Errant
+  1269→
+  1270→The typography should remain secondary to the symbol itself.
+  1271→
+  1272→The logo should have generous negative space around it.
+  1273→
+  1274→---
+  1275→
+  1276→## Hero Statement
+  1277→
+  1278→Below the logo, display one carefully chosen sentence.
+  1279→
+  1280→It should rotate on each page refresh from a curated collection.
+  1281→
+  1282→Examples include:
+  1283→
+  1284→"Wander deliberately."
+  1285→
+  1286→"Questions are places too."
+  1287→
+  1288→"Some ideas only appear when you're lost."
+  1289→
+  1290→"The quiet work is usually the important work."
+  1291→
+  1292→"We build what curiosity discovers."
+  1293→
+  1294→Avoid slogans.
+  1295→
+  1296→Avoid marketing language.
+  1297→
+  1298→These should read like fragments from a notebook.
+  1299→
+  1300→---
+  1301→
+  1302→## Scroll Cue
+  1303→
+  1304→Never display a bouncing arrow.
+  1305→
+  1306→Instead, use a nearly invisible cue.
+  1307→
+  1308→Examples:
+  1309→
+  1310→- a thin vertical line slowly extending downward
+  1311→- a softly pulsing dot
+  1312→- a subtle change in mesh movement near the bottom of the screen
+  1313→
+  1314→Visitors should discover that scrolling continues naturally.
+  1315→
+  1316→---
+  1317→
+  1318→## As Scrolling Begins
+  1319→
+  1320→Information should not suddenly appear.
+  1321→
+  1322→Instead:
+  1323→
+  1324→The mesh stretches slightly.
+  1325→
+  1326→Typography fades gently.
+  1327→
+  1328→Navigation becomes slightly more visible.
+  1329→
+  1330→Darkness subtly changes depth.
+  1331→
+  1332→The page should feel as though it is opening rather than moving.
+  1333→
+  1334→---
+  1335→
+  1336→# 15. Work
+  1337→
+  1338→The Work section is the heart of Studio Errant.
+  1339→
+  1340→Projects are not products.
+  1341→
+  1342→They are explorations.
+  1343→
+  1344→The layout should feel curated rather than indexed.
+  1345→
+  1346→Avoid traditional portfolio grids whenever possible.
+  1347→
+  1348→Instead, think in chapters.
+  1349→
+  1350→---
+  1351→
+  1352→## Structure
+  1353→
+  1354→Suggested categories:
+  1355→
+  1356→Artificial Intelligence
+  1357→
+  1358→Design
+  1359→
+  1360→Writing
+  1361→
+  1362→Research
+  1363→
+  1364→Experiments
+  1365→
+  1366→Creative Direction
+  1367→
+  1368→Future categories should be easy to add without redesigning the page.
+  1369→
+  1370→---
+  1371→
+  1372→## Category Introduction
+  1373→
+  1374→Each chapter begins with a large title.
+  1375→
+  1376→Followed by a short paragraph explaining that discipline.
+  1377→
+  1378→For example:
+  1379→
+  1380→Artificial Intelligence
+  1381→
+  1382→"We build systems that help people think, observe and create—not simply automate."
+  1383→
+  1384→These introductions should establish context before showing projects.
+  1385→
+  1386→---
+  1387→
+  1388→## Project Presentation
+  1389→
+  1390→Projects should emerge naturally beneath each chapter.
+  1391→
+  1392→Each project card should contain:
+  1393→
+  1394→- Cover image or visual
+  1395→- Project title
+  1396→- Short description
+  1397→- Year
+  1398→- Tags
+  1399→- Optional external links
+  1400→
+  1401→Hovering reveals slightly more information.
+  1402→
+  1403→Never overwhelm the visitor.
+  1404→
+  1405→---
+  1406→
+  1407→## Project Interaction
+  1408→
+  1409→Hovering should feel like attention rather than activation.
+  1410→
+  1411→Possible interactions:
+  1412→
+  1413→Card lifts 4–8 pixels.
+  1414→
+  1415→Image brightens slightly.
+  1416→
+  1417→Nearby mesh reacts softly.
+  1418→
+  1419→Typography increases contrast.
+  1420→
+  1421→Avoid:
+  1422→
+  1423→3D flips
+  1424→
+  1425→Rotations
+  1426→
+  1427→Aggressive zooms
+  1428→
+  1429→Heavy shadows
+  1430→
+  1431→---
+  1432→
+  1433→## Purple Transition
+  1434→
+  1435→The Work section introduces the only significant color shift in the website.
+  1436→
+  1437→Purple should slowly emerge beneath the darkness.
+  1438→
+  1439→Not above it.
+  1440→
+  1441→Visitors should almost feel the transition before they consciously notice it.
+  1442→
+  1443→As they leave the Work section, the purple slowly dissolves back into black.
+  1444→
+  1445→---
+  1446→
+  1447→## Filtering
+  1448→
+  1449→Avoid complex filter interfaces.
+  1450→
+  1451→Instead, provide simple category navigation.
+  1452→
+  1453→The focus should remain on exploration rather than searching.
+  1454→
+  1455→---
+  1456→
+  1457→# 16. Project Pages
+  1458→
+  1459→Every project deserves its own page.
+  1460→
+  1461→Projects should feel like essays rather than product pages.
+  1462→
+  1463→Each page tells a story.
+  1464→
+  1465→---
+  1466→
+  1467→## Recommended Structure
+  1468→
+  1469→Hero Image
+  1470→
+  1471→↓
+  1472→
+  1473→Project Overview
+  1474→
+  1475→↓
+  1476→
+  1477→The Problem
+  1478→
+  1479→↓
+  1480→
+  1481→Research
+  1482→
+  1483→↓
+  1484→
+  1485→Process
+  1486→
+  1487→↓
+  1488→
+  1489→Iterations
+  1490→
+  1491→↓
+  1492→
+  1493→Final Outcome
+  1494→
+  1495→↓
+  1496→
+  1497→Reflection
+  1498→
+  1499→↓
+  1500→
+  1501→Related Projects
+  1502→
+  1503→---
+  1504→
+  1505→## Reflection
+  1506→
+  1507→Every project should end with reflection.
+  1508→
+  1509→Questions such as:
+  1510→
+  1511→What worked?
+  1512→
+  1513→What surprised us?
+  1514→
+  1515→What would we change?
+  1516→
+  1517→What questions remain?
+  1518→
+  1519→Reflection communicates maturity better than perfection.
+  1520→
+  1521→---
+  1522→
+  1523→## Visual Rhythm
+  1524→
+  1525→Alternate between:
+  1526→
+  1527→Large visuals.
+  1528→
+  1529→Short text.
+  1530→
+  1531→Generous spacing.
+  1532→
+  1533→Avoid long uninterrupted paragraphs.
+  1534→
+  1535→The page should feel breathable.
+  1536→
+  1537→---
+  1538→
+  1539→## Media
+  1540→
+  1541→Support:
+  1542→
+  1543→Images
+  1544→
+  1545→Videos
+  1546→
+  1547→PDFs
+  1548→
+  1549→Interactive embeds
+  1550→
+  1551→GitHub repositories
+  1552→
+  1553→External links
+  1554→
+  1555→Case studies should be future-proof.
+  1556→
+  1557→---
+  1558→
+  1559→# 17. About
+  1560→
+  1561→The About page should answer one question:
+  1562→
+  1563→Why does Studio Errant exist?
+  1564→
+  1565→It should not answer:
+  1566→
+  1567→Where did I study?
+  1568→
+  1569→What software do I know?
+  1570→
+  1571→How many years of experience do I have?
+  1572→
+  1573→Those details may exist lower on the page.
+  1574→
+  1575→They should never define the page.
+  1576→
+  1577→---
+  1578→
+  1579→## Suggested Structure
+  1580→
+  1581→Introduction
+  1582→
+  1583→↓
+  1584→
+  1585→Story
+  1586→
+  1587→↓
+  1588→
+  1589→Philosophy
+  1590→
+  1591→↓
+  1592→
+  1593→Creative Process
+  1594→
+  1595→↓
+  1596→
+  1597→Current Interests
+  1598→
+  1599→↓
+  1600→
+  1601→Future Vision
+  1602→
+  1603→↓
+  1604→
+  1605→Contact
+  1606→
+  1607→---
+  1608→
+  1609→## Writing Style
+  1610→
+  1611→Write in first person.
+  1612→
+  1613→Not because Studio Errant is only one person forever,
+  1614→
+  1615→but because honesty creates trust.
+  1616→
+  1617→Speak conversationally.
+  1618→
+  1619→Avoid corporate language.
+  1620→
+  1621→Avoid inspirational clichés.
+  1622→
+  1623→Avoid describing yourself as passionate, innovative, visionary or creative.
+  1624→
+  1625→Instead, demonstrate those qualities through writing.
+  1626→
+  1627→---
+  1628→
+  1629→## Creative Process
+  1630→
+  1631→Describe curiosity as a cycle.
+  1632→
+  1633→Question
+  1634→
+  1635→↓
+  1636→
+  1637→Observation
+  1638→
+  1639→↓
+  1640→
+  1641→Experiment
+  1642→
+  1643→↓
+  1644→
+  1645→Failure
+  1646→
+  1647→↓
+  1648→
+  1649→Reflection
+  1650→
+  1651→↓
+  1652→
+  1653→Understanding
+  1654→
+  1655→↓
+  1656→
+  1657→Creation
+  1658→
+  1659→This diagram should become a recurring visual motif.
+  1660→
+  1661→---
+  1662→
+  1663→## Timeline
+  1664→
+  1665→If included,
+  1666→
+  1667→the timeline should emphasize ideas rather than achievements.
+  1668→
+  1669→Examples:
+  1670→
+  1671→Started sketching.
+  1672→
+  1673→Discovered programming.
+  1674→
+  1675→Built first AI project.
+  1676→
+  1677→Published first research.
+  1678→
+  1679→Wrote first book.
+  1680→
+  1681→Notice that these are moments of growth rather than résumé milestones.
+  1682→
+  1683→---
+  1684→
+  1685→# 18. Responsive Behaviour
+  1686→
+  1687→Studio Errant should never feel like a desktop website squeezed onto a phone.
+  1688→
+  1689→Each device deserves intentional adaptation.
+  1690→
+  1691→---
+  1692→
+  1693→## Desktop
+  1694→
+  1695→The complete experience.
+  1696→
+  1697→Living mesh.
+  1698→
+  1699→Cursor system.
+  1700→
+  1701→Hover interactions.
+  1702→
+  1703→Maximum atmosphere.
+  1704→
+  1705→---
+  1706→
+  1707→## Tablet
+  1708→
+  1709→Preserve immersion.
+  1710→
+  1711→Reduce mesh complexity slightly.
+  1712→
+  1713→Simplify layouts.
+  1714→
+  1715→Increase spacing.
+  1716→
+  1717→Touch replaces hover.
+  1718→
+  1719→---
+  1720→
+  1721→## Mobile
+  1722→
+  1723→The philosophy remains identical.
+  1724→
+  1725→Only the interaction changes.
+  1726→
+  1727→Disable:
+  1728→
+  1729→Custom cursor.
+  1730→
+  1731→Cursor trail.
+  1732→
+  1733→Cursor mesh interaction.
+  1734→
+  1735→Simplify:
+  1736→
+  1737→Particle density.
+  1738→
+  1739→Mesh complexity.
+  1740→
+  1741→Transition duration.
+  1742→
+  1743→Keep:
+  1744→
+  1745→Atmosphere.
+  1746→
+  1747→Typography.
+  1748→
+  1749→Spacing.
+  1750→
+  1751→Visual rhythm.
+  1752→
+  1753→---
+  1754→
+  1755→## Performance
+  1756→
+  1757→If performance drops below acceptable levels,
+  1758→
+  1759→reduce visual complexity before sacrificing usability.
+  1760→
+  1761→The experience should remain smooth.
+  1762→
+  1763→Fluidity matters more than visual density.
+  1764→
+  1765→---
+  1766→
+  1767→## Breakpoints
+  1768→
+  1769→Design responsively rather than targeting specific devices.
+  1770→
+  1771→Layouts should adapt naturally.
+  1772→
+  1773→Avoid rigid pixel-based assumptions.
+  1774→
+  1775→---
+  1776→
+  1777→## Testing
+  1778→
+  1779→The final website should be tested across:
+  1780→
+  1781→Desktop browsers.
+  1782→
+  1783→Modern mobile browsers.
+  1784→
+  1785→Tablets.
+  1786→
+  1787→High-DPI displays.
+  1788→
+  1789→Ultrawide monitors.
+  1790→
+  1791→Dark OLED displays.
+  1792→
+  1793→Older integrated GPUs.
+  1794→
+  1795→Graceful degradation is preferable to visual glitches.
+  1796→
+  1797→---
+  1798→
+  1799→## Responsive Philosophy
+  1800→
+  1801→Every visitor should feel they experienced Studio Errant.
+  1802→
+  1803→Not a simplified version.
+  1804→
+  1805→Not a mobile version.
+  1806→
+  1807→The same place,
+  1808→
+  1809→experienced through a different window.
+  1810→
+  1811→# 19. Accessibility
+  1812→
+  1813→Accessibility is not a checklist.
+  1814→
+  1815→It is a design philosophy.
+  1816→
+  1817→Studio Errant should never exclude someone simply because they experience the web differently.
+  1818→
+  1819→The interface should be elegant for everyone.
+  1820→
+  1821→Accessibility should never feel like a compromise.
+  1822→
+  1823→It should feel intentional.
+  1824→
+  1825→---
+  1826→
+  1827→## Core Principles
+  1828→
+  1829→The website must support:
+  1830→
+  1831→- Keyboard navigation
+  1832→- Screen readers
+  1833→- High contrast
+  1834→- Reduced Motion
+  1835→- Logical focus order
+  1836→- Semantic HTML
+  1837→- ARIA only where necessary
+  1838→
+  1839→Use semantic elements first.
+  1840→
+  1841→Accessibility should emerge naturally from good structure.
+  1842→
+  1843→---
+  1844→
+  1845→## Keyboard Navigation
+  1846→
+  1847→Every interactive element should be reachable.
+  1848→
+  1849→Focus states should feel beautiful rather than utilitarian.
+  1850→
+  1851→Avoid harsh browser default outlines.
+  1852→
+  1853→Instead create elegant white focus rings that complement the design language.
+  1854→
+  1855→---
+  1856→
+  1857→## Reduced Motion
+  1858→
+  1859→If a visitor requests reduced motion:
+  1860→
+  1861→Living Mesh:
+  1862→
+  1863→Extremely slow drift.
+  1864→
+  1865→Cursor:
+  1866→
+  1867→Disabled.
+  1868→
+  1869→Particles:
+  1870→
+  1871→Disabled.
+  1872→
+  1873→Page transitions:
+  1874→
+  1875→Simple fades.
+  1876→
+  1877→Animations:
+  1878→
+  1879→Opacity only.
+  1880→
+  1881→Atmosphere should remain.
+  1882→
+  1883→Movement should become optional.
+  1884→
+  1885→---
+  1886→
+  1887→## Readability
+  1888→
+  1889→Typography should prioritize comfort.
+  1890→
+  1891→Never sacrifice readability for style.
+  1892→
+  1893→Maintain generous line height.
+  1894→
+  1895→Avoid long line lengths.
+  1896→
+  1897→Text should feel effortless to read.
+  1898→
+  1899→---
+  1900→
+  1901→# 20. Performance Strategy
+  1902→
+  1903→Performance is part of the experience.
+  1904→
+  1905→A beautiful website that stutters is no longer beautiful.
+  1906→
+  1907→Smoothness is more valuable than complexity.
+  1908→
+  1909→---
+  1910→
+  1911→## Philosophy
+  1912→
+  1913→Protect the emotional experience first.
+  1914→
+  1915→Protect performance second.
+  1916→
+  1917→Everything else is negotiable.
+  1918→
+  1919→---
+  1920→
+  1921→## Priority Order
+  1922→
+  1923→If compromises become necessary:
+  1924→
+  1925→1. Preserve philosophy.
+  1926→
+  1927→2. Preserve fluidity.
+  1928→
+  1929→3. Preserve usability.
+  1930→
+  1931→4. Reduce visual complexity.
+  1932→
+  1933→Never sacrifice smooth interaction simply to keep an effect.
+  1934→
+  1935→---
+  1936→
+  1937→## Performance Budget
+  1938→
+  1939→Aim for:
+  1940→
+  1941→Desktop:
+  1942→
+  1943→60 FPS during interaction.
+  1944→
+  1945→Mobile:
+  1946→
+  1947→Smooth scrolling with no obvious frame drops.
+  1948→
+  1949→Animations should rely on:
+  1950→
+  1951→opacity
+  1952→
+  1953→transform
+  1954→
+  1955→GPU acceleration
+  1956→
+  1957→Avoid layout thrashing.
+  1958→
+  1959→Avoid expensive DOM updates.
+  1960→
+  1961→---
+  1962→
+  1963→## Progressive Enhancement
+  1964→
+  1965→Studio Errant should scale gracefully.
+  1966→
+  1967→High-end devices receive:
+  1968→
+  1969→- Full Living Mesh
+  1970→- Cursor system
+  1971→- Rich interactions
+  1972→
+  1973→Mid-range devices receive:
+  1974→
+  1975→- Simplified mesh
+  1976→- Reduced particle density
+  1977→
+  1978→Low-end devices receive:
+  1979→
+  1980→- Lightweight animated background
+  1981→- Static fallback if necessary
+  1982→
+  1983→Every visitor should receive the same atmosphere.
+  1984→
+  1985→Only implementation complexity changes.
+  1986→
+  1987→---
+  1988→
+  1989→# 21. Technical Requirements
+  1990→
+  1991→The website must be deployable directly to GitHub Pages.
+  1992→
+  1993→No backend.
+  1994→
+  1995→No databases.
+  1996→
+  1997→No authentication.
+  1998→
+  1999→No server-side rendering.
+  2000→
+
+[showing lines 1-2000 of 2345; use offset=2001 with limit to continue reading]
