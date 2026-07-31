@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bodoni_Moda, Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import Script from "next/script";
 
 /*
   Typography
@@ -96,6 +97,20 @@ export default function RootLayout({
       >
         {children}
         <Toaster />
+
+        {/* Google Analytics 4 */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-X7BCJRV04N"
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-X7BCJRV04N');
+          `}
+        </Script>
       </body>
     </html>
   );
