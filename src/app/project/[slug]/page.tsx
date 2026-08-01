@@ -37,5 +37,35 @@ export default function ProjectDetail({
 }: {
   params: { slug: string };
 }) {
-  return <ProjectDetailPage slug={params.slug} />;
+  const project = getProject(params.slug);
+
+  // Only emit CreativeWork schema for real, indexable projects —
+  // same eligibility as generateMetadata above.
+  const showSchema = project && !project.comingSoon && !project.secret;
+
+  const schema = showSchema
+    ? {
+        "@context": "https://schema.org",
+        "@type": "CreativeWork",
+        name: project.title,
+        description: project.summary,
+        url: `https://studioerrant.in/project/${project.slug}`,
+        author: { "@id": "https://studioerrant.in/#person" },
+        dateCreated: project.year,
+        keywords: project.tags.join(", "),
+        isPartOf: { "@id": "https://studioerrant.in/#website" },
+      }
+    : null;
+
+  return (
+    <>
+      {schema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      )}
+      <ProjectDetailPage slug={params.slug} />
+    </>
+  );
 }
