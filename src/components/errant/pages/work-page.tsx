@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { useRouterStore } from "@/lib/router";
+import Link from "next/link";
 import { NAV_SECTIONS } from "@/data/errant/nav-sections";
 import { PROJECTS, type ProjectCategory } from "@/data/errant/projects";
 import { Reveal, PullQuote } from "@/components/errant/transitions";
@@ -23,7 +23,6 @@ import { cn } from "@/lib/utils";
  * the page when many teardowns are added.
  */
 export function WorkPage() {
-  const navigate = useRouterStore((s) => s.navigate);
 
   return (
     <div className="relative">
@@ -120,15 +119,14 @@ export function WorkPage() {
           </p>
         </Reveal>
         <Reveal delay={0.15}>
-          <button
-            type="button"
-            onClick={() => navigate({ name: "about" })}
-            data-cursor="hover"
-            className="group mt-12 inline-flex items-center gap-4 text-sm uppercase tracking-[0.3em] text-foreground/65 transition-colors hover:text-foreground"
-          >
-            <span className="h-px w-6 bg-foreground/30 transition-all group-hover:w-10 group-hover:bg-foreground/70" />
-            Why I build this way
-          </button>
+          <Link
+  href="/about"
+  data-cursor="hover"
+  className="group mt-12 inline-flex items-center gap-4 text-sm uppercase tracking-[0.3em] text-foreground/65 transition-colors hover:text-foreground"
+>
+  <span className="h-px w-6 bg-foreground/30 transition-all group-hover:w-10 group-hover:bg-foreground/70" />
+  Why I build this way
+</Link>
         </Reveal>
       </section>
     </div>
