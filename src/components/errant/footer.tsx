@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouterStore } from "@/lib/router";
+import Link from "next/link";
 import { StudioErrantLogo } from "@/components/errant/studio-errant-logo";
 
 /**
@@ -10,7 +10,6 @@ import { StudioErrantLogo } from "@/components/errant/studio-errant-logo";
  * to Night / Morning.
  */
 export function Footer() {
-  const navigate = useRouterStore((s) => s.navigate);
   const year = new Date().getFullYear();
 
   return (
@@ -18,11 +17,10 @@ export function Footer() {
       <div className="mx-auto max-w-[1600px] px-6 py-16 md:px-12 md:py-24">
         <div className="grid gap-14 md:grid-cols-12">
           <div className="md:col-span-6">
-            <button
-              type="button"
-              onClick={() => navigate({ name: "arrival" })}
+            <Link
+              href="/"
               data-cursor="hover"
-              className="transition-opacity duration-700 hover:opacity-80"
+              className="inline-block transition-opacity duration-700 hover:opacity-80"
               aria-label="Studio Errant — return to arrival"
             >
               <StudioErrantLogo
@@ -30,7 +28,7 @@ export function Footer() {
                 height="40px"
                 alt="Studio Errant"
               />
-            </button>
+            </Link>
             <p className="mt-8 max-w-md text-sm leading-relaxed text-foreground/45">
               An independent practice built around curiosity. I build what
               curiosity discovers — and document the wandering that gets
@@ -44,34 +42,31 @@ export function Footer() {
             </h3>
             <ul className="space-y-3 text-sm text-foreground/60">
               <li>
-                <button
-                  type="button"
-                  onClick={() => navigate({ name: "arrival" })}
+                <Link
+                  href="/"
                   className="transition-colors duration-700 hover:text-foreground"
                   data-cursor="hover"
                 >
                   Arrival
-                </button>
+                </Link>
               </li>
               <li>
-                <button
-                  type="button"
-                  onClick={() => navigate({ name: "work" })}
+                <Link
+                  href="/work"
                   className="transition-colors duration-700 hover:text-foreground"
                   data-cursor="hover"
                 >
                   Work
-                </button>
+                </Link>
               </li>
               <li>
-                <button
-                  type="button"
-                  onClick={() => navigate({ name: "about" })}
+                <Link
+                  href="/about"
                   className="transition-colors duration-700 hover:text-foreground"
                   data-cursor="hover"
                 >
                   About
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
