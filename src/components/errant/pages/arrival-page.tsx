@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { useRouterStore } from "@/lib/router";
+import Link from "next/link";
 import { ARRIVAL_QUOTES } from "@/data/errant/quotes";
 import { Reveal } from "@/components/errant/transitions";
 import { StudioErrantLogo } from "@/components/errant/studio-errant-logo";
@@ -26,7 +26,6 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
  * is the introduction.
  */
 export function ArrivalPage() {
-  const navigate = useRouterStore((s) => s.navigate);
   const reduced = usePrefersReducedMotion();
 
   const quote = useMemo(
@@ -167,15 +166,14 @@ export function ArrivalPage() {
               Beyond this point, projects. Not a portfolio — a record of
               curiosities followed far enough to become something.
             </p>
-            <button
-              type="button"
-              onClick={() => navigate({ name: "work" })}
+            <Link
+              href="/work"
               data-cursor="hover"
               className="group mt-12 inline-flex items-center gap-5 text-[11px] uppercase tracking-[0.32em] text-foreground/55 transition-colors duration-700 hover:text-foreground"
             >
               Enter
               <span className="relative h-px w-10 bg-foreground/25 transition-all duration-700 group-hover:w-20 group-hover:bg-foreground/60" />
-            </button>
+            </Link>
           </Reveal>
 
           <Reveal className="md:col-span-4 md:col-start-9" delay={0.15}>
@@ -207,24 +205,22 @@ export function ArrivalPage() {
         </Reveal>
         <Reveal delay={0.12}>
           <div className="mt-16 flex flex-wrap items-center justify-center gap-x-12 gap-y-5">
-            <button
-              type="button"
-              onClick={() => navigate({ name: "work" })}
+            <Link
+              href="/work"
               data-cursor="hover"
               className="group flex items-center gap-3 text-[11px] uppercase tracking-[0.32em] text-foreground/55 transition-colors duration-700 hover:text-foreground"
             >
               <span className="h-px w-5 bg-foreground/25 transition-all duration-700 group-hover:w-8 group-hover:bg-foreground/60" />
               Work
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate({ name: "about" })}
+            </Link>
+            <Link
+              href="/about"
               data-cursor="hover"
               className="group flex items-center gap-3 text-[11px] uppercase tracking-[0.32em] text-foreground/55 transition-colors duration-700 hover:text-foreground"
             >
               <span className="h-px w-5 bg-foreground/25 transition-all duration-700 group-hover:w-8 group-hover:bg-foreground/60" />
               About
-            </button>
+            </Link>
           </div>
         </Reveal>
       </section>
