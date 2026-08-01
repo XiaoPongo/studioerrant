@@ -3,43 +3,40 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { useRouterStore, type ErrantRoute, type RouteName } from "@/lib/router";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { StudioErrantLogo } from "@/components/errant/studio-errant-logo";
 import { cn } from "@/lib/utils";
 
-const ITEMS: { name: RouteName; label: string; route: ErrantRoute }[] = [
-  { name: "arrival", label: "Arrival", route: { name: "arrival" } },
-  { name: "work", label: "Work", route: { name: "work" } },
-  { name: "about", label: "About", route: { name: "about" } },
+type RouteName = "arrival" | "work" | "about";
+
+const ITEMS: { name: RouteName; label: string; href: string }[] = [
+  { name: "arrival", label: "Arrival", href: "/" },
+  { name: "work", label: "Work", href: "/work" },
+  { name: "about", label: "About", href: "/about" },
 ];
 
 export function Navigation() {
-  const route = useRouterStore((s) => s.route);
-  const navigate = useRouterStore((s) => s.navigate);
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Close the mobile overlay whenever the route changes. We adjust
-  // state during render (the documented React pattern) rather than
-  // via setState-in-effect.
-  const routeKey = route.name + (route.slug ?? "");
-  const [prevRouteKey, setPrevRouteKey] = useState(routeKey);
-  if (prevRouteKey !== routeKey) {
-    setPrevRouteKey(routeKey);
+  // Close the mobile overlay whenever the route changes.
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     if (mobileOpen) setMobileOpen(false);
   }
 
-  // Subscribe to scroll. The setState happens inside the passive
-  // event handler (allowed) — never synchronously in the effect body.
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const isActive = (name: RouteName) => {
-    if (name === "arrival") return route.name === "arrival";
-    return route.name === name;
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
   };
 
   return (
@@ -56,12 +53,8 @@ export function Navigation() {
         )}
       >
         <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-6 md:px-12 md:py-8">
-          {/* The official logo — clicking returns the visitor to
-              Arrival. Doubled in size for the header (height 44px)
-              so it has presence. Theme-aware. */}
-          <button
-            type="button"
-            onClick={() => navigate({ name: "arrival" })}
+          <Link
+            href="/"
             className="group transition-opacity duration-700 hover:opacity-80"
             aria-label="Studio Errant — return to arrival"
             data-cursor="hover"
@@ -71,17 +64,16 @@ export function Navigation() {
               height="44px"
               alt="Studio Errant"
             />
-          </button>
+          </Link>
 
           {/* Desktop nav — top right, small typography. */}
           <nav className="hidden items-center gap-12 md:flex">
             {ITEMS.map((item) => {
-              const active = isActive(item.name);
+              const active = isActive(item.href);
               return (
-                <button
+                <Link
                   key={item.name}
-                  type="button"
-                  onClick={() => navigate(item.route)}
+                  href={item.href}
                   data-cursor="hover"
                   className="group relative text-[11px] uppercase tracking-[0.32em] transition-colors duration-700"
                   aria-current={active ? "page" : undefined}
@@ -102,7 +94,7 @@ export function Navigation() {
                       active ? "w-full opacity-100" : "w-0 opacity-0",
                     )}
                   />
-                </button>
+                </Link>
               );
             })}
           </nav>
@@ -134,11 +126,10 @@ export function Navigation() {
           >
             <nav className="flex flex-col items-center gap-14">
               {ITEMS.map((item, i) => {
-                const active = isActive(item.name);
+                const active = isActive(item.href);
                 return (
-                  <motion.button
+                  <motion.div
                     key={item.name}
-                    type="button"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
@@ -146,14 +137,17 @@ export function Navigation() {
                       ease: "easeOut",
                       delay: 0.15 + i * 0.1,
                     }}
-                    onClick={() => navigate(item.route)}
-                    className={cn(
-                      "font-editorial text-2xl lowercase tracking-[0.18em] transition-colors duration-700",
-                      active ? "text-foreground" : "text-foreground/45",
-                    )}
                   >
-                    {item.label}
-                  </motion.button>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "font-editorial text-2xl lowercase tracking-[0.18em] transition-colors duration-700",
+                        active ? "text-foreground" : "text-foreground/45",
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
                 );
               })}
             </nav>
