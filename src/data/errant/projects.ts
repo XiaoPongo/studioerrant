@@ -31,6 +31,8 @@ export interface Project {
   status?: "shipped" | "ongoing" | "archived" | "soon";
   palette: string;
   overview: string;
+  /** Optional PDF download link, shown as a secondary action on the detail page. */
+downloadUrl?: string;
   sections: ProjectSection[];
   reflection: {
     whatWorked: string;
@@ -148,7 +150,7 @@ export const PROJECTS: Project[] = [
     status: "shipped",
     palette: "from-[#1a1730] to-background",
     overview: "An poem.",
-    externalUrl: "https://github.com/XiaoPongo/studioerrant/blob/main/I%26F/A%20Fool.pdf",
+    downloadUrl: "https://github.com/XiaoPongo/studioerrant/blob/main/I%26F/A%20Fool.pdf",
     sections: [],
     reflection: {
       whatWorked: "",
@@ -168,7 +170,7 @@ export const PROJECTS: Project[] = [
     status: "shipped",
     palette: "from-[#211b38] to-background",
     overview: "A poem.",
-    externalUrl: "https://github.com/XiaoPongo/studioerrant/blob/main/I%26F/Where%20the%20Land%20Forgets%20Itself.pdf",
+    downloadUrl: "https://github.com/XiaoPongo/studioerrant/blob/main/I%26F/Where%20the%20Land%20Forgets%20Itself.pdf",
     sections: [],
     reflection: {
       whatWorked: "",
@@ -188,7 +190,7 @@ export const PROJECTS: Project[] = [
     status: "shipped",
     palette: "from-[#1a1730] to-background",
     overview: "A short story.",
-    externalUrl: "https://github.com/XiaoPongo/studioerrant/blob/main/I%26F/A%20Name%20I%20Once%20Knew.pdf",
+    downloadUrl: "https://github.com/XiaoPongo/studioerrant/blob/main/I%26F/A%20Name%20I%20Once%20Knew.pdf",
     sections: [],
     reflection: {
       whatWorked: "",
