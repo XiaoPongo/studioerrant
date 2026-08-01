@@ -3,6 +3,7 @@ import { Bodoni_Moda, Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Script from "next/script";
+import { SiteShell } from "@/components/errant/site-shell";
 
 /*
   Typography
@@ -95,7 +96,7 @@ export default function RootLayout({
       <body
         className={`${editorial.variable} ${sans.variable} antialiased bg-background text-foreground`}
       >
-        {children}
+        <SiteShell>{children}</SiteShell>
         <Toaster />
 
         {/* Google Analytics 4 */}
