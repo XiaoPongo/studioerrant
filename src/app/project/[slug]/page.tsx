@@ -8,12 +8,13 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
-}): Metadata {
-  const project = getProject(params.slug);
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const project = getProject(slug);
 
   // Unknown slug, coming-soon placeholder, or intentionally hidden
   // ("secret") pages should not be indexed until they carry real
@@ -32,12 +33,13 @@ export function generateMetadata({
   };
 }
 
-export default function ProjectDetail({
+export default async function ProjectDetail({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const project = getProject(params.slug);
+  const { slug } = await params;
+  const project = getProject(slug);
 
   // Only emit CreativeWork schema for real, indexable projects —
   // same eligibility as generateMetadata above.
@@ -65,7 +67,7 @@ export default function ProjectDetail({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
       )}
-      <ProjectDetailPage slug={params.slug} />
+      <ProjectDetailPage slug={slug} />
     </>
   );
 }
