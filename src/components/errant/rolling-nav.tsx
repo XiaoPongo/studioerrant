@@ -132,7 +132,7 @@ export function RollingNav({
       window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [route, isDesktop, mobileOnly]);
+  }, [pathname, isDesktop, mobileOnly]);
 
   // Auto-rotation every 4 seconds.
   useEffect(() => {
@@ -221,7 +221,7 @@ export function RollingNav({
       performance.now() + AUTO_ROTATE_PAUSE_AFTER_INTERACTION;
     setActiveId(section.id);
     if (!pathname.startsWith("/work")) {
-  router.push("/work");
+      router.push("/work");
       setTimeout(() => {
         const el = document.querySelector(
           `[data-nav-section="${section.id}"]`,
