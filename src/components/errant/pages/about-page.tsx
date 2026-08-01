@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useRouterStore } from "@/lib/router";
+import Link from "next/link";
 import { Reveal, PullQuote } from "@/components/errant/transitions";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
@@ -66,7 +66,6 @@ const VALUES = [
 ];
 
 export function AboutPage() {
-  const navigate = useRouterStore((s) => s.navigate);
   const reduced = usePrefersReducedMotion();
 
   return (
@@ -312,15 +311,14 @@ export function AboutPage() {
               WhatsApp · +91 75886 43764
               <span className="h-px w-6 bg-foreground/30 transition-all group-hover:w-10 group-hover:bg-foreground/70" />
             </a>
-            <button
-              type="button"
-              onClick={() => navigate({ name: "work" })}
-              data-cursor="hover"
-              className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
-            >
-              See the work
-              <span className="h-px w-6 bg-foreground/30 transition-all group-hover:w-10 group-hover:bg-foreground/70" />
-            </button>
+            <Link
+  href="/work"
+  data-cursor="hover"
+  className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
+>
+  See the work
+  <span className="h-px w-6 bg-foreground/30 transition-all group-hover:w-10 group-hover:bg-foreground/70" />
+</Link>
           </div>
         </Reveal>
       </section>
