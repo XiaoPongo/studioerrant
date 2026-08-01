@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouterStore } from "@/lib/router";
+import { usePathname, useRouter } from "next/navigation";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
