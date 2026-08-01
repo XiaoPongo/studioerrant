@@ -53,8 +53,8 @@ export function RollingNav({
 }: {
   mobileOnly?: boolean;
 }) {
-  const navigate = useRouterStore((s) => s.navigate);
-  const route = useRouterStore((s) => s.route);
+  const router = useRouter();
+  const pathname = usePathname();
   const reduced = usePrefersReducedMotion();
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -220,8 +220,8 @@ export function RollingNav({
     pauseUntilRef.current =
       performance.now() + AUTO_ROTATE_PAUSE_AFTER_INTERACTION;
     setActiveId(section.id);
-    if (route.name !== "work") {
-      navigate({ name: "work" });
+    if (!pathname.startsWith("/work")) {
+  router.push("/work");
       setTimeout(() => {
         const el = document.querySelector(
           `[data-nav-section="${section.id}"]`,
