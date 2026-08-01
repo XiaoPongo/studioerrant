@@ -146,7 +146,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
           <div className="space-y-1">
             {DESIGN_LINKS.map((item, i) => (
               <Reveal key={item.url} delay={Math.min(i * 0.02, 0.2)}>
-                
+                <a
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
