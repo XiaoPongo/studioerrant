@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, ExternalLink } from "lucide-react";
-import { useRouterStore } from "@/lib/router";
 import {
   getProject,
   getRelatedProjects,
@@ -15,7 +15,6 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/utils";
 
 export function ProjectDetailPage({ slug }: { slug: string }) {
-  const navigate = useRouterStore((s) => s.navigate);
   const reduced = usePrefersReducedMotion();
   const project = getProject(slug);
 
@@ -29,15 +28,14 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
           It may be archived, or it may never have been finished. Either
           way, the question it was asking is still worth following.
         </p>
-        <button
-          type="button"
-          onClick={() => navigate({ name: "work" })}
+        <Link
+          href="/work"
           data-cursor="hover"
           className="group mt-10 inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
         >
           <ArrowLeft size={14} />
           Return to the work
-        </button>
+        </Link>
       </div>
     );
   }
@@ -50,15 +48,14 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
       <article className="relative">
         <div className="mx-auto max-w-[1600px] px-6 pt-32 md:px-12 md:pt-40">
           <Reveal>
-            <button
-              type="button"
-              onClick={() => navigate({ name: "work" })}
+            <Link
+              href="/work"
               data-cursor="hover"
               className="group inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-foreground/45 transition-colors hover:text-foreground"
             >
               <ArrowLeft size={12} className="transition-transform group-hover:-translate-x-1" />
               Back to the work
-            </button>
+            </Link>
           </Reveal>
         </div>
         <section className="mx-auto flex min-h-[60vh] max-w-3xl flex-col items-center justify-center px-6 text-center md:px-12">
@@ -83,15 +80,14 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
       <article className="relative">
         <div className="mx-auto max-w-[1600px] px-6 pt-32 md:px-12 md:pt-40">
           <Reveal>
-            <button
-              type="button"
-              onClick={() => navigate({ name: "work" })}
+            <Link
+              href="/work"
               data-cursor="hover"
               className="group inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-foreground/45 transition-colors hover:text-foreground"
             >
               <ArrowLeft size={12} className="transition-transform group-hover:-translate-x-1" />
               Back to the work
-            </button>
+            </Link>
           </Reveal>
         </div>
         <section className="mx-auto flex min-h-[60vh] max-w-3xl flex-col items-center justify-center px-6 text-center md:px-12">
@@ -111,15 +107,14 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
       <article className="relative">
         <div className="mx-auto max-w-[1600px] px-6 pt-32 md:px-12 md:pt-40">
           <Reveal>
-            <button
-              type="button"
-              onClick={() => navigate({ name: "work" })}
+            <Link
+              href="/work"
               data-cursor="hover"
               className="group inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-foreground/45 transition-colors hover:text-foreground"
             >
               <ArrowLeft size={12} className="transition-transform group-hover:-translate-x-1" />
               Back to the work
-            </button>
+            </Link>
           </Reveal>
 
           <Reveal delay={0.05}>
@@ -151,7 +146,7 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
           <div className="space-y-1">
             {DESIGN_LINKS.map((item, i) => (
               <Reveal key={item.url} delay={Math.min(i * 0.02, 0.2)}>
-                <a
+                
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -179,15 +174,14 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
             </p>
           </Reveal>
           <Reveal delay={0.1}>
-            <button
-              type="button"
-              onClick={() => navigate({ name: "work" })}
+            <Link
+              href="/work"
               data-cursor="hover"
               className="group mt-12 inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
             >
               <ArrowLeft size={14} />
               More work
-            </button>
+            </Link>
           </Reveal>
         </section>
       </article>
@@ -201,15 +195,14 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
     <article className="relative">
       <div className="mx-auto max-w-[1600px] px-6 pt-32 md:px-12 md:pt-40">
         <Reveal>
-          <button
-            type="button"
-            onClick={() => navigate({ name: "work" })}
+          <Link
+            href="/work"
             data-cursor="hover"
             className="group inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-foreground/45 transition-colors hover:text-foreground"
           >
             <ArrowLeft size={12} className="transition-transform group-hover:-translate-x-1" />
             Back to the work
-          </button>
+          </Link>
         </Reveal>
 
         {/* Hero */}
@@ -366,24 +359,22 @@ export function ProjectDetailPage({ slug }: { slug: string }) {
         </Reveal>
         <Reveal delay={0.1}>
           <div className="mt-12 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
-            <button
-              type="button"
-              onClick={() => navigate({ name: "work" })}
+            <Link
+              href="/work"
               data-cursor="hover"
               className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
             >
               <ArrowLeft size={14} />
               More work
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate({ name: "about" })}
+            </Link>
+            <Link
+              href="/about"
               data-cursor="hover"
               className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
             >
               Why I build this way
               <ArrowUpRight size={14} />
-            </button>
+            </Link>
           </div>
         </Reveal>
       </section>
