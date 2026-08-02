@@ -78,8 +78,9 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
   icons: {
     icon: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/favicon.svg`,
+    apple: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/apple-touch-icon.png`,
   },
-};
+  manifest: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/manifest.json`,
 
 export const viewport: Viewport = {
   themeColor: "#0c0d0e",
