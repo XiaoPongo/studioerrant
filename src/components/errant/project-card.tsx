@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowUpRight, Download } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import type { Project } from "@/data/errant/projects";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/utils";
@@ -68,9 +68,44 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
     );
   }
 
-  // Standard cards — click to open the project detail page. If a
-  // downloadUrl is present (e.g. writing pieces backed by a PDF),
-  // a small secondary link is shown beneath the card.
+  // Writing pieces (or anything with a downloadUrl and no dedicated
+  // page) — a frosted blur panel over the palette gradient. No image,
+  // no separate button. The whole card opens the PDF directly. Title
+  // pinned top-right, a short description sits beneath it.
+  if (project.downloadUrl) {
+    return (
+      <motion.a
+        href={project.downloadUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-cursor="hover"
+        initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-12% 0px -12% 0px" }}
+        transition={{ duration: 0.9, ease: "easeOut", delay: (index % 2) * 0.08 }}
+        className="group relative block w-full text-right"
+        aria-label={`Read ${project.title} — opens PDF in a new tab`}
+      >
+        <div className="relative aspect-[16/10] overflow-hidden rounded-sm border border-foreground/[0.06] bg-surface">
+          {/* Palette gradient base */}
+          <div className={cn("absolute inset-0 bg-gradient-to-br", project.palette)} />
+          {/* The clickable frosted-blur overlay */}
+          <div className="absolute inset-0 backdrop-blur-md bg-background/35 transition-colors duration-500 group-hover:bg-background/25" />
+          {/* Title top-right, description beneath */}
+          <div className="absolute inset-0 flex flex-col items-end justify-start p-6">
+            <h3 className="font-editorial text-2xl text-foreground md:text-3xl">
+              {project.title}
+            </h3>
+            <p className="mt-2 max-w-[75%] text-sm leading-relaxed text-foreground/60">
+              {project.summary}
+            </p>
+          </div>
+        </div>
+      </motion.a>
+    );
+  }
+
+  // Standard cards — click to open the project detail page.
   return (
     <motion.div
       initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18 }}
@@ -118,19 +153,6 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
           <ArrowUpRight size={18} className="absolute right-5 top-5 text-foreground/0 transition-all duration-500 group-hover:right-4 group-hover:top-4 group-hover:text-foreground/70" />
         </div>
       </Link>
-
-      {project.downloadUrl && (
-        <a
-          href={project.downloadUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-cursor="hover"
-          className="group/pdf mt-3 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-foreground/45 transition-colors duration-500 hover:text-foreground"
-        >
-          <Download size={12} />
-          View &amp; download PDF
-        </a>
-      )}
     </motion.div>
   );
 }
