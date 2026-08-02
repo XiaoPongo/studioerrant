@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Download } from "lucide-react";
 import type { Project } from "@/data/errant/projects";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/utils";
@@ -68,7 +68,9 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
     );
   }
 
-  // Standard cards — click to open the project detail page.
+  // Standard cards — click to open the project detail page. If a
+  // downloadUrl is present (e.g. writing pieces backed by a PDF),
+  // a small secondary link is shown beneath the card.
   return (
     <motion.div
       initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18 }}
@@ -116,6 +118,19 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
           <ArrowUpRight size={18} className="absolute right-5 top-5 text-foreground/0 transition-all duration-500 group-hover:right-4 group-hover:top-4 group-hover:text-foreground/70" />
         </div>
       </Link>
+
+      {project.downloadUrl && (
+        <a
+          href={project.downloadUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cursor="hover"
+          className="group/pdf mt-3 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-foreground/45 transition-colors duration-500 hover:text-foreground"
+        >
+          <Download size={12} />
+          View &amp; download PDF
+        </a>
+      )}
     </motion.div>
   );
 }
