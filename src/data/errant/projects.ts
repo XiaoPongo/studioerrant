@@ -40,8 +40,6 @@ downloadUrl?: string;
     whatWouldChange: string;
     whatRemains: string;
   };
-  /** Optional external link (for writing pieces, design decks, etc.) */
-    downloadUrl?: string;
   /** For "coming soon" items — overrides the card and detail page. */
   comingSoon?: boolean;
   /** Special label for items that are intentionally hidden. */
