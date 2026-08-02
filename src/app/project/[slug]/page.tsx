@@ -3,7 +3,7 @@ import { ProjectDetailPage } from "@/components/errant/pages/project-detail-page
 import { PROJECTS, getProject } from "@/data/errant/projects";
 
 export function generateStaticParams() {
-  return PROJECTS.map((project) => ({
+  return PROJECTS.filter((p) => !p.downloadUrl).map((project) => ({
     slug: project.slug,
   }));
 }
