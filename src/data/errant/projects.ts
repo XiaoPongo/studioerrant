@@ -148,7 +148,7 @@ export const PROJECTS: Project[] = [
     status: "shipped",
     palette: "from-[#1a1730] to-background",
     overview: "An poem.",
-    downloadUrl: "https://github.com/XiaoPongo/studioerrant/blob/main/I%26F/A%20Fool.pdf",
+    downloadUrl: "https://drive.google.com/file/d/1p4ca1-O_MZwGtch8N6e_D7XfJPps1qgi/view",
     sections: [],
     reflection: {
       whatWorked: "",
@@ -168,7 +168,7 @@ export const PROJECTS: Project[] = [
     status: "shipped",
     palette: "from-[#211b38] to-background",
     overview: "A poem.",
-    downloadUrl: "https://github.com/XiaoPongo/studioerrant/blob/main/I%26F/Where%20the%20Land%20Forgets%20Itself.pdf",
+    downloadUrl: "https://drive.google.com/file/d/1VJWR0XqCPN951rg5LEq0hNBXQZf84_IU/view",
     sections: [],
     reflection: {
       whatWorked: "",
@@ -188,7 +188,7 @@ export const PROJECTS: Project[] = [
     status: "shipped",
     palette: "from-[#1a1730] to-background",
     overview: "A short story.",
-    downloadUrl: "https://github.com/XiaoPongo/studioerrant/blob/main/I%26F/A%20Name%20I%20Once%20Knew.pdf",
+    downloadUrl: "https://drive.google.com/file/d/1RX8SO3_n0yvimoz3RgRpfbcuKyI7LW4l/view",
     sections: [],
     reflection: {
       whatWorked: "",
