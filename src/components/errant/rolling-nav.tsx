@@ -32,6 +32,11 @@ import { cn } from "@/lib/utils";
  *      achieved with native non-passive event listeners so
  *      preventDefault() actually works.
  *
+ * Because the nav is fixed to the viewport (not part of document
+ * flow), it would otherwise sit on top of the footer once a visitor
+ * scrolls that far. An IntersectionObserver watches the footer and
+ * fades the desktop nav out just before it would visually collide.
+ *
  * DATA-DRIVEN: reads from NAV_SECTIONS (built from CATEGORIES).
  *
  * Desktop: fixed to the right edge, vertically centered, full size.
@@ -61,6 +66,7 @@ export function RollingNav({
   const [activeId, setActiveId] = useState<ProjectCategory>(
     NAV_SECTIONS[0]?.id ?? "ai",
   );
+  const [nearFooter, setNearFooter] = useState(false);
   const pauseUntilRef = useRef<number>(0);
   const navRef = useRef<HTMLElement>(null);
 
@@ -87,6 +93,23 @@ export function RollingNav({
   };
   // Keep advanceRef in sync so native listeners can call the latest.
   advanceRef.current = advance;
+
+  // Fade the desktop nav out as the footer approaches, so a fixed
+  // element never sits on top of footer content. Triggers a little
+  // before the footer visually reaches the nav's vertical position,
+  // giving the opacity transition room to finish in time.
+  useEffect(() => {
+    if (mobileOnly || !isDesktop) return;
+    const footer = document.querySelector("footer");
+    if (!footer) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setNearFooter(entry.isIntersecting),
+      { rootMargin: "0px 0px -35% 0px", threshold: 0 },
+    );
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, [mobileOnly, isDesktop, pathname]);
 
   // Page-scroll-driven rotation (desktop only).
   useEffect(() => {
@@ -335,12 +358,17 @@ export function RollingNav({
     );
   }
 
-  // ── DESKTOP: fixed to the right edge, vertically centered. ──
+  // ── DESKTOP: fixed to the right edge, vertically centered.
+  // Fades out (and stops intercepting clicks/scroll) as the footer
+  // approaches, so it never visually overlaps footer content. ──
   return (
     <nav
       ref={navRef as React.RefObject<HTMLElement>}
       aria-label="Sections"
-      className="pointer-events-auto fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 md:block lg:right-10"
+      className={cn(
+        "fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 md:block lg:right-10 transition-opacity duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
+        nearFooter ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto",
+      )}
     >
       {reel}
       <div
