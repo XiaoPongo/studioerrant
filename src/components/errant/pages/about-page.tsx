@@ -254,7 +254,7 @@ export function AboutPage() {
         <Reveal delay={0.12}>
           <div className="mt-12 flex flex-wrap items-center gap-x-10 gap-y-4">
             <a
-              href={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/amay-deep-resume.pdf`}
+              href="https://drive.google.com/file/d/1gFK8Ks-P7Bn4WmSAsmOJcEIw23R0lcj-/view?usp=drive_link"
               target="_blank"
               rel="noopener noreferrer"
               data-cursor="hover"
@@ -264,8 +264,9 @@ export function AboutPage() {
               <span className="h-px w-6 bg-foreground/30 transition-all duration-700 group-hover:w-10 group-hover:bg-foreground/70" />
             </a>
             <a
-              href={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/amay-deep-resume.pdf`}
-              download="amay-deep-resume.pdf"
+              href="https://drive.google.com/uc?export=download&id=1gFK8Ks-P7Bn4WmSAsmOJcEIw23R0lcj-"
+              target="_blank"
+              rel="noopener noreferrer"
               data-cursor="hover"
               className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors duration-700 hover:text-foreground"
             >
@@ -312,13 +313,13 @@ export function AboutPage() {
               <span className="h-px w-6 bg-foreground/30 transition-all group-hover:w-10 group-hover:bg-foreground/70" />
             </a>
             <Link
-  href="/work"
-  data-cursor="hover"
-  className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
->
-  See the work
-  <span className="h-px w-6 bg-foreground/30 transition-all group-hover:w-10 group-hover:bg-foreground/70" />
-</Link>
+              href="/work"
+              data-cursor="hover"
+              className="group inline-flex items-center gap-3 text-sm uppercase tracking-[0.3em] text-foreground/70 transition-colors hover:text-foreground"
+            >
+              See the work
+              <span className="h-px w-6 bg-foreground/30 transition-all group-hover:w-10 group-hover:bg-foreground/70" />
+            </Link>
           </div>
         </Reveal>
       </section>
