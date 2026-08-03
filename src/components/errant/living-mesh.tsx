@@ -37,10 +37,22 @@ interface Point {
   y: number;
   vx: number;
   vy: number;
+  /** A persistent target velocity the point always eases toward —
+   *  this is what keeps drift alive without needing cursor input. */
+  targetVx: number;
+  targetVy: number;
   size: number;
   baseAlpha: number;
   /** Phase for a slow, subtle breathing pulse in opacity. */
   phase: number;
+  /** Recomputed each frame — how many lines currently connect to
+   *  this point. Used to make well-connected points shine brighter. */
+  connections: number;
+  /** Distance to the single nearest connected neighbor this frame —
+   *  drives the amoeba-like stretch toward it. Infinity if none. */
+  nearestDist: number;
+  /** Angle toward that nearest neighbor, in radians. */
+  nearestAngle: number;
 }
 
 function cssColorToRgb(input: string): { r: number; g: number; b: number } {
@@ -136,9 +148,14 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
         y: Math.random() * height,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
+        targetVx: Math.cos(angle) * speed,
+        targetVy: Math.sin(angle) * speed,
         size: 0.9 + Math.random() * 0.9,
-        baseAlpha: 0.14 + Math.random() * 0.16,
+        baseAlpha: 0.2 + Math.random() * 0.22,
         phase: Math.random() * Math.PI * 2,
+        connections: 0,
+        nearestDist: Infinity,
+        nearestAngle: 0,
       };
     }
 
@@ -173,13 +190,28 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
 
       // ── Drift each point ──
       for (const p of points) {
-        // A very small, slowly-changing random acceleration — a
-        // gentle Brownian wander, not a purposeful flow.
-        p.vx += (Math.random() - 0.5) * 0.0025 * speedScale;
-        p.vy += (Math.random() - 0.5) * 0.0025 * speedScale;
+        // The target velocity wanders slowly over time — organic
+        // variation — but is always renormalized to a real, visible
+        // speed, so it never decays toward zero the way pure random
+        // noise would.
+        p.targetVx += (Math.random() - 0.5) * 0.0018 * speedScale;
+        p.targetVy += (Math.random() - 0.5) * 0.0018 * speedScale;
+        const targetSpeed = Math.hypot(p.targetVx, p.targetVy) || 1;
+        const minTarget = 0.035 * speedScale;
+        const maxTarget = 0.09 * speedScale;
+        const clamped = Math.min(Math.max(targetSpeed, minTarget), maxTarget);
+        p.targetVx = (p.targetVx / targetSpeed) * clamped;
+        p.targetVy = (p.targetVy / targetSpeed) * clamped;
 
-        // Cursor influence — points drift softly away from the
-        // pointer, like disturbed dust settling.
+        // Ease the actual velocity toward the target. This is what
+        // guarantees continuous motion — the point always has
+        // somewhere to drift toward, with or without the cursor.
+        p.vx += (p.targetVx - p.vx) * 0.025;
+        p.vy += (p.targetVy - p.vy) * 0.025;
+
+        // Cursor influence — a temporary push layered on top. The
+        // easing above will settle it back toward the target drift
+        // over the following second or two.
         if (pointer.active && !reducedMotion && !isTouch) {
           const dx = p.x - pointer.x;
           const dy = p.y - pointer.y;
@@ -187,17 +219,14 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
           const radius = 160;
           if (dist2 < radius * radius) {
             const d = Math.sqrt(dist2) || 1;
-            const force = (1 - d / radius) * 0.012;
+            const force = (1 - d / radius) * 0.02;
             p.vx += (dx / d) * force;
             p.vy += (dy / d) * force;
           }
         }
 
-        // Damping keeps the drift slow and settled rather than
-        // accelerating indefinitely.
-        p.vx *= 0.98;
-        p.vy *= 0.98;
-        const maxSpeed = 0.16 * speedScale;
+        // A safety clamp so cursor bursts never send a point flying.
+        const maxSpeed = 0.22 * speedScale;
         const sp = Math.hypot(p.vx, p.vy);
         if (sp > maxSpeed) {
           p.vx = (p.vx / sp) * maxSpeed;
@@ -214,6 +243,9 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
         if (p.x > width + margin) p.x = -margin;
         if (p.y < -margin) p.y = height + margin;
         if (p.y > height + margin) p.y = -margin;
+
+        p.connections = 0;
+        p.nearestDist = Infinity;
       }
 
       // ── Draw connections first, so points sit on top ──
@@ -227,8 +259,20 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
           if (dist >= connectDist) continue;
 
           const proximity = 1 - dist / connectDist;
-          let alpha = proximity * proximity * 0.16 * alphaMult;
+          let alpha = proximity * proximity * 0.24 * alphaMult;
           if (alpha < 0.002) continue;
+
+          a.connections += proximity;
+          b.connections += proximity;
+
+          if (dist < a.nearestDist) {
+            a.nearestDist = dist;
+            a.nearestAngle = Math.atan2(b.y - a.y, b.x - a.x);
+          }
+          if (dist < b.nearestDist) {
+            b.nearestDist = dist;
+            b.nearestAngle = Math.atan2(a.y - b.y, a.x - b.x);
+          }
 
           const useAccent =
             creative > 0.01 && (i + j) % 7 === 0 && creative > Math.random();
@@ -239,7 +283,9 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
           } else {
             ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
           }
-          ctx.lineWidth = 0.6;
+          // Closer points connect with a thicker line — this is
+          // what makes near-clusters read as brighter "hubs".
+          ctx.lineWidth = 0.4 + proximity * 1.3;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
@@ -250,15 +296,36 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       // ── Draw points ──
       for (const p of points) {
         const pulse = 0.85 + Math.sin(t * 0.0006 + p.phase) * 0.15;
-        const alpha = p.baseAlpha * pulse * alphaMult;
+        // Points with more/closer connections shine brighter and
+        // slightly larger — this is what makes hub points stand out,
+        // similar in spirit to the denser convergence points in a
+        // real neural network render.
+        const connectionBoost = Math.min(1 + p.connections * 0.35, 2.4);
+        const alpha = p.baseAlpha * pulse * alphaMult * connectionBoost;
+        const radius = p.size * 2.2 * Math.min(1 + p.connections * 0.12, 1.6);
 
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2.2);
-        grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`);
+        // A gentle amoeba-like stretch toward the nearest connected
+        // neighbor — subtle, not cartoonish. Reaches out slightly
+        // more as the neighbor gets closer, and relaxes back to a
+        // plain round dot when nothing is nearby.
+        const proximity =
+          p.nearestDist < connectDist ? 1 - p.nearestDist / connectDist : 0;
+        const stretch = 1 + proximity * 0.45;
+        const squeeze = 1 - proximity * 0.16;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        if (proximity > 0) ctx.rotate(p.nearestAngle);
+        ctx.scale(stretch, squeeze);
+
+        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, radius);
+        grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${Math.min(alpha, 0.9)})`);
         grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 2.2, 0, Math.PI * 2);
+        ctx.arc(0, 0, radius, 0, Math.PI * 2);
         ctx.fill();
+        ctx.restore();
       }
 
       rafId = requestAnimationFrame(step);
