@@ -120,17 +120,17 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       connectDist = Math.max(90, Math.min(160, width / 12));
 
       const area = width * height;
-      let density = Math.floor(area / 34000);
+      let density = Math.floor((area / 34000) * 2.5);
       if (isTouch) density = Math.floor(density * 0.55);
       if (reducedMotion) density = Math.floor(density * 0.7);
-      density = Math.max(16, Math.min(density, 46));
+      density = Math.max(40, Math.min(density, 115));
       points = new Array(density).fill(0).map(() => spawn());
       ctx.clearRect(0, 0, width, height);
     }
 
     function spawn(): Point {
       const angle = Math.random() * Math.PI * 2;
-      const speed = 0.012 + Math.random() * 0.02;
+      const speed = 0.032 + Math.random() * 0.05;
       return {
         x: Math.random() * width,
         y: Math.random() * height,
@@ -197,7 +197,7 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
         // accelerating indefinitely.
         p.vx *= 0.98;
         p.vy *= 0.98;
-        const maxSpeed = 0.06 * speedScale;
+        const maxSpeed = 0.16 * speedScale;
         const sp = Math.hypot(p.vx, p.vy);
         if (sp > maxSpeed) {
           p.vx = (p.vx / sp) * maxSpeed;
