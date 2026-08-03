@@ -4,52 +4,42 @@ import { useEffect, useRef } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 /**
- * The Living Mesh — the flow of ideas.
+ * The Living Mesh — a constellation of ideas.
  *
- * Particles (motes) are born at the LEFT edge of the viewport and
- * travel RIGHT with purpose — imitating the flow of ideas through a
- * neural network, or signals traveling between neurons. Most reach
- * the right edge. Some drift upward, some downward, but the general
- * direction is always left-to-right.
+ * A field of soft points drifts slowly and quietly across the
+ * viewport — never in a single direction, never with a trailing
+ * shape. When two points happen to drift near one another, a faint
+ * line connects them, like a synapse firing between neurons. As they
+ * drift apart, the line fades. This is the whole effect: points and
+ * the occasional line between them — nothing organic, nothing with a
+ * head or a tail.
  *
- * No motes appear randomly in the middle. They are always emitted
- * from the left and always travel rightward. When a mote reaches the
- * right edge (or strays too far up/down), it is recycled back to the
- * left edge as a new mote.
+ * Motion is a gentle random drift (a soft, damped Brownian walk),
+ * wrapped at the edges so the field never thins out or needs to
+ * "spawn" new points. The field should read as calm and structural —
+ * a network quietly thinking — rather than as flowing particles.
  *
- * Each mote is rendered as a thin, faint STREAK — a signal along a
- * pathway, not a particle with a bulbous head. Paths are close to
- * straight, with only a slight organic wobble, so the field reads as
- * calm directional flow rather than swimming motion.
+ * The point/line color follows the theme: warm white in Night
+ * (graphite dust in raking light), charcoal in Morning (graphite on
+ * paper). In Morning the field is MORE visible (--mote-alpha-mult is
+ * higher) so it never disappears on the light background.
  *
- * The mote color follows the theme: warm white in Night (graphite
- * dust in raking light), charcoal in Morning (graphite on paper). In
- * Morning the motes are MORE visible (--mote-alpha-mult is higher)
- * so the flow never disappears on the light background.
- *
- * Reduced motion: the flow slows dramatically but does not stop —
- * the atmosphere remains.
+ * Reduced motion: drift slows dramatically but does not stop — the
+ * atmosphere remains, and connections still form and fade.
  */
 interface MeshProps {
   creativeIntensity?: number;
   className?: string;
 }
 
-interface Mote {
+interface Point {
   x: number;
   y: number;
-  /** Previous frame's position, used to draw the streak segment. */
-  px: number;
-  py: number;
   vx: number;
   vy: number;
-  life: number;
-  maxLife: number;
   size: number;
   baseAlpha: number;
-  /** A persistent vertical drift — some motes rise, some fall. */
-  drift: number;
-  /** A small phase for organic wobble. */
+  /** Phase for a slow, subtle breathing pulse in opacity. */
   phase: number;
 }
 
@@ -101,13 +91,18 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
     let width = 0;
     let height = 0;
     let dpr = 1;
-    let motes: Mote[] = [];
+    let points: Point[] = [];
     let rafId = 0;
     const startTime = performance.now();
     let lastTime = startTime;
     const pointer = { x: -9999, y: -9999, active: false };
     let cachedRgb = { r: 232, g: 228, b: 220 };
     let cachedAlphaMult = 1;
+
+    // Max distance at which two points connect with a line. Scales
+    // gently with viewport so the field feels similarly dense on
+    // large and small screens.
+    let connectDist = 130;
 
     const isTouch =
       typeof window !== "undefined" &&
@@ -122,44 +117,27 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Density: a sparse field of idea-flows. Fewer on touch.
+      connectDist = Math.max(90, Math.min(160, width / 12));
+
       const area = width * height;
-      let density = Math.floor(area / 38000);
+      let density = Math.floor(area / 34000);
       if (isTouch) density = Math.floor(density * 0.55);
-      if (reducedMotion) density = Math.floor(density * 0.6);
-      density = Math.max(14, Math.min(density, 48));
-      motes = new Array(density).fill(0).map(() => spawn(true));
+      if (reducedMotion) density = Math.floor(density * 0.7);
+      density = Math.max(16, Math.min(density, 46));
+      points = new Array(density).fill(0).map(() => spawn());
       ctx.clearRect(0, 0, width, height);
     }
 
-    function spawn(initial = false): Mote {
-      // Motes are ALWAYS born at the left edge. On the very first
-      // spawn (initial=true) we distribute them across the width so
-      // the field doesn't start empty — but they still flow right.
-      const x = initial ? Math.random() * width : -20 - Math.random() * 60;
-      const y = Math.random() * height;
-      // Rightward velocity — the purpose. Most motes move at a
-      // similar pace; a few are slower or faster, but the spread is
-      // gentler than before so the field feels coherent, not scattered.
-      const speed = 0.16 + Math.random() * 0.34;
-      // Vertical drift: a light, mostly-straight path. Some motes
-      // rise, some fall, but only slightly — signals along a
-      // pathway, not creatures swimming.
-      const driftSign = Math.random() < 0.5 ? -1 : 1;
-      const driftMag = Math.random() * 0.016;
+    function spawn(): Point {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 0.012 + Math.random() * 0.02;
       return {
-        x,
-        y,
-        px: x,
-        py: y,
-        vx: speed,
-        vy: 0,
-        life: 0,
-        maxLife: 18000 + Math.random() * 16000,
-        // Uniform-ish thin size — no oversized "heads".
-        size: 0.55 + Math.random() * 0.55,
-        baseAlpha: 0.07 + Math.random() * 0.13,
-        drift: driftSign * driftMag,
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        size: 0.9 + Math.random() * 0.9,
+        baseAlpha: 0.14 + Math.random() * 0.16,
         phase: Math.random() * Math.PI * 2,
       };
     }
@@ -170,12 +148,7 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       const dt = Math.min(now - lastTime, 60);
       lastTime = now;
 
-      // Fade of existing pixels so streaks leave a soft, SHORT
-      // trailing tail rather than a long comet.
-      ctx.globalCompositeOperation = "destination-out";
-      ctx.fillStyle = "rgba(0, 0, 0, 0.065)";
-      ctx.fillRect(0, 0, width, height);
-      ctx.globalCompositeOperation = "source-over";
+      ctx.clearRect(0, 0, width, height);
 
       // Re-read the mote color from the CSS variable on every frame
       // so it tracks theme changes instantly.
@@ -190,7 +163,7 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       const rgb = cachedRgb;
       const alphaMult = cachedAlphaMult;
 
-      const speedScale = reducedMotion ? 0.25 : 1;
+      const speedScale = reducedMotion ? 0.2 : 1;
       const creative = creativeRef.current;
 
       // The accent — deep, muted, discovered.
@@ -198,109 +171,94 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       const accentG = 76;
       const accentB = 128;
 
-      ctx.lineCap = "round";
+      // ── Drift each point ──
+      for (const p of points) {
+        // A very small, slowly-changing random acceleration — a
+        // gentle Brownian wander, not a purposeful flow.
+        p.vx += (Math.random() - 0.5) * 0.0025 * speedScale;
+        p.vy += (Math.random() - 0.5) * 0.0025 * speedScale;
 
-      for (let i = 0; i < motes.length; i++) {
-        const p = motes[i];
-
-        p.px = p.x;
-        p.py = p.y;
-
-        // Rightward flow — the purpose. Constant gentle push right.
-        p.vx += 0.002 * speedScale;
-        // A restrained, slow wobble — enough to feel organic, not
-        // enough to read as a curving swim path.
-        p.vy += p.drift + Math.sin(t * 0.00011 + p.phase) * 0.0013;
-
-        // Cursor influence — a gentle deflection, like a hand
-        // disturbing the flow. Never stops the rightward motion.
+        // Cursor influence — points drift softly away from the
+        // pointer, like disturbed dust settling.
         if (pointer.active && !reducedMotion && !isTouch) {
           const dx = p.x - pointer.x;
           const dy = p.y - pointer.y;
           const dist2 = dx * dx + dy * dy;
-          const radius = 200;
+          const radius = 160;
           if (dist2 < radius * radius) {
             const d = Math.sqrt(dist2) || 1;
-            const force = (1 - d / radius) * 0.02;
+            const force = (1 - d / radius) * 0.012;
+            p.vx += (dx / d) * force;
             p.vy += (dy / d) * force;
           }
         }
 
-        // Damping — keep motion fluid, never robotic.
-        p.vx *= 0.985;
-        p.vy *= 0.955;
-        // Clamp horizontal speed so it never stalls or sprints.
-        const minVx = 0.08 * speedScale;
-        const maxVx = 0.7 * speedScale;
-        if (p.vx < minVx) p.vx = minVx;
-        if (p.vx > maxVx) p.vx = maxVx;
+        // Damping keeps the drift slow and settled rather than
+        // accelerating indefinitely.
+        p.vx *= 0.98;
+        p.vy *= 0.98;
+        const maxSpeed = 0.06 * speedScale;
+        const sp = Math.hypot(p.vx, p.vy);
+        if (sp > maxSpeed) {
+          p.vx = (p.vx / sp) * maxSpeed;
+          p.vy = (p.vy / sp) * maxSpeed;
+        }
 
         p.x += p.vx * (dt / 16);
         p.y += p.vy * (dt / 16);
-        p.life += dt;
 
-        // Recycle when the mote reaches the right edge, strays too
-        // far vertically, or lives too long. Always re-birth at the
-        // LEFT edge — never in the middle.
-        if (
-          p.x > width + 30 ||
-          p.y < -80 ||
-          p.y > height + 80 ||
-          p.life > p.maxLife
-        ) {
-          Object.assign(p, spawn(false));
-          continue;
+        // Wrap at the edges — the field never thins out or needs to
+        // respawn points, so density stays constant and even.
+        const margin = 20;
+        if (p.x < -margin) p.x = width + margin;
+        if (p.x > width + margin) p.x = -margin;
+        if (p.y < -margin) p.y = height + margin;
+        if (p.y > height + margin) p.y = -margin;
+      }
+
+      // ── Draw connections first, so points sit on top ──
+      for (let i = 0; i < points.length; i++) {
+        for (let j = i + 1; j < points.length; j++) {
+          const a = points[i];
+          const b = points[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist >= connectDist) continue;
+
+          const proximity = 1 - dist / connectDist;
+          let alpha = proximity * proximity * 0.16 * alphaMult;
+          if (alpha < 0.002) continue;
+
+          const useAccent =
+            creative > 0.01 && (i + j) % 7 === 0 && creative > Math.random();
+
+          if (useAccent) {
+            const accentAlpha = alpha * creative * 1.4;
+            ctx.strokeStyle = `rgba(${accentR}, ${accentG}, ${accentB}, ${accentAlpha})`;
+          } else {
+            ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+          }
+          ctx.lineWidth = 0.6;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
         }
+      }
 
-        // Fade in for the first 12% of life, hold, fade out for the
-        // last 25%. Long, slow fades.
-        const lifeRatio = p.life / p.maxLife;
-        let fade: number;
-        if (lifeRatio < 0.12) {
-          fade = lifeRatio / 0.12;
-        } else if (lifeRatio > 0.75) {
-          fade = (1 - lifeRatio) / 0.25;
-        } else {
-          fade = 1;
-        }
-        fade = fade * fade;
+      // ── Draw points ──
+      for (const p of points) {
+        const pulse = 0.85 + Math.sin(t * 0.0006 + p.phase) * 0.15;
+        const alpha = p.baseAlpha * pulse * alphaMult;
 
-        const alpha = p.baseAlpha * fade * alphaMult;
-
-        // The signal itself — a thin stroked line from the previous
-        // position to the current one. No radial blob, no bulbous
-        // head. This is what makes it read as a traveling signal
-        // rather than a swimming particle.
-        ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
-        ctx.lineWidth = p.size;
-        ctx.beginPath();
-        ctx.moveTo(p.px, p.py);
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
-
-        // A soft, SMALL glow at the leading point — subtle, not a
-        // dominant head shape.
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 1.4);
-        grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha * 0.8})`);
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2.2);
+        grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`);
         grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 1.4, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size * 2.2, 0, Math.PI * 2);
         ctx.fill();
-
-        // A fraction of motes carry the creative accent — and only
-        // when creative intensity has risen.
-        if (creative > 0.01 && i % 5 === 0) {
-          const accentAlpha = creative * alpha * 0.5;
-          if (accentAlpha > 0.001) {
-            ctx.strokeStyle = `rgba(${accentR}, ${accentG}, ${accentB}, ${accentAlpha})`;
-            ctx.lineWidth = p.size * 1.1;
-            ctx.beginPath();
-            ctx.moveTo(p.px, p.py);
-            ctx.lineTo(p.x, p.y);
-            ctx.stroke();
-          }
-        }
       }
 
       rafId = requestAnimationFrame(step);
