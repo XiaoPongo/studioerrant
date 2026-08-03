@@ -17,10 +17,10 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
  * right edge (or strays too far up/down), it is recycled back to the
  * left edge as a new mote.
  *
- * Each mote leaves a soft fading trail — the axon, the dendrite, the
- * thread of a thought. The trails are what give the field its
- * "living tissue" quality. They are drawn very faintly so the whole
- * reads as a slow undercurrent rather than busy animation.
+ * Each mote is rendered as a thin, faint STREAK — a signal along a
+ * pathway, not a particle with a bulbous head. Paths are close to
+ * straight, with only a slight organic wobble, so the field reads as
+ * calm directional flow rather than swimming motion.
  *
  * The mote color follows the theme: warm white in Night (graphite
  * dust in raking light), charcoal in Morning (graphite on paper). In
@@ -38,6 +38,9 @@ interface MeshProps {
 interface Mote {
   x: number;
   y: number;
+  /** Previous frame's position, used to draw the streak segment. */
+  px: number;
+  py: number;
   vx: number;
   vy: number;
   life: number;
@@ -105,7 +108,6 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
     const pointer = { x: -9999, y: -9999, active: false };
     let cachedRgb = { r: 232, g: 228, b: 220 };
     let cachedAlphaMult = 1;
-    let lastVarCheck = 0;
 
     const isTouch =
       typeof window !== "undefined" &&
@@ -137,21 +139,26 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       const x = initial ? Math.random() * width : -20 - Math.random() * 60;
       const y = Math.random() * height;
       // Rightward velocity — the purpose. Most motes move at a
-      // similar pace; a few are slower (0.08) or faster (0.6).
-      const speed = 0.12 + Math.random() * Math.random() * 0.5;
-      // Vertical drift: most motes drift slightly, some more. Sign
-      // determines up vs down.
+      // similar pace; a few are slower or faster, but the spread is
+      // gentler than before so the field feels coherent, not scattered.
+      const speed = 0.16 + Math.random() * 0.34;
+      // Vertical drift: a light, mostly-straight path. Some motes
+      // rise, some fall, but only slightly — signals along a
+      // pathway, not creatures swimming.
       const driftSign = Math.random() < 0.5 ? -1 : 1;
-      const driftMag = Math.random() * 0.04;
+      const driftMag = Math.random() * 0.016;
       return {
         x,
         y,
+        px: x,
+        py: y,
         vx: speed,
         vy: 0,
         life: 0,
         maxLife: 18000 + Math.random() * 16000,
-        size: 0.4 + Math.random() * Math.random() * 1.5,
-        baseAlpha: 0.06 + Math.random() * 0.14,
+        // Uniform-ish thin size — no oversized "heads".
+        size: 0.55 + Math.random() * 0.55,
+        baseAlpha: 0.07 + Math.random() * 0.13,
         drift: driftSign * driftMag,
         phase: Math.random() * Math.PI * 2,
       };
@@ -163,19 +170,15 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       const dt = Math.min(now - lastTime, 60);
       lastTime = now;
 
-      // Very gentle fade of existing pixels so motes leave soft
-      // trailing tails (the axons / dendrites).
+      // Fade of existing pixels so streaks leave a soft, SHORT
+      // trailing tail rather than a long comet.
       ctx.globalCompositeOperation = "destination-out";
-      ctx.fillStyle = "rgba(0, 0, 0, 0.035)";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.065)";
       ctx.fillRect(0, 0, width, height);
       ctx.globalCompositeOperation = "source-over";
 
-      // Re-read the mote color from the CSS variable on EVERY frame.
-      // This is cheap (one getComputedStyle call) and guarantees the
-      // mote color tracks the current theme instantly — important
-      // because the canvas persists across theme toggles and the
-      // cached value would otherwise be stale until the next 500ms
-      // check.
+      // Re-read the mote color from the CSS variable on every frame
+      // so it tracks theme changes instantly.
       const cs = getComputedStyle(document.documentElement);
       const fg = cs.getPropertyValue("--mote-color").trim();
       const am = cs.getPropertyValue("--mote-alpha-mult").trim();
@@ -195,14 +198,19 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
       const accentG = 76;
       const accentB = 128;
 
+      ctx.lineCap = "round";
+
       for (let i = 0; i < motes.length; i++) {
         const p = motes[i];
 
+        p.px = p.x;
+        p.py = p.y;
+
         // Rightward flow — the purpose. Constant gentle push right.
         p.vx += 0.002 * speedScale;
-        // Vertical drift — each mote has its own persistent drift
-        // direction (some up, some down). Plus a slow organic wobble.
-        p.vy += p.drift + Math.sin(t * 0.0002 + p.phase) * 0.004;
+        // A restrained, slow wobble — enough to feel organic, not
+        // enough to read as a curving swim path.
+        p.vy += p.drift + Math.sin(t * 0.00011 + p.phase) * 0.0013;
 
         // Cursor influence — a gentle deflection, like a hand
         // disturbing the flow. Never stops the rightward motion.
@@ -220,10 +228,10 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
 
         // Damping — keep motion fluid, never robotic.
         p.vx *= 0.985;
-        p.vy *= 0.96;
+        p.vy *= 0.955;
         // Clamp horizontal speed so it never stalls or sprints.
-        const minVx = 0.06 * speedScale;
-        const maxVx = 0.85 * speedScale;
+        const minVx = 0.08 * speedScale;
+        const maxVx = 0.7 * speedScale;
         if (p.vx < minVx) p.vx = minVx;
         if (p.vx > maxVx) p.vx = maxVx;
 
@@ -259,13 +267,25 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
 
         const alpha = p.baseAlpha * fade * alphaMult;
 
-        // The mote head — a tiny soft dot.
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3);
-        grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`);
+        // The signal itself — a thin stroked line from the previous
+        // position to the current one. No radial blob, no bulbous
+        // head. This is what makes it read as a traveling signal
+        // rather than a swimming particle.
+        ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+        ctx.lineWidth = p.size;
+        ctx.beginPath();
+        ctx.moveTo(p.px, p.py);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+
+        // A soft, SMALL glow at the leading point — subtle, not a
+        // dominant head shape.
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 1.4);
+        grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha * 0.8})`);
         grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size * 1.4, 0, Math.PI * 2);
         ctx.fill();
 
         // A fraction of motes carry the creative accent — and only
@@ -273,13 +293,12 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
         if (creative > 0.01 && i % 5 === 0) {
           const accentAlpha = creative * alpha * 0.5;
           if (accentAlpha > 0.001) {
-            const ag = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 4);
-            ag.addColorStop(0, `rgba(${accentR}, ${accentG}, ${accentB}, ${accentAlpha})`);
-            ag.addColorStop(1, `rgba(${accentR}, ${accentG}, ${accentB}, 0)`);
-            ctx.fillStyle = ag;
+            ctx.strokeStyle = `rgba(${accentR}, ${accentG}, ${accentB}, ${accentAlpha})`;
+            ctx.lineWidth = p.size * 1.1;
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size * 4, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.moveTo(p.px, p.py);
+            ctx.lineTo(p.x, p.y);
+            ctx.stroke();
           }
         }
       }
