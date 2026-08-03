@@ -48,11 +48,6 @@ interface Point {
   /** Recomputed each frame — how many lines currently connect to
    *  this point. Used to make well-connected points shine brighter. */
   connections: number;
-  /** Distance to the single nearest connected neighbor this frame —
-   *  drives the amoeba-like stretch toward it. Infinity if none. */
-  nearestDist: number;
-  /** Angle toward that nearest neighbor, in radians. */
-  nearestAngle: number;
 }
 
 function cssColorToRgb(input: string): { r: number; g: number; b: number } {
@@ -154,8 +149,6 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
         baseAlpha: 0.2 + Math.random() * 0.22,
         phase: Math.random() * Math.PI * 2,
         connections: 0,
-        nearestDist: Infinity,
-        nearestAngle: 0,
       };
     }
 
@@ -245,7 +238,6 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
         if (p.y > height + margin) p.y = -margin;
 
         p.connections = 0;
-        p.nearestDist = Infinity;
       }
 
       // ── Draw connections first, so points sit on top ──
@@ -264,15 +256,6 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
 
           a.connections += proximity;
           b.connections += proximity;
-
-          if (dist < a.nearestDist) {
-            a.nearestDist = dist;
-            a.nearestAngle = Math.atan2(b.y - a.y, b.x - a.x);
-          }
-          if (dist < b.nearestDist) {
-            b.nearestDist = dist;
-            b.nearestAngle = Math.atan2(a.y - b.y, a.x - b.x);
-          }
 
           const useAccent =
             creative > 0.01 && (i + j) % 7 === 0 && creative > Math.random();
@@ -304,28 +287,13 @@ export function LivingMesh({ creativeIntensity = 0, className }: MeshProps) {
         const alpha = p.baseAlpha * pulse * alphaMult * connectionBoost;
         const radius = p.size * 2.2 * Math.min(1 + p.connections * 0.12, 1.6);
 
-        // A gentle amoeba-like stretch toward the nearest connected
-        // neighbor — subtle, not cartoonish. Reaches out slightly
-        // more as the neighbor gets closer, and relaxes back to a
-        // plain round dot when nothing is nearby.
-        const proximity =
-          p.nearestDist < connectDist ? 1 - p.nearestDist / connectDist : 0;
-        const stretch = 1 + proximity * 0.45;
-        const squeeze = 1 - proximity * 0.16;
-
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        if (proximity > 0) ctx.rotate(p.nearestAngle);
-        ctx.scale(stretch, squeeze);
-
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, radius);
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius);
         grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${Math.min(alpha, 0.9)})`);
         grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
         ctx.fill();
-        ctx.restore();
       }
 
       rafId = requestAnimationFrame(step);
